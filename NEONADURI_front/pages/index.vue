@@ -7,7 +7,23 @@
     >
       <img src="/logo/logo-white.png" alt="" class="bounce-in-top logo-image" />
     </div>
-    <div>TTT</div>
+    <div>
+      <img src="/banner/main-banner-white-long.jpg" class="banner" />
+    </div>
+    <div v-if="view" class="main-card-box">
+      <div class="cards">
+        <div class="main-card">
+          <img src="/maincard/main-search.png" class="card-img" />
+          <img src="/maincard/main-move.jpg" alt="" class="card-img back" />
+        </div>
+      </div>
+      <div class="cards">
+        <div class="main-card">
+          <img src="/maincard/main-move.jpg" class="card-img back" />
+          <img src="/maincard/main-statistics.png" class="card-img" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -33,6 +49,45 @@ export default {
 </script>
 
 <style scoped>
+.back {
+  transform: rotateY(180deg);
+}
+.cards {
+  width: 600px;
+  perspective: 1000px;
+}
+
+.main-card-box {
+  margin-top: 70px;
+  padding-bottom: 20px;
+  width: 100%;
+  height: 60vh;
+  display: flex;
+  justify-content: space-around;
+  perspective: 1000px;
+}
+.main-card {
+  width: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg);
+  transition: 0.5s;
+}
+
+.cards:hover .main-card {
+  transform: rotateY(-180deg);
+}
+
+.card-img {
+  width: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+}
+.banner {
+  width: 100%;
+  height: 85vh;
+}
+
 ::-webkit-scrollbar {
   display: none;
 }
