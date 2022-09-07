@@ -19,12 +19,9 @@ public class Tag {
     @Column(name = "tag_id")
     private Long tagId;
 
-    @OneToMany(mappedBy = "tag",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<ReviewTag> reviewTags = new HashSet<>();
+    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
+    private Set<Review> reviews = new HashSet<>();
 
     @Column(name = "tag_content", nullable = false)
     private String tagContent;
-
-    @Column(name = "tag_count", nullable = false)
-    private Long tagCount;
 }

@@ -17,17 +17,15 @@ public class Spot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "spot_id", nullable = false)
-    private long spotId;
+    private Long spotId;
 
-    @OneToOne
-    @JoinColumn(name = "region_id", nullable = false) //name 옵션은 DB 컬럼명
-    private Region regionId;
+    @Column(name = "region_id")
+    private Long regionId;
 
-    @OneToOne
-    @JoinColumn(name = "class_id", nullable = false)
-    private Classification classId;
+    @Column(name = "class_id")
+    private Long classId;
 
-    @OneToMany(mappedBy = "spot", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "spotId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Review> reviews = new HashSet<>();
 
     @Column(name = "spot_name", nullable = false)

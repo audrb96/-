@@ -21,11 +21,14 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "spot_id")
-    private Spot spot;
+    private Spot spotId;
 
-    //다대다 관계 mapping
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<ReviewTag> reviewTags = new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "reivew_tag",
+            joinColumns = @JoinColumn(name = "review_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags = new HashSet<>();
 
     @Column(name = "review_content", nullable = false)
     private String reviewContent;
@@ -35,4 +38,7 @@ public class Review {
 
     @Column(name = "review_image", nullable = false)
     private String reviewImage;
+
+    @Column(name = "review_password", nullable = false)
+    private String reviewPassword;
 }
