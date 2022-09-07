@@ -11,7 +11,7 @@
       <img src="/banner/main-banner-white-long.jpg" class="banner" />
     </div>
     <div v-if="view" class="main-card-box">
-      <div class="cards">
+      <div class="cards" @click="moveSearch">
         <div class="main-card">
           <img src="/maincard/main-search.png" class="card-img" />
           <img src="/maincard/main-move.jpg" alt="" class="card-img back" />
@@ -44,6 +44,9 @@ export default {
     toggle() {
       this.view = true
     },
+    moveSearch() {
+      this.$router.push('/search')
+    },
   },
 }
 </script>
@@ -53,6 +56,7 @@ export default {
   transform: rotateX(180deg);
 }
 .cards {
+  cursor: pointer;
   width: 600px;
   perspective: 1000px;
 }

@@ -43,6 +43,9 @@ export default {
 
 <style scoped>
 .navbar {
+  position: fixed;
+  top: 0;
+  right: 0;
   display: flex;
   justify-content: center;
 }
@@ -51,8 +54,9 @@ export default {
   z-index: 100;
   margin: 25px 20px 0 0;
 }
+
 .navbar-content {
-  height: 40%;
+  height: 400px;
   margin: 10px 20px 0 0;
   background-color: #fffff0;
   display: flex;
