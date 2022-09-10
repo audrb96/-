@@ -36,7 +36,7 @@
           <h1>지역 :</h1>
           <b-form-select
             v-model="sido"
-            :options="sidoOptions"
+            :options="sidoSelect"
             class="selected"
           ></b-form-select>
           <b-form-select
@@ -58,6 +58,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
   name: 'SearchPage',
   data() {
@@ -69,6 +71,15 @@ export default {
       sigunguOptions: [{ value: 'all', text: '전체' }],
       myeonOptions: [{ value: 'all', text: '전체' }],
     }
+  },
+  computed: {
+    ...mapGetters('region', ['sidoSelect']),
+  },
+  created() {
+    this.callSidos()
+  },
+  methods: {
+    ...mapActions('region', ['callSidos']),
   },
 }
 </script>
