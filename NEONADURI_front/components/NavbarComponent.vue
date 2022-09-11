@@ -51,6 +51,8 @@ export default {
 }
 .navbar-btn {
   position: fixed;
+  top: 0;
+  right: 1;
   z-index: 100;
   margin: 25px 20px 0 0;
 }

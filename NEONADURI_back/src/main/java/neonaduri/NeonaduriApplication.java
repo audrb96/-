@@ -1,4 +1,4 @@
-package neonaduri.application;
+package neonaduri;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

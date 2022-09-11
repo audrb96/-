@@ -1,0 +1,22 @@
+server:
+  port:
+    7070
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://neonaduri-db.c2k2xt6qu8x0.ap-northeast-2.rds.amazonaws.com:3306/neonaduri?serverTimezone=Asia/Seoul
+    username: NEONADURI_admin
+    password: ssafyA702
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        diarect: org.hibernate.dialect.MySQL5InnoDBDialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+
+    open-in-view: false
