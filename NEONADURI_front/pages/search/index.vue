@@ -75,7 +75,7 @@
           </div>
         </div>
         <div class="button-box">
-          <button class="custom-btn btn-12">
+          <button class="custom-btn btn-12" @click="moveSearchResult">
             <span>레츠고!</span><span>어디로 갈까요?</span>
           </button>
         </div>
@@ -272,6 +272,9 @@ export default {
 
       console.log(this.selected)
     },
+    moveSearchResult() {
+      this.$router.push('search/searchResult')
+    },
   },
 }
 </script>
@@ -366,7 +369,9 @@ export default {
   -moz-transform: rotateX(-90deg);
   transform: rotateX(-90deg);
 }
-
+.search {
+  height: 65vw;
+}
 .btn-group {
   width: 90%;
   display: flex;
@@ -437,9 +442,6 @@ export default {
   margin-right: 1.5%;
   width: 300px;
   height: 150px;
-}
-.search {
-  height: 65vw;
 }
 
 .recommand-des {
