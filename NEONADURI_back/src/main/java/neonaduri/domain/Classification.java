@@ -1,6 +1,7 @@
 package neonaduri.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Table(name = "classfication")
+@Table(name = "classification")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Classification {
 
@@ -22,4 +23,10 @@ public class Classification {
 
     @Column(name = "sm_class", nullable = false)
     private String smClass;
+
+    @Builder
+    public Classification(String mdClass, String smClass){
+        this.mdClass = mdClass;
+        this.smClass = smClass;
+    }
 }

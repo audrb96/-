@@ -18,7 +18,7 @@ public class Visited {
     private Long visitedId;
 
     @Column(name = "visited_region", nullable = false)
-    private Integer visitedRegion;
+    private String visitedRegion;
 
     @Column(name = "visited_year", nullable = false)
     private Integer visitedYear;

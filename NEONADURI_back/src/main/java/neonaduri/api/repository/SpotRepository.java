@@ -14,4 +14,6 @@ public interface SpotRepository extends JpaRepository<Spot, Long> {
 
     @Query("select s from Spot s join fetch s.reviews")
     Spot findDetailsSpotBySpotId(Long spotId);
+
+    Spot findSpotBySpotName(String spotName);
 }
