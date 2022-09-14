@@ -36,25 +36,17 @@ public class InsertController {
                 "C:\\Users\\82108\\Desktop\\neonaduri\\S07P22A702\\NEONADURI_back\\src\\main\\resources\\data"
         );
 
-        int idx = 0;
-//
         String[] line = null;
-        Classification cls = classificationRepository.findClassificationByMdClassAndSmClass("쇼핑", "시장");
-//
+        Classification cls = getClassification();
         while ((line = insertData.nextRead()) != null) {
-            idx += 1;
-            System.out.println("idx = " + idx);
-
             Region reg = getRegion(line);
             Spot spot = getSpot(line, cls, reg);
-
-            /* Store 저장 */
-            Store store = new Store(spot, line[1], line[2], line[3], line[4]);
-            storeRepository.save(store);
+            getStore(spot,line);
         }
         return "good!";
     }
 
+    @Transactional
     public Region getRegion(String[] line) {
         String[] s = line[6].split(" ");
 
@@ -62,15 +54,17 @@ public class InsertController {
             line[6] = s[0];
         }
 
+
         Region region = regionRepository.findRegionBySidoAndSigunguAndMyeon(line[5], line[6], line[7]);
 
         if (region == null) {
             region = new Region(line[5], line[6], line[7]);
-            return regionRepository.save(region);
+            regionRepository.saveAndFlush(region);
         }
         return region;
     }
 
+    @Transactional
     public Spot getSpot(String[] line, Classification cls, Region reg) throws IOException {
         Spot spot = spotRepository.findSpotBySpotName(line[0]);
 
@@ -91,5 +85,17 @@ public class InsertController {
             return spotRepository.save(spot);
         }
         return spot;
+    }
+
+    @Transactional
+    public void getStore(Spot spot, String[] line){
+        /* Store 저장 */
+        Store store = new Store(spot, line[1], line[2], line[3], line[4]);
+        storeRepository.save(store);
+    }
+
+    @Transactional
+    public Classification getClassification(){
+        return classificationRepository.findClassificationByMdClassAndSmClass("쇼핑", "시장");
     }
 }

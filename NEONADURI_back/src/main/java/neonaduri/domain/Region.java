@@ -13,7 +13,7 @@ public class Region {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "region_id")
-    private Long regionId; //따로 지역코드가 있는것으로 알고있어 auto_increment 안함
+    private Long regionId;
 
     @Column(name = "sido", nullable = false)
     private String sido;
