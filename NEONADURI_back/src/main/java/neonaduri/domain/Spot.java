@@ -1,8 +1,10 @@
 package neonaduri.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.java.Log;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -37,12 +39,24 @@ public class Spot {
     @Column(name = "lng", nullable = false)
     private float lng;
 
-    @Column(name = "tel", nullable = false)
+    @Column(name = "tel")
     private String tel;
 
     @Column(name = "spot_image", nullable = false)
     private String spotImage;
 
-    @Column(name = "spot_content", nullable = false)
+    @Column(name = "spot_content")
     private String spotContent;
+
+    @Builder
+    public Spot(Long classId, Float lat, Float lng, Long regionId, String spotImage, String spotName, String tel){
+        this.classId = classId;
+        this.lat = lat;
+        this.lng = lng;
+        this.regionId = regionId;
+        this.spotImage = spotImage;
+        this.spotName = spotName;
+        this.tel = tel;
+    }
+
 }
