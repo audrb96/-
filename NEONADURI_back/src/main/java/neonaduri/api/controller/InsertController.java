@@ -19,9 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,60 +36,60 @@ public class InsertController {
                 "C:\\Users\\82108\\Desktop\\neonaduri\\S07P22A702\\NEONADURI_back\\src\\main\\resources\\data"
         );
 
-        String[] line = null;
         int idx = 0;
+//
+        String[] line = null;
         Classification cls = classificationRepository.findClassificationByMdClassAndSmClass("쇼핑", "시장");
-
+//
         while ((line = insertData.nextRead()) != null) {
             idx += 1;
-//            System.out.println("idx = " + idx);
-//            System.out.println("line = " + line);
-
+            System.out.println("idx = " + idx);
 
             Region reg = getRegion(line);
-//            System.out.println("reg.toString() = " + reg.toString());
+            Spot spot = getSpot(line, cls, reg);
 
-            if (spotRepository.findSpotBySpotName(line[0]) == null){
-                String url = "https://www.google.com/search?q=" + line[0] + "&tbm=isch";
-                Connection cn = Jsoup.connect(url);
-                Document doc = cn.get();
-                String img = doc.select("img.rg_i.Q4LuWd").get(20).attr("data-src");
-
-                Spot spot = new Spot(
-                        cls.getClassId(),
-                        reg.getRegionId(),
-                        line[0],
-                        Float.parseFloat(line[8]),
-                        Float.parseFloat(line[9]),
-                        img
-                );
-                spotRepository.save(spot);
-            }
-
-            Spot saveSpot = spotRepository.findSpotBySpotName(line[0]);
-//            System.out.println("saveSpot = " + saveSpot.toString());
-
-            Store store = new Store(saveSpot, line[1], line[2], line[3], line[4]);
-//            System.out.println("store = " + store.toString());
+            /* Store 저장 */
+            Store store = new Store(spot, line[1], line[2], line[3], line[4]);
             storeRepository.save(store);
         }
         return "good!";
     }
 
-    public Region getRegion(String[] line){
-        System.out.println("line = " + Arrays.toString(line));
+    public Region getRegion(String[] line) {
         String[] s = line[6].split(" ");
 
-        if (s.length == 2){
+        if (s.length >= 2) {
             line[6] = s[0];
         }
 
         Region region = regionRepository.findRegionBySidoAndSigunguAndMyeon(line[5], line[6], line[7]);
 
-        if (region == null){
-            Region newRegion = new Region(line[5], line[6], line[7]);
-            return regionRepository.save(newRegion);
+        if (region == null) {
+            region = new Region(line[5], line[6], line[7]);
+            return regionRepository.save(region);
         }
         return region;
+    }
+
+    public Spot getSpot(String[] line, Classification cls, Region reg) throws IOException {
+        Spot spot = spotRepository.findSpotBySpotName(line[0]);
+
+        if (spot == null) {
+            String url = "https://www.google.com/search?q=" + line[0] + "&tbm=isch";
+            Connection cn = Jsoup.connect(url);
+            Document doc = cn.get();
+            String img = doc.select("img.rg_i.Q4LuWd").attr("data-src");
+
+            spot = new Spot(
+                    cls.getClassId(),
+                    reg.getRegionId(),
+                    line[0],
+                    Float.parseFloat(line[8]),
+                    Float.parseFloat(line[9]),
+                    img
+            );
+            return spotRepository.save(spot);
+        }
+        return spot;
     }
 }
