@@ -1,17 +1,20 @@
 package neonaduri.api.service;
 
 import lombok.RequiredArgsConstructor;
+import neonaduri.api.repository.ClassificationRepository;
+import neonaduri.api.repository.RegionRepository;
 import neonaduri.api.repository.SpotRepository;
+import neonaduri.domain.Region;
 import neonaduri.domain.Spot;
-import neonaduri.domain.Tag;
 import neonaduri.dto.response.ReviewTagsRes;
 import neonaduri.dto.response.SpotDetailsRes;
+import neonaduri.dto.response.SpotSearchRes;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +23,9 @@ import java.util.stream.Collectors;
 public class SpotService {
 
     private final SpotRepository spotRepository;
+    private final RegionRepository regionRepository;
+
+    private final ClassificationRepository classificationRepository;
 
     public SpotDetailsRes getSpotDetailsInfo(Long spotId) {
 
@@ -43,5 +49,40 @@ public class SpotService {
                 .spotImage(spot.getSpotImage())
                 .reviewContainsTags(reviews)
                 .build();
+    }
+
+    public List<SpotSearchRes> getFitConditionSpotInfo(Map<String, List<String>> conditions) {
+
+        final String SIDO = "sido";
+        final String SIGUNGU = "sigungu";
+        final String MYEON = "myeon";
+
+
+//        /* 1. 해당 지역을 찾고 */
+//        Region region = regionRepository.findRegionBySidoAndSigunguAndMyeon(
+//                conditions.get(SIDO).get(0), conditions.get(SIGUNGU).get(0), conditions.get(MYEON).get(0)).orElseThrow(() -> {
+//            throw new IllegalArgumentException();
+//        });
+
+        /* 2. 중분류, 소분류를 통해  */
+        /**
+         *
+         * 자연 -> 슾, 체험활동, ...
+         * 액티비티 -> 수영장, 목욕탕 ...
+         */
+        List<String[]> collect = conditions.keySet().stream()
+                .filter(key -> !key.equals(SIDO) && !key.equals(SIGUNGU) && !key.equals(MYEON))
+                .map(mdClass -> mdClass.split(","))
+                .collect(Collectors.toList());
+
+        for (String[] col : collect) {
+            System.out.println("col.toString() = " + Arrays.toString(col));
+        }
+
+        /* 3. 테마에 맞는 장소를 찾고 반환해준다. */
+//        List<SpotSearchRes> spotSearchRes =
+
+
+        return null;
     }
 }
