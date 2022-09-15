@@ -26,6 +26,6 @@ public interface RegionRepository extends JpaRepository<Region, Long> {
 
 
     //시군구, 면을 넣어서 일치하는 정보를 추출
-    Region findRegionBySigunguAndMyeon(String sigungu, String myeon);
+    Region findRegionBySidoAndSigunguAndMyeon(String sido, String sigungu, String myeon);
 
 }
