@@ -2,6 +2,7 @@
   <div class="check-modal">
     <div class="check-modal-box">
       <div class="check-modal-head">
+        <div></div>
         <div class="check-modal-head-check">리뷰 작성</div>
         <div class="check-modal-head-close" @click="CloseCheck">
           <v-icon large>mdi-close-circle-outline</v-icon>
@@ -62,6 +63,7 @@ export default {
         }
       }
     },
+
     Waiting() {
       this.postOrders(this.orders)
       this.CLEAR_ITEMS()
@@ -83,7 +85,7 @@ export default {
   left: 0;
   top: 0;
   width: 100vw; /* Full width */
-  height: 80vh; /* Full height */
+  height: 100vh; /* Full height */
   overflow: auto; /* Enable scroll if needed */
   /* Fallback color */
   font-size: 30px;
@@ -93,6 +95,7 @@ export default {
 .check-modal-box {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   background-color: white;
   /* color: white; */
   /* 15% from the top and centered */
@@ -100,8 +103,8 @@ export default {
   padding: 15px; */
   /* width: 35%; Could be more or less, depending on screen size */
   /* height: 30%; */
-  width: 70vw;
-  height: 60vh;
+  width: 70%;
+  height: 100%;
   margin: 10vh auto;
 }
 
@@ -109,6 +112,7 @@ export default {
   width: 100%;
   height: 10%;
   display: flex;
+  justify-content: space-between;
 }
 .check-modal-head-check {
   width: 90%;
@@ -117,7 +121,7 @@ export default {
   align-items: center;
 }
 .check-modal-head-close {
-  width: 10%;
+  width: 5%;
   height: 100%;
   display: flex;
   justify-content: center;
@@ -150,16 +154,16 @@ export default {
   width: 100%;
 }
 .check-modal-body-img {
-  width: 400px;
-  margin: 40px 40px 0 40px;
+  width: 40%;
+  margin: 4% 4% 0 4%;
 }
 .check-modal-body-input {
-  margin: 100px 40px 40px 0;
+  margin: 10% 4% 4% 0;
   display: flex;
   flex-direction: column;
 }
 .check-modal-body-input > input {
-  margin-bottom: 30px;
+  margin-bottom: 10%;
   border: 2px solid #a1d6e9;
   border-radius: 10px;
 }
@@ -170,8 +174,8 @@ export default {
   display: flex;
 }
 .check-model-body-bot-left {
-  width: 400px;
-  margin: 0px 40px;
+  width: 40%;
+  margin: 0px 4%;
 }
 .check-model-body-bot-right {
   display: flex;
@@ -188,14 +192,17 @@ export default {
   width: 50%;
   border: 2px solid #a1d6e9;
   border-radius: 10px;
-  margin: auto 0 0 10px;
+  margin: auto 0 5% 5%;
 }
 .check-model-body-bot-right > button {
   width: 150px;
   height: 75px;
+  margin-left: 100px;
   margin-right: 20px;
+  padding: 0 5px;
   background-color: #a1d6e9;
   border-radius: 10px;
   color: white;
+  font-size: 25px;
 }
 </style>
