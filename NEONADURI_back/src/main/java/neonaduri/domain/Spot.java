@@ -37,12 +37,12 @@ public class Spot {
     @Column(name = "lng", nullable = false)
     private Float lng;
 
-    @Column(name = "tel", nullable = false)
+    @Column(name = "tel")
     private String tel;
 
     @Column(name = "spot_image", nullable = false)
     private String spotImage;
 
-    @Column(name = "spot_content", nullable = false)
+    @Column(name = "spot_content")
     private String spotContent;
 }
