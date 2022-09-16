@@ -7,6 +7,7 @@
     >
       <img src="/logo/logo-white.png" alt="" class="bounce-in-top logo-image" />
     </div>
+
     <div>
       <img src="/banner/main-banner-white-long.jpg" class="banner" />
     </div>

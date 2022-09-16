@@ -31,11 +31,28 @@ export const getters = {
   sidoSelect(state) {
     const sidoOption = []
     sidoOption.push({ value: 'all', text: '전체' })
-    state.sidoList.forEach((sido) => {
-      sidoOption.push({ value: sido, text: sido })
+    state.sidoList.forEach((element) => {
+      sidoOption.push({ value: element.sido, text: element.sido })
     })
 
     return sidoOption
+  },
+  sigunguSelect(state) {
+    const sigunguOption = []
+    sigunguOption.push({ value: 'all', text: '전체' })
+    state.sigunguList.forEach((element) => {
+      sigunguOption.push({ value: element.sigungu, text: element.sigungu })
+    })
+
+    return sigunguOption
+  },
+  myeonSelect(state) {
+    const myeonOption = []
+    myeonOption.push({ value: 'all', text: '전체' })
+    state.myeonList.forEach((element) => {
+      myeonOption.push({ value: element.myeon, text: element.myeon })
+    })
+    return myeonOption
   },
 }
 

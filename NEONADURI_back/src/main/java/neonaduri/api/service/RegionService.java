@@ -2,6 +2,7 @@ package neonaduri.api.service;
 
 import lombok.RequiredArgsConstructor;
 import neonaduri.api.repository.RegionRepository;
+import neonaduri.domain.Region;
 import neonaduri.dto.response.MyeonResponseDto;
 import neonaduri.dto.response.SidoResponseDto;
 import neonaduri.dto.response.SigunguResponseDto;
@@ -19,6 +20,7 @@ public class RegionService {
 
     @Transactional
     public List<SidoResponseDto> getSidoList() {
+
         try {
             return regionRepository.findAllSido();
         } catch (Exception e) {

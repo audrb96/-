@@ -7,12 +7,12 @@ async function getSidos(success, fail) {
 }
 
 async function getSigungus(sido, success, fail) {
-  await api.get(`/api/region/${sido}`).then(success).catch(fail)
+  await api.get(`/api/region/sigungu/${sido}`).then(success).catch(fail)
 }
 
 async function getMyeon(location, success, fail) {
   await api
-    .get(`/api/region/${location.sido}/${location.sigungu}`)
+    .get(`/api/region/myeon/${location.sido}/${location.sigungu}`)
     .then(success)
     .catch(fail)
 }
