@@ -28,13 +28,13 @@ public class Store {
     private String storeName;
 
     @Column(name = "main_cat", nullable = false)
-    private MainCategory mainCat;
+    private String mainCat;
 
     @Column(name = "middle_cat", nullable = false)
-    private MiddleCategory midCat;
+    private String midCat;
 
     @Column(name = "sub_cat", nullable = false)
-    private SubCategory subCategory;
+    private String subCategory;
 
     @Column(name = "content", nullable = false)
     private String content;
