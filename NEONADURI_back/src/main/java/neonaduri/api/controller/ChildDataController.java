@@ -3,17 +3,19 @@ package neonaduri.api.controller;
 import lombok.RequiredArgsConstructor;
 import neonaduri.api.repository.ClassificationRepository;
 import neonaduri.api.repository.RegionRepository;
+import neonaduri.api.repository.SpotRepository;
 import neonaduri.domain.Classification;
 import neonaduri.domain.Region;
+import neonaduri.domain.Spot;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.management.JMException;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +24,8 @@ public class ChildDataController {
     private final RegionRepository regionRepository;
 
     private final ClassificationRepository classificationRepository;
+
+    private final SpotRepository spotRepository;
 
     /**
      * child data 주입
@@ -57,7 +61,7 @@ public class ChildDataController {
                 String[] address = array[1].split(" ");
 
                 String sido = null;
-                String[] sidoList = {"세종특별자치시", "제주특별자치도", "경기도", "강원도", "부산광역시", "대구광역시", "인천광역시", "광주광역시", "대전광역시", "울산광역시", "충청북도", "충청남도", "경상북도", "경상남도", "전라북도", "전라남도"};
+                String[] sidoList = {"서울특별시", "세종특별자치시", "제주특별자치도", "경기도", "강원도", "부산광역시", "대구광역시", "인천광역시", "광주광역시", "대전광역시", "울산광역시", "충청북도", "충청남도", "경상북도", "경상남도", "전라북도", "전라남도"};
 
                 //시도명 올바르게 넣어줌
                 if (address[0].equals("서울")) {
@@ -132,15 +136,70 @@ public class ChildDataController {
                     }
                 }
 
+                //경상북도 구미시 산동면 -> 산동읍
+                if(myeon.equals("산동면") && sigungu.equals("구미시")){
+                    myeon = "산동읍";
+                }
 
-                System.out.println("시도 : " + sido);
-                System.out.println("시군구 : " + sigungu);
-                System.out.println("면 : " + myeon);
+                //부산광역시 기장군 일광읍 -> 일광면
+                if(myeon.equals("일광읍") && sigungu.equals("기장군")){
+                    myeon = "일광면";
+                }
+
+                //경상북도 용인시 남사면 -> 남사읍
+                if(myeon.equals("남사면") && sigungu.equals("용인시")){
+                    myeon = "남사읍";
+                }
+
+
+                //논현동
+                if(myeon.contains("논현") && sigungu.equals("강남구")){
+                    myeon = "논현동";
+                }
+
+                //목동
+                if(sigungu.equals("양천구") && myeon.contains("목")){
+                    myeon = "목동";
+                }
+
+
+
+                //범일동
+                if(myeon.contains("범일") && sigungu.equals("동구")){
+                    myeon = "범일동";
+                }
+
+
+                //만수동
+                if(myeon.contains("만수") && sido.equals("인천광역시")){
+                    myeon = "만수동";
+                }
+
+                //홍천군 동면 -> 영귀미면
+                if(myeon.equals("동면") && sigungu.contains("홍천")){
+                    myeon = "영귀미면";
+                }
+
+                //양구군 남면 -> 국토정중앙면
+                if(myeon.equals("남면") && sigungu.equals("양구군")){
+                    myeon = "국토정중앙면";
+               }
+
+                //영월군 중동면 -> 산솔면
+                if(myeon.equals("중동면") && sigungu.equals("영월군")){
+                    myeon = "산솔면";
+                }
+
+                //경주시 양북면 -> 문무대왕면
+                if(myeon.equals("양북면") && sigungu.equals("경주시")){
+                    myeon = "문무대왕면";
+                }
+
 
                 //추출한 시군구, 면으로 지역코드 뽑아낸다.
                 Region region = regionRepository.findRegionBySidoAndSigunguAndMyeon(sido, sigungu, myeon);
                 Long regionId = region.getRegionId();
-                System.out.println(regionId);
+
 
 /** classification 뽑기*/
                 //spotName 이 지정된 캐릭터명을 포함하는지 확인하여 분류
@@ -161,7 +220,30 @@ public class ChildDataController {
 
                 Long clsId = cls.getClassId();
 
-                System.out.println(clsId);
+/** img 크롤링 */
+
+                Spot spot = spotRepository.findSpotBySpotName(array[0]);
+
+                if (spot == null) {
+                    String url = "https://www.google.com/search?q=" + array[0] + "&tbm=isch";
+                    Connection cn = Jsoup.connect(url);
+                    Document doc = cn.get();
+                    String img = doc.select("img.rg_i.Q4LuWd").attr("data-src");
+
+                    spot = new Spot(
+                            clsId,
+                            Float.parseFloat(array[3]),
+                            Float.parseFloat(array[4]),
+                            regionId,
+                            img,
+                            array[0],
+                            array[2]
+
+                    );
+                    spotRepository.save(spot);
+                }
+
+
 
 
             }
