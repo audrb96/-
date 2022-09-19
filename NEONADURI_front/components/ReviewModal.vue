@@ -10,11 +10,12 @@
       </div>
       <div class="check-modal-body">
         <div class="check-model-body-top">
-          <img
+          <!-- <img
             class="check-modal-body-img"
             src="/review/deoksugung.jpg"
             alt=""
-          />
+          /> -->
+          <img :src="preview" class="check-modal-body-img" alt="없음" />
           <div class="check-modal-body-input">
             <input
               class="check-modal-body-input-line"
@@ -30,8 +31,16 @@
         </div>
         <div class="check-model-body-bot">
           <div class="check-model-body-bot-left">
-            <v-icon>mdi-plus-box-multiple</v-icon>
-            <!-- <v-icon>mdi-delete-forever</v-icon> -->
+            <v-file-input
+              v-model="file"
+              :placeholder="fileInfo?.name"
+              @change="previewFile(file)"
+            />
+            <!-- <v-file-input
+              v-model="file"
+              text="fileInfo?.name"
+              @change="previewFile(file)"
+            /> -->
           </div>
           <div class="check-model-body-bot-right">
             <div class="check-model-body-bot-pass">
@@ -49,6 +58,9 @@
 <script>
 export default {
   name: 'CheckModal',
+  data() {
+    return { preview: '/banner/no-image.png', fileInfo: null }
+  },
   computed: {},
   methods: {
     CloseCheck() {
@@ -70,6 +82,40 @@ export default {
       this.CLEAR_CHOICE_FOODS()
       this.CLEAR_CHECK_FOODS()
       this.$router.push('/waiting')
+    },
+    previewFile(file) {
+      if (file) {
+        const fileData = (data) => {
+          this.preview = data
+        }
+        this.fileInfo = file
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.addEventListener(
+          'load',
+          function () {
+            fileData(reader.result)
+          },
+          false
+        )
+      } else if (file === null) {
+        this.fileInfo = null
+        this.preview = '/banner/no-image.png'
+      } else {
+        file = this.fileInfo
+        const fileData = (data) => {
+          this.preview = data
+        }
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.addEventListener(
+          'load',
+          function () {
+            fileData(reader.result)
+          },
+          false
+        )
+      }
     },
   },
 }
@@ -155,6 +201,7 @@ export default {
 }
 .check-modal-body-img {
   width: 40%;
+  max-height: 400px;
   margin: 4% 4% 0 4%;
 }
 .check-modal-body-input {

@@ -8,17 +8,25 @@
         </div>
         <div>
           <div class="spot-main">
-            <div class="spot-main-title">{{ spot.title }}</div>
+            <div class="spot-main-title">
+              <div class="title-text">
+                {{ spot.title }}
+              </div>
+              <div class="title-icon">
+                <v-icon @click="modifyContent">mdi-lead-pencil</v-icon>
+              </div>
+            </div>
             <button>경유지추가</button>
           </div>
           <div class="spot-content">
             {{ spot.content }}
           </div>
-          <input
-            type="text"
-            style="background-color: black"
-            placeholder="bbbb"
-          />
+          <div class="content-modify" style="display: none">
+            <div class="content-modify-sub">
+              <textarea v-model="spot.content" class="modify-input" />
+              <button class="modify-button" @click="contentSave">저장</button>
+            </div>
+          </div>
         </div>
       </div>
       <div class="spot-review">
@@ -74,7 +82,11 @@
                         @mouseover="focusOn(idx)"
                         @mouseout="focusOut(idx)"
                       >
-                        <input placeholder="password" type="password" />
+                        <input
+                          class="password-input"
+                          placeholder="password"
+                          type="password"
+                        />
                         <a class="password-button">
                           <v-icon :id="'key-icon' + idx">mdi-key</v-icon>
                           <v-icon
@@ -106,18 +118,6 @@ export default {
   component: { NavbarComponent },
   data() {
     return {
-      // items: [
-      //   { isPass: true, isEnter: false },
-      //   { isPass: true, isEnter: false },
-      //   { isPass: true, isEnter: false },
-      //   { isPass: true, isEnter: false },
-      //   { isPass: true, isEnter: false },
-      //   { isPass: true, isEnter: false },
-      //   { isPass: true, isEnter: false },
-      //   { isPass: true, isEnter: false },
-      //   { isPass: true, isEnter: false },
-      //   { isPass: true, isEnter: false },
-      // ],
       dialog: false,
       spot: {
         title: '동궁과 월지',
@@ -204,18 +204,21 @@ export default {
       modal.style.display = 'block'
     },
     focusOn(idx) {
-      // eslint-disable-next-line no-console
-      // console.log(idx)
-      // this.reviews[idx].isPass = false
-      // this.reviews[idx].isEnter = true
       this.$el.querySelector(`#key-icon${idx}`).style.display = 'none'
       this.$el.querySelector(`#pencil-icon${idx}`).style.display = 'block'
     },
     focusOut(idx) {
-      // this.reviews[1].isPass = true
-      // this.reviews[1].isEnter = false
       this.$el.querySelector(`#key-icon${idx}`).style.display = 'block'
       this.$el.querySelector(`#pencil-icon${idx}`).style.display = 'none'
+    },
+    modifyContent() {
+      this.$el.querySelector(`.content-modify`).style.display = 'block'
+      this.$el.querySelector(`.spot-content`).style.display = 'none'
+      this.$el.querySelector(`.modify-input`).focus()
+    },
+    contentSave() {
+      this.$el.querySelector(`.spot-content`).style.display = 'block'
+      this.$el.querySelector(`.content-modify`).style.display = 'none'
     },
   },
 }
@@ -254,8 +257,14 @@ export default {
   justify-content: space-between;
 }
 .spot-main-title {
+  width: 90%;
+  display: flex;
   font-size: 25px;
   font-weight: bold;
+}
+.title-icon {
+  margin-left: 1%;
+  cursor: pointer;
 }
 .spot-main > button {
   padding: 10px;
@@ -266,6 +275,21 @@ export default {
 .spot-content {
   width: 70%;
   margin-bottom: 40px;
+}
+.content-modify-sub {
+  display: flex;
+}
+.modify-input {
+  width: 70%;
+  margin-bottom: 40px;
+}
+.modify-button {
+  height: 5%;
+  margin: 15px 0 0 15px;
+  padding: 5px;
+  background-color: #45a9c8;
+  border-radius: 5px;
+  color: white;
 }
 .spot-review-top {
   display: flex;
@@ -320,14 +344,14 @@ export default {
   border-radius: 5px 2em 2em 5px;
   outline: none;
 }
-.search-container:hover input,
-.search-container:focus input,
-.search-container:focus-within input {
+.search-container:hover .password-input,
+.search-container:focus .password-input,
+.search-container:focus-within .password-input {
   display: inline-block;
   width: 7em;
 }
 
-input {
+.password-input {
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
@@ -348,15 +372,15 @@ input {
   -moz-transition: all 0.25s;
   -webkit-transition: all 0.25s;
 }
-input:focus {
+.password-input:focus {
   outline: none;
   box-shadow: 0 -1px 1px rgba(255, 255, 255, 0.25),
     0 1px 5px rgba(0, 0, 0, 0.15);
 }
-input[type='password'] {
+.password-input[type='password'] {
   font-family: '맑은고딕', '돋움';
 }
-input[type='password']::placeholder {
+.password-input[type='password']::placeholder {
   font-family: 'Cafe24Ssurround';
 }
 
