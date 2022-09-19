@@ -1,6 +1,5 @@
 package neonaduri.api.controller;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import neonaduri.api.service.StatisticsService;
 import neonaduri.domain.statistics.Visited;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/statistics")
@@ -19,16 +19,6 @@ public class StatisticsController {
     private final StatisticsService statisticsService;
 
     /** 만족도 */
-//    @GetMapping("/sat")
-//    public ResponseEntity<List<Satisfaction>> getSatisfaction() {
-////        try {
-//            return new ResponseEntity<>(statisticsService.findSatisfaction(), HttpStatus.ACCEPTED);
-////        } catch (Exception e) {
-////            System.out.println("안돼용,,");
-////            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-////        }
-//    }
-
 
     @GetMapping("/sat")
     public ResponseEntity<?> getSatisfaction() {

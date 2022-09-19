@@ -13,5 +13,12 @@ module.exports = {
   // add your custom rules here
   rules: {
     "vue/multi-word-component-names" : "off",
+    "spaced-comment": [
+      "error",
+      "always",
+      {
+        "markers": ["/"]
+      }
+    ]
   },
 }
