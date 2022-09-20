@@ -13,12 +13,11 @@
 
         <div>여행지 찾기</div>
       </div>
-      <div class="navbar-content-icon">
+      <div class="navbar-content-icon" @click="mvStatistics">
         <v-icon large>mdi-alpha-i-circle-outline</v-icon>
-
         <div>여행 정보</div>
       </div>
-      <div class="navbar-content-icon">
+      <div class="navbar-content-icon" @click="mvFindRoute">
         <v-icon large> mdi-call-split </v-icon>
         <div>여행 경로찾기</div>
       </div>
@@ -36,6 +35,12 @@ export default {
   methods: {
     toggle() {
       this.isExpanded = !this.isExpanded
+    },
+    mvFindRoute() {
+      this.$router.push('/findRoute')
+    },
+    mvStatistics() {
+      this.$router.push('/statistics')
     },
   },
 }
@@ -79,6 +84,7 @@ export default {
   overflow: hidden;
 }
 .navbar-content-icon {
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: center;

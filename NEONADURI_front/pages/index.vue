@@ -21,7 +21,7 @@
             <img src="/maincard/main-move.jpg" alt="" class="card-img back" />
           </div>
         </div>
-        <div class="cards">
+        <div class="cards" @click="moveStatistics">
           <div class="main-card">
             <img src="/maincard/main-move.jpg" class="card-img back" />
             <img src="/maincard/main-statistics.png" class="card-img" />
@@ -51,6 +51,9 @@ export default {
     },
     moveSearch() {
       this.$router.push('/search')
+    },
+    moveStatistics() {
+      this.$router.push('/statistics')
     },
   },
 }

@@ -1,92 +1,93 @@
 <template>
   <div class="search">
-    <div class="main-content fadeInUp">
-      <div class="recommand">
-        <div class="recommand-content">
-          <div class="recommand-left">
-            <img
-              src="/review/deoksugung.jpg"
-              alt="임시"
-              class="recommand-img"
-            />
-            <div>
-              <h2 style="font-family: 'SEBANG_Gothic_Bold'">동궁과 월지</h2>
-              <br />
-              <div class="recommand-des">
-                신라의 문무왕이 삼국을 통일한 후 궁궐을 넓게 확장해 태자가
-                거처하도록 한 게 동궁! 밤에 보니깐 더 화려해보이네요.
+    <div style="width: 100%">
+      <div class="main-content fadeInUp">
+        <div class="recommand">
+          <div class="recommand-content">
+            <div class="recommand-left">
+              <img
+                src="/review/deoksugung.jpg"
+                alt="임시"
+                class="recommand-img"
+              />
+              <div>
+                <h2 style="font-family: 'SEBANG_Gothic_Bold'">동궁과 월지</h2>
+                <br />
+                <div class="recommand-des">
+                  신라의 문무왕이 삼국을 통일한 후 궁궐을 넓게 확장해 태자가
+                  거처하도록 한 게 동궁! 밤에 보니깐 더 화려해보이네요.
+                </div>
+                <div>#데이트 #경주</div>
               </div>
-              <div>#데이트 #경주</div>
+            </div>
+            <div class="top-title">
+              <img src="/icon/star.png" alt="star" class="star-icon" />
+              <div>추천장소</div>
             </div>
           </div>
-          <div class="top-title">
-            <img src="/icon/star.png" alt="star" class="star-icon" />
-            <div>추천장소</div>
+        </div>
+      </div>
+      <div class="option-content fadeInUp">
+        <div class="option">
+          <div class="search-bar">
+            <h1 style="font-family: 'SEBANG_Gothic_Bold'">검색 :</h1>
+            <input v-model="searchWord" type="text" class="search-input" />
+          </div>
+          <hr />
+          <div class="search-bar">
+            <h1 style="font-family: 'SEBANG_Gothic_Bold'">지역 :</h1>
+            <b-form-select
+              v-model="sido"
+              :options="sidoSelect"
+              class="selected"
+              @change="sidoChange"
+            ></b-form-select>
+            <b-form-select
+              v-model="sigungu"
+              :options="sigunguSelect"
+              class="selected"
+              @change="myeonChange"
+            ></b-form-select>
+            <b-form-select
+              v-model="myeon"
+              :options="myeonSelect"
+              class="selected"
+            ></b-form-select>
+          </div>
+          <hr />
+          <div>
+            <div
+              v-for="(option, index) in options"
+              :key="index"
+              class="option-row mb-3"
+            >
+              <div class="mr-3 mdClass-title">{{ option.mdClass }}</div>
+              <div class="btn-group">
+                <v-btn
+                  v-for="(element, i) in option.smClass"
+                  :key="i"
+                  color="#98d4f3"
+                  :value="element.name"
+                  class="mr-3 class-btn"
+                  :class="{ clicked: element.isSelected }"
+                  @click="btnClick(element, $event)"
+                  ><img
+                    class="btn-icon"
+                    :src="'/icon/' + element.icon"
+                    alt=""
+                  />{{ element.name }}</v-btn
+                >
+              </div>
+            </div>
+          </div>
+          <div class="button-box">
+            <button class="custom-btn btn-12" @click="moveSearchResult">
+              <span>레츠고!</span><span>어디로 갈까요?</span>
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <div class="option-content fadeInUp">
-      <div class="option">
-        <div class="search-bar">
-          <h1 style="font-family: 'SEBANG_Gothic_Bold'">검색 :</h1>
-          <input v-model="searchWord" type="text" class="search-input" />
-        </div>
-        <hr />
-        <div class="search-bar">
-          <h1 style="font-family: 'SEBANG_Gothic_Bold'">지역 :</h1>
-          <b-form-select
-            v-model="sido"
-            :options="sidoSelect"
-            class="selected"
-            @change="sidoChange"
-          ></b-form-select>
-          <b-form-select
-            v-model="sigungu"
-            :options="sigunguSelect"
-            class="selected"
-            @change="myeonChange"
-          ></b-form-select>
-          <b-form-select
-            v-model="myeon"
-            :options="myeonSelect"
-            class="selected"
-          ></b-form-select>
-        </div>
-        <hr />
-        <div>
-          <div
-            v-for="(option, index) in options"
-            :key="index"
-            class="option-row mb-3"
-          >
-            <div class="mr-3 mdClass-title">{{ option.mdClass }}</div>
-            <div class="btn-group">
-              <v-btn
-                v-for="(element, i) in option.smClass"
-                :key="i"
-                color="#98d4f3"
-                :value="element.name"
-                class="mr-3 class-btn"
-                :class="{ clicked: element.isSelected }"
-                @click="btnClick(element, $event)"
-                ><img
-                  class="btn-icon"
-                  :src="'/icon/' + element.icon"
-                  alt=""
-                />{{ element.name }}</v-btn
-              >
-            </div>
-          </div>
-        </div>
-        <div class="button-box">
-          <button class="custom-btn btn-12" @click="moveSearchResult">
-            <span>레츠고!</span><span>어디로 갈까요?</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
     <navbar-component></navbar-component>
   </div>
 </template>
