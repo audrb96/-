@@ -3,13 +3,14 @@ package neonaduri.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import neonaduri.domain.type.MainCategory;
 import neonaduri.domain.type.MiddleCategory;
 import neonaduri.domain.type.SubCategory;
 
 import javax.persistence.*;
 
-@Entity
+@Entity @ToString
 @Getter
 @Table(name = "store")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -37,8 +38,8 @@ public class Store {
     private String subCategory;
 
     public Store(Spot spot, String storeName, String mainCat, String midCat, String subCategory){
-        this.storeName = storeName;
         this.spotId = spot;
+        this.storeName = storeName;
         this.mainCat = mainCat;
         this.midCat = midCat;
         this.subCategory = subCategory;

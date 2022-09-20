@@ -35,14 +35,15 @@ public class InsertController {
         InsertData insertData = new InsertData(
                 "C:\\Users\\82108\\Desktop\\neonaduri\\S07P22A702\\NEONADURI_back\\src\\main\\resources\\data"
         );
-
         String[] line = null;
         Classification cls = getClassification();
+        System.out.println("start");
         while ((line = insertData.nextRead()) != null) {
             Region reg = getRegion(line);
             Spot spot = getSpot(line, cls, reg);
             getStore(spot,line);
         }
+        System.out.println("finish");
         return "good!";
     }
 
@@ -92,6 +93,7 @@ public class InsertController {
         /* Store 저장 */
         Store store = new Store(spot, line[1], line[2], line[3], line[4]);
         storeRepository.save(store);
+        System.out.println("store = " + store);
     }
 
     @Transactional
