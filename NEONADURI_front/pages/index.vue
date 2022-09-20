@@ -1,5 +1,5 @@
 <template>
-  <div class="index-page">
+  <div>
     <div
       class="splash-background"
       :class="{ 'slide-out-top': view }"
@@ -7,24 +7,25 @@
     >
       <img src="/logo/logo-white.png" alt="" class="bounce-in-top logo-image" />
     </div>
-
-    <div>
-      <img src="/banner/main-banner-light.png" class="banner" />
-    </div>
-    <div class="main-menu-container">
-      <img src="/banner/main-menu.png" class="main-menu" alt="" />
-    </div>
-    <div v-if="view" class="main-card-box">
-      <div class="cards" @click="moveSearch">
-        <div class="main-card">
-          <img src="/maincard/main-search.png" class="card-img" />
-          <img src="/maincard/main-move.jpg" alt="" class="card-img back" />
-        </div>
+    <div v-if="view" class="index-page">
+      <div>
+        <img src="/banner/main-banner-light.png" class="banner" />
       </div>
-      <div class="cards">
-        <div class="main-card">
-          <img src="/maincard/main-move.jpg" class="card-img back" />
-          <img src="/maincard/main-statistics.png" class="card-img" />
+      <div class="main-menu-container">
+        <img src="/banner/main-menu.png" class="main-menu" alt="" />
+      </div>
+      <div class="main-card-box">
+        <div class="cards" @click="moveSearch">
+          <div class="main-card">
+            <img src="/maincard/main-search.png" class="card-img" />
+            <img src="/maincard/main-move.jpg" alt="" class="card-img back" />
+          </div>
+        </div>
+        <div class="cards">
+          <div class="main-card">
+            <img src="/maincard/main-move.jpg" class="card-img back" />
+            <img src="/maincard/main-statistics.png" class="card-img" />
+          </div>
         </div>
       </div>
     </div>
