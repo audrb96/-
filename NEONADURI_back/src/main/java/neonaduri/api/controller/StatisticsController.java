@@ -18,33 +18,23 @@ public class StatisticsController {
 
     private final StatisticsService statisticsService;
 
-    /** 만족도 */
-//    @GetMapping("/sat")
-//    public ResponseEntity<List<Satisfaction>> getSatisfaction() {
-////        try {
-//            return new ResponseEntity<>(statisticsService.findSatisfaction(), HttpStatus.ACCEPTED);
-////        } catch (Exception e) {
-////            System.out.println("안돼용,,");
-////            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-////        }
-//    }
-
-
+    /** A05: 만족도에 따른 통계 자료 가져온다. */
     @GetMapping("/sat")
     public ResponseEntity<?> getSatisfaction() {
         return new ResponseEntity<>(statisticsService.findSatisfaction(),HttpStatus.OK);
     }
 
-    /**선택 이유 */
-    @GetMapping("/sel")
-    public ResponseEntity<?> getSelected() {
-        return new ResponseEntity<>(statisticsService.findSelected(), HttpStatus.OK);
-    }
 
-    /** 관광지 방문 횟수 */
+    /** A06: 여행횟수에 따른 통계 자료를 가져온다. */
     @GetMapping("/visited")
     public ResponseEntity<List<Visited>> getVisited() {
         return new ResponseEntity<>(statisticsService.findVisited(), HttpStatus.OK);
 
+    }
+
+    /** A07: 빙믄지 선택횟수에 따른 통계 자료를 가져온다. */
+    @GetMapping("/sel")
+    public ResponseEntity<?> getSelected() {
+        return new ResponseEntity<>(statisticsService.findSelected(), HttpStatus.OK);
     }
 }
