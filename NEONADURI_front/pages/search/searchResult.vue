@@ -133,10 +133,10 @@ export default {
 
 .slide {
   position: absolute;
-  top: 25%;
-  left: 10%;
-  width: 80%;
-  height: 50%;
+  top: 20%;
+  /* left: 1%; */
+  width: 100%;
+  height: 60%;
   background-color: red;
   border: 1px solid #fff;
   border-radius: 15px;

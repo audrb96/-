@@ -11,14 +11,13 @@ export default {}
 
 <style scoped>
 @font-face {
-  font-family: 'Cafe24Ssurround';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff')
+  font-family: 'SEBANG_Gothic_Bold';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2104@1.0/SEBANG_Gothic_Bold.woff')
     format('woff');
-  font-weight: bold;
+  font-weight: normal;
   font-style: normal;
 }
-
 .search-page {
-  font-family: 'Cafe24Ssurround';
+  font-family: 'SEBANG_Gothic_Bold';
 }
 </style>
