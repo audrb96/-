@@ -93,12 +93,13 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 
 export default {
   name: 'SearchPage',
   data() {
     return {
+      query: '',
       options: [
         {
           mdClass: '자연',
@@ -286,12 +287,17 @@ export default {
   },
   methods: {
     ...mapActions('region', ['callSidos', 'callSigungus', 'callMyeons']),
+    ...mapActions('spot', ['searchSpot']),
+    ...mapMutations('spot', ['SET_KEYWORD', 'SET_QUERY']),
     sidoChange() {
       this.callSigungus(this.sido)
+      this.sigungu = 'all'
+      this.myeon = 'all'
     },
     myeonChange() {
       const location = { sido: this.sido, sigungu: this.sigungu }
       this.callMyeons(location)
+      this.myeon = 'all'
     },
     btnClick(element) {
       if (this.selected.includes(element.name)) {
@@ -302,10 +308,40 @@ export default {
         this.selected.push(element.name)
       }
       element.isSelected = !element.isSelected
-
-      console.log(this.selected)
     },
     moveSearchResult() {
+      this.query = ''
+      this.query += 'size=50&page=0'
+      if (this.selected.length > 0) {
+        if (this.query !== '') this.query += '&'
+        this.query += 'classification='
+        this.selected.forEach((option) => {
+          this.query += `${option},`
+        })
+        this.query = this.query.slice(0, -1)
+      }
+
+      if (this.searchWord !== '') {
+        if (this.query !== '') this.query += '&'
+        this.query += `keyword=${this.searchWord}`
+      }
+
+      if (this.sido !== 'all') {
+        if (this.query !== '') this.query += '&'
+        this.query += `sido=${this.sido}`
+      }
+
+      if (this.sigungu !== 'all') {
+        if (this.query !== '') this.query += '&'
+        this.query += `sigungu=${this.sigungu}`
+      }
+
+      if (this.myeon !== 'all') {
+        if (this.query !== '') this.query += '&'
+        this.query += `myeon=${this.myeon}`
+      }
+      this.SET_KEYWORD(this.searchWord)
+      this.SET_QUERY(this.query)
       this.$router.push('search/searchResult')
     },
   },
@@ -349,7 +385,7 @@ export default {
 
 .button-box {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .custom-btn {

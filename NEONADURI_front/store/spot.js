@@ -1,16 +1,28 @@
-import { getSpot, modifyContent } from '~/api/spot'
+import { getSpot, modifyContent, search } from '~/api/spot'
 
 export const state = () => ({
+  query: '',
+  keyword: [],
   spotList: [],
   spot: null,
 })
 
 export const mutations = {
+  SET_QUERY(state, query) {
+    state.query = query
+  },
+  SET_KEYWORD(state, keyword) {
+    state.keyword = keyword
+  },
+
   SET_SPOTLIST(state, spotList) {
     state.spotList = spotList
   },
   SET_SPOT(state, spot) {
     state.spot = spot
+  },
+  CLEAR_QUERY(state) {
+    state.query = ''
   },
   CLEAR_SPOTLIST(state) {
     state.spotList = []
@@ -49,6 +61,19 @@ export const actions = {
         console.log(error)
       }
     )
+  },
+
+  async searchSpot({ commit }, query) {
+    await search(
+      query,
+      ({ data }) => {
+        commit('SET_SPOTLIST', data)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+    commit('CLEAR_QUERY')
   },
   // 필요한 것들
   // 1. 선택된 spot 불러오기

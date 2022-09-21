@@ -19,4 +19,8 @@ async function modifyContent(spotId, content, success, fail) {
     .catch(fail)
 }
 
-export { getSpot, modifyContent }
+async function search(query, success, fail) {
+  await api.get(`/api/spot/search?${query}`).then(success).catch(fail)
+}
+
+export { getSpot, modifyContent, search }
