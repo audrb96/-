@@ -82,7 +82,7 @@ export default {
     ...mapState('review', []),
   },
   methods: {
-    ...mapActions('review', ['registReview']),
+    ...mapActions('review', ['changeReview']),
     CloseCheck() {
       const modal = document.getElementsByClassName('check-modal')[0]
       const span = document.getElementsByClassName('check-modal-head-close')[0]
@@ -138,7 +138,7 @@ export default {
       }
     },
     writeReview() {
-      this.registReview(this.review)
+      this.changeReview(this.review)
     },
   },
 }
