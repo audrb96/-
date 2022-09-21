@@ -288,7 +288,7 @@ export default {
   methods: {
     ...mapActions('region', ['callSidos', 'callSigungus', 'callMyeons']),
     ...mapActions('spot', ['searchSpot']),
-    ...mapMutations('spot', ['SET_KEYWORD']),
+    ...mapMutations('spot', ['SET_KEYWORD', 'SET_QUERY']),
     sidoChange() {
       this.callSigungus(this.sido)
       this.sigungu = 'all'
@@ -340,9 +340,8 @@ export default {
         if (this.query !== '') this.query += '&'
         this.query += `myeon=${this.myeon}`
       }
-
-      this.searchSpot(this.query)
       this.SET_KEYWORD(this.searchWord)
+      this.SET_QUERY(this.query)
       this.$router.push('search/searchResult')
     },
   },

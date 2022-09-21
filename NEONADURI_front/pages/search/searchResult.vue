@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 export default {
   data() {
     return {
@@ -57,13 +57,16 @@ export default {
     }
   },
   computed: {
-    ...mapState('spot', ['keyword', 'spotList']),
+    ...mapState('spot', ['keyword', 'spotList', 'query']),
   },
-  mounted() {
+  async mounted() {
+    await this.searchSpot(this.query)
+    console.log('222222')
     this.renderSlides()
   },
   methods: {
     ...mapMutations('spot', ['SET_SPOT']),
+    ...mapActions('spot', ['searchSpot']),
     slideClick(spot) {
       this.SET_SPOT(spot)
       this.$router.push('/review')
