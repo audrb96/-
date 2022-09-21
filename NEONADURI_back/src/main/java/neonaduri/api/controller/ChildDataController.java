@@ -10,12 +10,19 @@ import neonaduri.domain.Spot;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.print.Doc;
 import java.io.*;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,7 +45,7 @@ public class ChildDataController {
 
         try {
             //파일 넣어준다.
-            br = new BufferedReader(new InputStreamReader(new FileInputStream("C:\\Users\\SSAFY\\Desktop\\neonaduri\\S07P22A702\\data\\childFacility.csv"), "UTF-8"));
+            br = new BufferedReader(new InputStreamReader(new FileInputStream("C:\\Users\\gus48\\Desktop\\702\\S07P22A702\\data\\childFacility.csv"), "UTF-8"));
             String line = "";
             br.readLine(); //첫 행은 버린다. (컬럼명이므로)
 
@@ -77,8 +84,7 @@ public class ChildDataController {
 //                }
                 else if (Arrays.asList(sidoList).contains(address[0])) {
                     sido = address[0];
-                }
-                else if (address[0].equals("경기") || address[0].equals("강원")) {
+                } else if (address[0].equals("경기") || address[0].equals("강원")) {
                     sido = address[0] + "도";
                 } else if (address[0].equals("충북")) {
                     sido = "충청북도";
@@ -120,78 +126,77 @@ public class ChildDataController {
                 }
 
                 //용담1동, 용담2동, 용담3동, 일도일동, 일도이동
-                if(myeon.contains("용담")){
-                    if (myeon.contains("1")){
+                if (myeon.contains("용담")) {
+                    if (myeon.contains("1")) {
                         myeon = "용담일동";
-                    }else if (myeon.contains("2")){
+                    } else if (myeon.contains("2")) {
                         myeon = "용담이동";
-                    }else if (myeon.contains("3")){
+                    } else if (myeon.contains("3")) {
                         myeon = "용담삼동";
                     }
-                }else if (myeon.contains("일도")){
-                    if(myeon.contains("1")){
+                } else if (myeon.contains("일도")) {
+                    if (myeon.contains("1")) {
                         myeon = "일도일동";
-                    } else if (myeon.contains("2")){
+                    } else if (myeon.contains("2")) {
                         myeon = "일도이동";
                     }
                 }
 
                 //경상북도 구미시 산동면 -> 산동읍
-                if(myeon.equals("산동면") && sigungu.equals("구미시")){
+                if (myeon.equals("산동면") && sigungu.equals("구미시")) {
                     myeon = "산동읍";
                 }
 
                 //부산광역시 기장군 일광읍 -> 일광면
-                if(myeon.equals("일광읍") && sigungu.equals("기장군")){
+                if (myeon.equals("일광읍") && sigungu.equals("기장군")) {
                     myeon = "일광면";
                 }
 
                 //경상북도 용인시 남사면 -> 남사읍
-                if(myeon.equals("남사면") && sigungu.equals("용인시")){
+                if (myeon.equals("남사면") && sigungu.equals("용인시")) {
                     myeon = "남사읍";
                 }
 
 
                 //논현동
-                if(myeon.contains("논현") && sigungu.equals("강남구")){
+                if (myeon.contains("논현") && sigungu.equals("강남구")) {
                     myeon = "논현동";
                 }
 
                 //목동
-                if(sigungu.equals("양천구") && myeon.contains("목")){
+                if (sigungu.equals("양천구") && myeon.contains("목")) {
                     myeon = "목동";
                 }
 
 
-
                 //범일동
-                if(myeon.contains("범일") && sigungu.equals("동구")){
+                if (myeon.contains("범일") && sigungu.equals("동구")) {
                     myeon = "범일동";
                 }
 
 
                 //만수동
-                if(myeon.contains("만수") && sido.equals("인천광역시")){
+                if (myeon.contains("만수") && sido.equals("인천광역시")) {
                     myeon = "만수동";
                 }
 
                 //홍천군 동면 -> 영귀미면
-                if(myeon.equals("동면") && sigungu.contains("홍천")){
+                if (myeon.equals("동면") && sigungu.contains("홍천")) {
                     myeon = "영귀미면";
                 }
 
                 //양구군 남면 -> 국토정중앙면
-                if(myeon.equals("남면") && sigungu.equals("양구군")){
+                if (myeon.equals("남면") && sigungu.equals("양구군")) {
                     myeon = "국토정중앙면";
-               }
+                }
 
                 //영월군 중동면 -> 산솔면
-                if(myeon.equals("중동면") && sigungu.equals("영월군")){
+                if (myeon.equals("중동면") && sigungu.equals("영월군")) {
                     myeon = "산솔면";
                 }
 
                 //경주시 양북면 -> 문무대왕면
-                if(myeon.equals("양북면") && sigungu.equals("경주시")){
+                if (myeon.equals("양북면") && sigungu.equals("경주시")) {
                     myeon = "문무대왕면";
                 }
 
@@ -206,47 +211,58 @@ public class ChildDataController {
                 //뽀로로, 타요, 폴리, 라바, 기타
                 Classification cls;
 
-                if(array[0].contains("뽀로로")){
+                if (array[0].contains("뽀로로")) {
                     cls = classificationRepository.findClassificationByMdClassAndSmClass("어린이", "뽀로로");
-                } else if(array[0].contains("타요")){
-                     cls = classificationRepository.findClassificationByMdClassAndSmClass("어린이", "타요");
-                } else if(array[0].contains("폴리")){
-                     cls = classificationRepository.findClassificationByMdClassAndSmClass("어린이", "폴리");
-                } else if(array[0].contains("라바")){
-                     cls = classificationRepository.findClassificationByMdClassAndSmClass("어린이", "라바");
+                } else if (array[0].contains("타요")) {
+                    cls = classificationRepository.findClassificationByMdClassAndSmClass("어린이", "타요");
+                } else if (array[0].contains("롤리폴리")) {
+                    cls = classificationRepository.findClassificationByMdClassAndSmClass("어린이", "기타");
+                } else if (array[0].contains("아시아폴리스")) {
+                    cls = classificationRepository.findClassificationByMdClassAndSmClass("어린이", "기타");
+                } else if (array[0].contains("폴리")) {
+                    cls = classificationRepository.findClassificationByMdClassAndSmClass("어린이", "폴리");
+                } else if (array[0].contains("라바")) {
+                    cls = classificationRepository.findClassificationByMdClassAndSmClass("어린이", "라바");
                 } else {
-                     cls = classificationRepository.findClassificationByMdClassAndSmClass("어린이", "기타");
+                    cls = classificationRepository.findClassificationByMdClassAndSmClass("어린이", "기타");
                 }
 
                 Long clsId = cls.getClassId();
 
 /** img 크롤링 */
+                String prefixURl = "https://www.google.com/search?q=";
+                String suffixURl = "&tbm=isch";
+//                if (spot == null) {
+                String encodeUrl = URLEncoder.encode(array[0], "UTF-8");
+                String url = prefixURl + encodeUrl + suffixURl;
+//                    url = URLEncoder.encode(url, "UTF-8");
+                Connection cn = Jsoup.connect(url);
+                Document doc = cn.get();
+//                Elements select = document.select("div.bRMDJf.islir");
+//                Element imgElement = (Element) select
+//                System.out.println(imgElement.attr("data-src"));
+                String img = doc.getElementsByClass("rg_i Q4LuWd").attr("data-src");
 
-                Spot spot = spotRepository.findSpotBySpotName(array[0]);
-
-                if (spot == null) {
-                    String url = "https://www.google.com/search?q=" + array[0] + "&tbm=isch";
-                    Connection cn = Jsoup.connect(url);
-                    Document doc = cn.get();
-                    String img = doc.select("img.rg_i.Q4LuWd").attr("data-src");
-
-                    spot = new Spot(
-                            clsId,
-                            Float.parseFloat(array[3]),
-                            Float.parseFloat(array[4]),
-                            regionId,
-                            img,
-                            array[0],
-                            array[2]
-
-                    );
-                    spotRepository.save(spot);
-                }
+//                System.out.println(img);
+//                    img = URLDecoder.decode(doc.select("img.rg_i.Q4LuWd").attr("data-src"), "UTF-8");
+//                                        String img = doc.select("img.rg_i.Q4LuWd").attr("data-src");
 
 
+                Spot spot = new Spot(
+                        clsId,
+                        Float.parseFloat(array[3]),
+                        Float.parseFloat(array[4]),
+                        regionId,
+                        img,
+                        array[0],
+                        array[2]
 
-
+                );
+                spotRepository.save(spot);
             }
+
+
+//            }
 
 
         } catch (FileNotFoundException e) {

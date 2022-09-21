@@ -43,6 +43,7 @@ public class Spot {
     private String tel;
 
     @Column(name = "spot_image", nullable = false)
+    @Lob
     private String spotImage;
 
     @Column(name = "spot_content")

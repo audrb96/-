@@ -17,6 +17,6 @@ public interface SpotRepository extends JpaRepository<Spot, Long> {
 
 
     //시군구, 면을 넣어서 일치하는 정보를 추출
-    Spot findSpotBySpotName(String spotName);
+    List<Spot> findSpotBySpotName(String spotName);
 
 }
