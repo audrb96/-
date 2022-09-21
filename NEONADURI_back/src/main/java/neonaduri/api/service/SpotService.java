@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 import neonaduri.api.repository.SpotRepository;
 import neonaduri.domain.Spot;
 import neonaduri.domain.Tag;
+import neonaduri.dto.request.SearchSpotReq;
 import neonaduri.dto.response.ReviewTagsRes;
+import neonaduri.dto.response.SearchSpotDto;
 import neonaduri.dto.response.SpotDetailsRes;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,5 +47,9 @@ public class SpotService {
                 .spotImage(spot.getSpotImage())
                 .reviewContainsTags(reviews)
                 .build();
+    }
+
+    public Page<SearchSpotDto> searchSpotService(SearchSpotReq searchSpotReq, Pageable pageable) {
+        return spotRepository.searchByCon(searchSpotReq,pageable);
     }
 }

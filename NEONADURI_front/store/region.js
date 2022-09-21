@@ -4,6 +4,9 @@ export const state = () => ({
   sidoList: [],
   sigunguList: [],
   myeonList: [],
+  sido: null,
+  sigungu: null,
+  myeon: null,
 })
 
 export const mutations = {

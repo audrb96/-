@@ -1,11 +1,16 @@
-import { getSpot, modifyContent } from '~/api/spot'
+import { getSpot, modifyContent, search } from '~/api/spot'
 
 export const state = () => ({
+  keyword: [],
   spotList: [],
   spot: null,
 })
 
 export const mutations = {
+  SET_KEYWORD(state, keyword) {
+    state.keyword = keyword
+  },
+
   SET_SPOTLIST(state, spotList) {
     state.spotList = spotList
   },
@@ -44,6 +49,18 @@ export const actions = {
       content,
       ({ data }) => {
         commit('MODIFY_CONTENT', content)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  },
+
+  searchSpot({ commit }, query) {
+    search(
+      query,
+      ({ data }) => {
+        commit('SET_SPOTLIST', data)
       },
       (error) => {
         console.log(error)

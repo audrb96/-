@@ -28,19 +28,7 @@ public class StatisticsService {
     //만족도 조회
     @Transactional
     public List<Satisfaction> findSatisfaction() {
-
-//        log.info("test1");
-////        Satisfaction satisfactionBySatId = satisfactionRepository.findSatisfactionBySatId(1L);
-////        System.out.println("satisfactionBySatId = " + satisfactionBySatId.toString());
-//        List<Satisfaction> all = satisfactionRepository.findAll();;
-//        log.info("test2");
-////        System.out.println("all = " + all);
-//        return null;
-////        return all;
-//        return satisfactionRepository.findAll();
-
         return satisfactionRepository.findAll();
-
     }
 
     @Transactional

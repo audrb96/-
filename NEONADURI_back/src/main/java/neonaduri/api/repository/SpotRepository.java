@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
-public interface SpotRepository extends JpaRepository<Spot, Long> {
+public interface SpotRepository extends JpaRepository<Spot, Long>, SpotRepositoryCustom {
 
     Spot findSpotBySpotId(Long spotId); // Optional X. 빈 값 있지 않음.
 

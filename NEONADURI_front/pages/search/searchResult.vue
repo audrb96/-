@@ -1,13 +1,36 @@
 <template>
   <div class="result-page">
     <div class="result-title mb-1 pt-1">
-      <div class="title-text">'경상도'의 검색 결과입니다.</div>
+      <div v-if="keyword != ''" class="title-text">
+        '{{ keyword }}'의 검색 결과입니다.
+      </div>
+      <div v-if="keyword == ''" class="title-text">검색 결과입니다.</div>
     </div>
     <div id="main" class="search-container">
       <div class="search-result" @wheel="handleScroll">
         <div class="container">
           <div class="slider">
-            <div class="slide" style="background-color: green"></div>
+            <div
+              v-for="(spot, index) in spotList.content"
+              :key="index"
+              class="slide"
+              @click="slideClick(spot)"
+            >
+              <div>
+                <img :src="spot.spotImage" class="spot-image" alt="spotImage" />
+              </div>
+              <div class="ml-4">
+                <div class="spot-name">{{ spot.spotName }}</div>
+                <div class="spot-content">
+                  {{
+                    spot.spotContent
+                      ? spot.spotContent
+                      : '직접 내용을 채워주세요! ^0^'
+                  }}
+                </div>
+              </div>
+            </div>
+            <!-- <div class="slide" style="background-color: green"></div>
             <div class="slide" style="background-color: red"></div>
             <div class="slide" style="background-color: orange"></div>
             <div
@@ -17,7 +40,7 @@
             <div class="slide" style="background-color: violet"></div>
             <div class="slide" style="background-color: black"></div>
             <div class="slide" style="background-color: pink"></div>
-            <div class="slide" style="background-color: teal"></div>
+            <div class="slide" style="background-color: teal"></div> -->
           </div>
         </div>
       </div>
@@ -26,16 +49,26 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {
       timer: 0,
     }
   },
+  computed: {
+    ...mapState('spot', ['keyword', 'spotList']),
+  },
   mounted() {
     this.renderSlides()
   },
   methods: {
+    ...mapMutations('spot', ['SET_SPOT']),
+    slideClick(spot) {
+      this.SET_SPOT(spot)
+      this.$router.push('/review')
+    },
+
     handleScroll(e) {
       if (this.timer) {
         clearTimeout(this.timer)
@@ -43,10 +76,8 @@ export default {
 
       this.timer = setTimeout(() => {
         if (e.wheelDeltaY > 0) {
-          console.log('333333')
           this.prevSlide()
         } else if (e.wheelDeltaY < 0) {
-          console.log('444444')
           this.nextSlide()
         }
       }, 50)
@@ -96,6 +127,38 @@ export default {
 </script>
 
 <style>
+@font-face {
+  font-family: 'GmarketSansMedium';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
+    format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SEBANG_Gothic_Bold';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2104@1.0/SEBANG_Gothic_Bold.woff')
+    format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+.spot-name {
+  font-family: 'SEBANG_Gothic_Bold';
+  font-size: 5vh;
+  width: 75vh;
+  height: 10vh;
+}
+.spot-content {
+  font-family: 'GmarketSansMedium';
+  font-size: 3vh;
+  width: 75vh;
+  height: 25vh;
+}
+
+.spot-image {
+  width: 60vh;
+  height: 40vh;
+}
 .container {
   display: flex;
   flex-flow: column;
@@ -132,16 +195,21 @@ export default {
 }
 
 .slide {
+  cursor: pointer;
   position: absolute;
+  display: flex;
+  align-items: center;
   top: 20%;
   /* left: 1%; */
   width: 100%;
   height: 60%;
-  background-color: red;
+  background-color: #e3fdfe;
   border: 1px solid #fff;
   border-radius: 15px;
   opacity: 0;
+  padding: 2vh;
   transition: all 0.7s ease-out;
+  box-shadow: 10px 10px 10px rgb(196, 196, 196);
 }
 
 .slide--active {
@@ -174,6 +242,7 @@ export default {
   padding: 2%;
 }
 .title-text {
+  font-family: 'SEBANG_Gothic_Bold';
   font-size: 40px;
 }
 
