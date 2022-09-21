@@ -9,16 +9,4 @@
 export default {}
 </script>
 
-<style scoped>
-@font-face {
-  font-family: 'Cafe24Ssurround';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff')
-    format('woff');
-  font-weight: bold;
-  font-style: normal;
-}
-
-.search-page {
-  font-family: 'Cafe24Ssurround';
-}
-</style>
+<style scoped></style>

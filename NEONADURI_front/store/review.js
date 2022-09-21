@@ -1,3 +1,5 @@
+import { getReviews, modifyReview, writeReview } from '~/api/review'
+
 export const state = () => ({
   reviewList: [],
   review: null,
@@ -21,6 +23,41 @@ export const mutations = {
 export const getters = {}
 
 export const actions = {
+  callReviews({ commit }, spotId) {
+    getReviews(
+      spotId,
+      ({ data }) => {
+        commit('SET_REVIEWLIST', data)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  },
+
+  registReview({ commit }, review) {
+    writeReview(
+      review,
+      ({ data }) => {
+        console.log(data)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  },
+  changeReview({ commit }, review) {
+    modifyReview(
+      review,
+      ({ data }) => {
+        console.log(data)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  },
+
   // 필요한 것들
   // 1. 리뷰 등록, 수정하기
   // 2. 리뷰 수정하기 전 기본정보 불러오기

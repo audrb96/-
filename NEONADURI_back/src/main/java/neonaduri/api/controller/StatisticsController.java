@@ -1,6 +1,5 @@
 package neonaduri.api.controller;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import neonaduri.api.service.StatisticsService;
 import neonaduri.domain.statistics.Visited;
@@ -11,13 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/statistics")
 public class StatisticsController {
 
     private final StatisticsService statisticsService;
-
+    
     /** A05: 만족도에 따른 통계 자료 가져온다. */
     @GetMapping("/sat")
     public ResponseEntity<?> getSatisfaction() {

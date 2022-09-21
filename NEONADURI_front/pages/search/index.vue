@@ -1,87 +1,93 @@
 <template>
   <div class="search">
-    <div class="main-content fadeInUp">
-      <div class="recommand">
-        <div class="recommand-content">
-          <div class="recommand-left">
-            <img
-              src="/review/deoksugung.jpg"
-              alt="임시"
-              class="recommand-img"
-            />
-            <div>
-              <h2>동궁과 월지</h2>
-              <br />
-              <div class="recommand-des">
-                신라의 문무왕이 삼국을 통일한 후 궁궐을 넓게 확장해 태자가
-                거처하도록 한 게 동궁! 밤에 보니깐 더 화려해보이네요.
+    <div style="width: 100%">
+      <div class="main-content fadeInUp">
+        <div class="recommand">
+          <div class="recommand-content">
+            <div class="recommand-left">
+              <img
+                src="/review/deoksugung.jpg"
+                alt="임시"
+                class="recommand-img"
+              />
+              <div>
+                <h2 style="font-family: 'SEBANG_Gothic_Bold'">동궁과 월지</h2>
+                <br />
+                <div class="recommand-des">
+                  신라의 문무왕이 삼국을 통일한 후 궁궐을 넓게 확장해 태자가
+                  거처하도록 한 게 동궁! 밤에 보니깐 더 화려해보이네요.
+                </div>
+                <div>#데이트 #경주</div>
               </div>
-              <div>#데이트 #경주</div>
+            </div>
+            <div class="top-title">
+              <img src="/icon/star.png" alt="star" class="star-icon" />
+              <div>추천장소</div>
             </div>
           </div>
-          <div class="top-title">
-            <img src="/icon/star.png" alt="star" class="star-icon" />
-            <div>추천장소</div>
+        </div>
+      </div>
+      <div class="option-content fadeInUp">
+        <div class="option">
+          <div class="search-bar">
+            <h1 style="font-family: 'SEBANG_Gothic_Bold'">검색 :</h1>
+            <input v-model="searchWord" type="text" class="search-input" />
+          </div>
+          <hr />
+          <div class="search-bar">
+            <h1 style="font-family: 'SEBANG_Gothic_Bold'">지역 :</h1>
+            <b-form-select
+              v-model="sido"
+              :options="sidoSelect"
+              class="selected"
+              @change="sidoChange"
+            ></b-form-select>
+            <b-form-select
+              v-model="sigungu"
+              :options="sigunguSelect"
+              class="selected"
+              @change="myeonChange"
+            ></b-form-select>
+            <b-form-select
+              v-model="myeon"
+              :options="myeonSelect"
+              class="selected"
+            ></b-form-select>
+          </div>
+          <hr />
+          <div>
+            <div
+              v-for="(option, index) in options"
+              :key="index"
+              class="option-row mb-3"
+            >
+              <div class="mr-3 mdClass-title">{{ option.mdClass }}</div>
+              <div class="btn-group">
+                <v-btn
+                  v-for="(element, i) in option.smClass"
+                  :key="i"
+                  color="#98d4f3"
+                  :value="element.name"
+                  class="mr-3 class-btn"
+                  :class="{ clicked: element.isSelected }"
+                  @click="btnClick(element, $event)"
+                  ><img
+                    class="btn-icon"
+                    :src="'/icon/' + element.icon"
+                    alt=""
+                  />{{ element.name }}</v-btn
+                >
+              </div>
+            </div>
+          </div>
+          <div class="button-box">
+            <button class="custom-btn btn-12" @click="moveSearchResult">
+              <span>레츠고!</span><span>어디로 갈까요?</span>
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <div class="option-content fadeInUp">
-      <div class="option">
-        <div class="search-bar">
-          <h1>검색 :</h1>
-          <input v-model="searchWord" type="text" class="search-input" />
-        </div>
-        <div class="search-bar">
-          <h1>지역 :</h1>
-          <b-form-select
-            v-model="sido"
-            :options="sidoSelect"
-            class="selected"
-            @change="sidoChange"
-          ></b-form-select>
-          <b-form-select
-            v-model="sigungu"
-            :options="sigunguSelect"
-            class="selected"
-            @change="myeonChange"
-          ></b-form-select>
-          <b-form-select
-            v-model="myeon"
-            :options="myeonSelect"
-            class="selected"
-          ></b-form-select>
-        </div>
-        <div>
-          <h1 class="mb">분류</h1>
-          <div
-            v-for="(option, index) in options"
-            :key="index"
-            class="option-row mb-3"
-          >
-            <h2 class="mr-3">{{ option.mdClass }}</h2>
-            <div class="btn-group">
-              <v-btn
-                v-for="(element, i) in option.smClass"
-                :key="i"
-                color="#98d4f3"
-                :value="element.name"
-                class="mr-3"
-                :class="{ clicked: element.isSelected }"
-                @click="btnClick(element, $event)"
-                >{{ element.name }}</v-btn
-              >
-            </div>
-          </div>
-        </div>
-        <div class="button-box">
-          <button class="custom-btn btn-12" @click="moveSearchResult">
-            <span>레츠고!</span><span>어디로 갈까요?</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
     <navbar-component></navbar-component>
   </div>
 </template>
@@ -98,30 +104,37 @@ export default {
           mdClass: '자연',
           smClass: [
             {
+              icon: 'forest.png',
               name: '숲',
               isSelected: false,
             },
             {
+              icon: 'park.png',
               name: '관광공원/허브마을',
               isSelected: false,
             },
             {
+              icon: 'lake.png',
               name: '대형호수/저수지',
               isSelected: false,
             },
             {
+              icon: 'plant.png',
               name: '식물원',
               isSelected: false,
             },
             {
+              icon: 'waterfall.png',
               name: '폭포/계곡',
               isSelected: false,
             },
             {
+              icon: 'sea.png',
               name: '해수욕장',
               isSelected: false,
             },
             {
+              icon: 'tree.png',
               name: '휴양림/수목원',
               isSelected: false,
             },
@@ -131,10 +144,12 @@ export default {
           mdClass: '관광',
           smClass: [
             {
+              icon: 'sightseeing1.png',
               name: '유명관광지',
               isSelected: false,
             },
             {
+              icon: 'sightseeing2.png',
               name: '일반관광지',
               isSelected: false,
             },
@@ -144,18 +159,22 @@ export default {
           mdClass: '체험',
           smClass: [
             {
+              icon: 'zoo.png',
               name: '동물원',
               isSelected: false,
             },
             {
+              icon: 'aquarium.png',
               name: '아쿠아리움/대형수족관',
               isSelected: false,
             },
             {
+              icon: 'funfair.png',
               name: '일반유원지/일반놀이공원',
               isSelected: false,
             },
             {
+              icon: 'theme.png',
               name: '테마공원/대형놀이공원',
               isSelected: false,
             },
@@ -165,14 +184,17 @@ export default {
           mdClass: '전통',
           smClass: [
             {
+              icon: 'desk.png',
               name: '서원/향교/서당',
               isSelected: false,
             },
             {
+              icon: 'temple1.png',
               name: '유명사찰',
               isSelected: false,
             },
             {
+              icon: 'temple2.png',
               name: '지역사찰',
               isSelected: false,
             },
@@ -182,14 +204,17 @@ export default {
           mdClass: '쇼핑',
           smClass: [
             {
+              icon: 'market.png',
               name: '시장',
               isSelected: false,
             },
             {
+              icon: 'food.png',
               name: '먹거리/패션거리',
               isSelected: false,
             },
             {
+              icon: 'souvenir.png',
               name: '토속/특산물/기념품매장',
               isSelected: false,
             },
@@ -199,14 +224,17 @@ export default {
           mdClass: '카지노',
           smClass: [
             {
+              icon: '7.png',
               name: '세븐럭카지노',
               isSelected: false,
             },
             {
+              icon: 'paradiseCasino.png',
               name: '파라다이스카지노',
               isSelected: false,
             },
             {
+              icon: 'casino.png',
               name: '카지노',
               isSelected: false,
             },
@@ -216,22 +244,27 @@ export default {
           mdClass: '어린이',
           smClass: [
             {
+              icon: 'pororo.png',
               name: '뽀로로',
               isSelected: false,
             },
             {
+              icon: 'tayo.png',
               name: '타요',
               isSelected: false,
             },
             {
+              icon: 'poly.png',
               name: '폴리',
               isSelected: false,
             },
             {
+              icon: 'larva.png',
               name: '라바',
               isSelected: false,
             },
             {
+              icon: 'guitar.png',
               name: '기타',
               isSelected: false,
             },
@@ -280,6 +313,40 @@ export default {
 </script>
 
 <style scoped>
+@font-face {
+  font-family: 'GmarketSansMedium';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
+    format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SEBANG_Gothic_Bold';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2104@1.0/SEBANG_Gothic_Bold.woff')
+    format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+.mdClass-title {
+  width: 8%;
+  font-size: 30px;
+  font-family: 'SEBANG_Gothic_Bold';
+  padding-left: 10px;
+  height: 40px;
+  border-left: 5px solid #02a6f8;
+}
+
+.class-btn {
+  display: flex;
+  align-items: center;
+}
+
+.btn-icon {
+  width: 20px;
+  margin-right: 10px;
+}
+
 .button-box {
   display: flex;
   justify-content: end;
@@ -370,6 +437,7 @@ export default {
   transform: rotateX(-90deg);
 }
 .search {
+  font-family: 'GmarketSansMedium';
   height: 65vw;
 }
 .btn-group {
@@ -382,8 +450,8 @@ export default {
 }
 
 .option-row {
-  margin-left: 2%;
   display: flex;
+  align-items: center;
 }
 .selected {
   margin-left: 20px;
@@ -428,7 +496,7 @@ export default {
   padding: 2%;
   border-radius: 15px;
   background-color: white;
-  width: 80%;
+  width: 90%;
 }
 .recommand-left {
   display: flex;
