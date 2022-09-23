@@ -197,6 +197,9 @@ export default {
       markerArr: [],
       labelArr: [],
       resultMarkerArr: [],
+
+      changedStart:Object,
+      changedEnd:Object,
     }
   },
   mounted() {
@@ -265,10 +268,6 @@ export default {
         this.findStartPoint = false
         this.findEndPoint = true
       }
-    },
-    resetBoxes() {
-      this.startPoint = ''
-      this.endPoint = ''
     },
     // 지도 그리기
     makeMap() {
@@ -509,7 +508,13 @@ export default {
         this.markerArr[i].setMap(null);
       }
 
-       new Tmapv2.Marker({
+      
+      if(this.resultInfoArr.length > 0){
+        this.changedStart.setMap(null);
+        this.changedEnd.setMap(null);
+      }
+      
+       this.changedStart=new Tmapv2.Marker({
           position: new Tmapv2.LatLng(
             this.startPointObject.lat,
             this.startPointObject.lon
@@ -520,7 +525,7 @@ export default {
           map: this.map,
         })
 
-        new Tmapv2.Marker({
+        this.changedEnd=new Tmapv2.Marker({
           position: new Tmapv2.LatLng(
             this.endPointObject.lat,
             this.endPointObject.lon
@@ -585,20 +590,17 @@ export default {
       // 기존의 길과 포인트들 전부 삭제
       if (this.resultInfoArr.length > 0) {
         for (let i in this.resultInfoArr) {
-          console.log("타입 : ")
-          console.log(typeof this.resultInfoArr[i])
-          console.log(this.resultInfoArr.length)
           this.resultInfoArr[i].setMap(null)
         }
-      }
         this.resultInfoArr = []
+      }
 
       if (this.resultMarkerArr.length > 0) {
         for (let i in this.resultMarkerArr) {
           this.resultMarkerArr[i].setMap(null)
         }
+        this.resultMarkerArr = []
       }
-      this.resultMarkerArr = []
 
       // 루트 그림 그리는 포인트를 담는 배열
       const drawInfoArr = []
@@ -606,14 +608,7 @@ export default {
       for (let i in resultFeatures) {
         const geometry = resultFeatures[i].geometry
         const properties = resultFeatures[i].properties
-        let polyline_
-
-        this.resultInfoArr.push(this.startPointObject)
-        this.resultInfoArr.push(this.endPointObject)
-
-        for (const k in this.stopOverObjectList) {
-          this.resultInfoArr.push(this.stopOverObjectList[k])
-        }
+        let polyline_;
 
         if (geometry.type == 'LineString') {
           for (const j in geometry.coordinates) {
