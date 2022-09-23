@@ -64,6 +64,7 @@ export const actions = {
     getSidos(
       ({ data }) => {
         commit('SET_SIDOLIST', data)
+        console.log(data)
       },
       (error) => {
         console.log(error)

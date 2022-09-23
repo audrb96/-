@@ -95,14 +95,6 @@ export default {
         }
       }
     },
-
-    Waiting() {
-      this.postOrders(this.orders)
-      this.CLEAR_ITEMS()
-      this.CLEAR_CHOICE_FOODS()
-      this.CLEAR_CHECK_FOODS()
-      this.$router.push('/waiting')
-    },
     previewFile(file) {
       if (file) {
         const fileData = (data) => {

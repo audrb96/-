@@ -31,30 +31,30 @@
       <div class="review-top">
         <img class="review-logo" src="/logo/review-logo.png" alt="" />
       </div>
-      <div class="spot-main">
+      <div class="spot-main slide-in-right">
         <div class="spot-left">
-          <img src="/review/deoksugung.jpg" alt="" />
+          <img :src="spot.spotImage" alt="" />
         </div>
         <div class="spot-right">
           <div class="spot-main-title">
             <div class="title-text">
-              {{ tempSpot.title }}
+              {{ spot.spotName }}
             </div>
             <div class="title-icon">
               <v-icon @click="modifyContent">mdi-lead-pencil</v-icon>
             </div>
           </div>
           <div class="spot-content">
-            {{ tempSpot.content }}
+            {{ spot.spotContent }}
           </div>
           <div class="content-modify" style="display: none">
             <div class="content-modify-sub">
-              <textarea :value="tempSpot.content" class="modify-input" />
+              <textarea :value="spot.spotContent" class="modify-input" />
               <button class="modify-button" @click="contentSave">저장</button>
             </div>
           </div>
           <div class="spot-add">
-            <button class="add-btn">경유지추가</button>
+            <button class="add-btn" @click="addSpot">경유지추가</button>
           </div>
         </div>
       </div>
@@ -112,7 +112,7 @@
                         @mouseout="focusOut(idx)"
                       >
                         <input
-                          class="password-input"
+                          :class="`password-input password-input` + idx"
                           placeholder="password"
                           type="password"
                         />
@@ -121,7 +121,7 @@
                           <v-icon
                             :id="'pencil-icon' + idx"
                             style="display: none"
-                            @click="enterPass"
+                            @click="enterPass(idx)"
                             >mdi-lead-pencil</v-icon
                           >
                         </a>
@@ -139,15 +139,10 @@
   </div>
 </template>
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {
-      tempSpot: {
-        title: '동궁과 월지',
-        content:
-          '신라의 문무왕이 삼국을 통일한 후 궁궐을 넓게 확장해 태자가 거처하도록 한 게 동궁! 밤에 보니깐 더 화려해보이네요.',
-      },
       reviews: [
         {
           image: '',
@@ -227,10 +222,12 @@ export default {
     ...mapState('review', ['reviewList']),
   },
   created() {
+    // 불러올 때 review_id도 불러옴
     // this.callReviews(this.spot.id)
   },
   methods: {
-    ...mapActions('review', ['callReviews']),
+    ...mapMutations('route', ['ADD_ROUTE']),
+    ...mapActions('review', ['callReviews', 'changeContent', 'confirmPass']),
     MoveCheck() {
       const modal = document.getElementsByClassName('check-modal')[0]
       modal.style.display = 'block'
@@ -253,15 +250,62 @@ export default {
         this.$el.querySelector(`.modify-input`).value
       this.$el.querySelector(`.spot-content`).style.display = 'block'
       this.$el.querySelector(`.content-modify`).style.display = 'none'
+      this.changeContent(this.$el.querySelector(`.modify-input`).value)
     },
-    enterPass() {
-      alert('비밀번호 입력')
+    // review 불러오면 idx -> review_id로 바꾸기
+    enterPass(idx) {
+      // review_id와 review_password받아오기
+      const info = {
+        id: idx,
+        password: this.$el.querySelector(`.password-input${idx}`).value,
+      }
+      this.confirmPass(info)
+      alert(info.id + '번째 비밀번호 : ' + info.password)
+    },
+    addSpot() {
+      const route = {
+        id: this.spot.spotId,
+        name: this.spot.spotName,
+        lat: this.spot.lat,
+        lng: this.spot.lng,
+      }
+      this.ADD_ROUTE(route)
     },
   },
 }
 </script>
 
 <style scoped>
+.slide-in-right {
+  -webkit-animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+    both;
+  animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+@-webkit-keyframes slide-in-right {
+  0% {
+    -webkit-transform: translateX(1000px);
+    transform: translateX(1000px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes slide-in-right {
+  0% {
+    -webkit-transform: translateX(1000px);
+    transform: translateX(1000px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 @font-face {
   font-family: 'Cafe24Ssurround';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff')
@@ -311,6 +355,7 @@ export default {
 }
 .spot-left > img {
   width: 500px;
+  height: 330px;
 }
 .spot-right {
   position: absolute;

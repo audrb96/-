@@ -17,4 +17,8 @@ async function modifyReview(review, success, fail) {
   await api.put(`/api/review`, JSON.stringify(review)).then(success).catch(fail)
 }
 
-export { writeReview, getReviews, modifyReview }
+async function comparePass(id, pass, success, fail) {
+  await api.get(`/api/review/pass/${id}/${pass}`).then(success).catch(fail)
+}
+
+export { writeReview, getReviews, modifyReview, comparePass }
