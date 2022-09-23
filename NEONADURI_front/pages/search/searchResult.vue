@@ -54,19 +54,26 @@ export default {
   data() {
     return {
       timer: 0,
+      scrollCount: 0,
     }
   },
   computed: {
-    ...mapState('spot', ['keyword', 'spotList', 'query']),
+    ...mapState('spot', ['keyword', 'spotList', 'query', 'page']),
   },
   async mounted() {
+    this.SET_QUERY(this.query.replace(`page=${this.page}`, `page=0`))
+    this.CLEAR_PAGE()
     await this.searchSpot(this.query)
-    console.log('222222')
     this.renderSlides()
   },
   methods: {
-    ...mapMutations('spot', ['SET_SPOT']),
-    ...mapActions('spot', ['searchSpot']),
+    ...mapMutations('spot', [
+      'SET_SPOT',
+      'SET_QUERY',
+      'ADD_PAGE',
+      'CLEAR_PAGE',
+    ]),
+    ...mapActions('spot', ['searchSpot', 'addSpot']),
     slideClick(spot) {
       this.SET_SPOT(spot)
       this.$router.push('/review')
@@ -86,6 +93,15 @@ export default {
       }, 50)
     },
     nextSlide() {
+      this.scrollCount += 1
+      if (this.scrollCount === 40) {
+        this.SET_QUERY(
+          this.query.replace(`page=${this.page}`, `page=${this.page + 1}`)
+        )
+        this.ADD_PAGE()
+        this.addSpot(this.query)
+        this.scrollCount = 0
+      }
       const activeSlide = this.$el.querySelector('.slide--active')
       const nextSlide = activeSlide.nextElementSibling
       if (nextSlide) {
@@ -129,7 +145,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 @font-face {
   font-family: 'GmarketSansMedium';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
