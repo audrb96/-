@@ -34,7 +34,6 @@ public class SpotRepositoryImpl implements SpotRepositoryCustom{
 
     @Override
     public Page<SearchSpotDto> searchByCon(SearchSpotReq searchSpotReq, Pageable pageable) {
-
         List<SearchSpotDto> content = jpaQueryFactory
                 .select(new QSearchSpotDto(
                         spot.spotId,
@@ -55,6 +54,8 @@ public class SpotRepositoryImpl implements SpotRepositoryCustom{
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
+
 
         JPAQuery<SearchSpotDto> countQuery = jpaQueryFactory
                 .select(new QSearchSpotDto(

@@ -27,8 +27,8 @@ export default {
         src: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js',
       },
       {
-        src: 'https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=l7xx9b31967c4bc2496f8dde1d66747658c9'
-      }
+        src: 'https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=l7xx9b31967c4bc2496f8dde1d66747658c9',
+      },
     ],
   },
 
@@ -36,7 +36,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [{ src: '~/plugins/persistedState.js' }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -54,6 +54,9 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     'bootstrap-vue/nuxt',
+    'nuxt-vuex-localstorage',
+    'cookie-universal-nuxt',
+    ['cookie-universal-nuxt', { alias: 'cookiz' }],
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -65,4 +68,3 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 }
-
