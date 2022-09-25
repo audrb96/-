@@ -6,7 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SatisfactionRepository extends JpaRepository<Satisfaction, Long> {
-
-    Satisfaction findSatisfactionBySatId(Long satId);
-
 }

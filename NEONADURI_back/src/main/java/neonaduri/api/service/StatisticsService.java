@@ -25,31 +25,23 @@ public class StatisticsService {
 
     private final VisitedRepository visitedRepository;
 
-    //만족도 조회
+    /** 만족도 조회*/
     @Transactional
     public List<Satisfaction> findSatisfaction() {
-
-//        log.info("test1");
-////        Satisfaction satisfactionBySatId = satisfactionRepository.findSatisfactionBySatId(1L);
-////        System.out.println("satisfactionBySatId = " + satisfactionBySatId.toString());
-//        List<Satisfaction> all = satisfactionRepository.findAll();;
-//        log.info("test2");
-////        System.out.println("all = " + all);
-//        return null;
-////        return all;
-//        return satisfactionRepository.findAll();
-
-        return satisfactionRepository.findAll();
-
+        try {
+            return satisfactionRepository.findAll();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return new ArrayList<>();
     }
 
     @Transactional
     /** 방문지 선택이유*/
     public List<Selected> findSelected() {
-
         try {
             return selectedRepository.findAll();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return new ArrayList<>();
@@ -60,7 +52,7 @@ public class StatisticsService {
     public List<Visited> findVisited() {
         try {
             return visitedRepository.findAll();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return new ArrayList<>();
