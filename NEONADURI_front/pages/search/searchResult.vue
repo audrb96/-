@@ -64,7 +64,9 @@ export default {
     this.SET_QUERY(this.query.replace(`page=${this.page}`, `page=0`))
     this.CLEAR_PAGE()
     await this.searchSpot(this.query)
-    this.renderSlides()
+    if (this.spotList?.content.length > 0) {
+      this.renderSlides()
+    }
   },
   methods: {
     ...mapMutations('spot', [
@@ -80,17 +82,19 @@ export default {
     },
 
     handleScroll(e) {
-      if (this.timer) {
-        clearTimeout(this.timer)
-      }
-
-      this.timer = setTimeout(() => {
-        if (e.wheelDeltaY > 0) {
-          this.prevSlide()
-        } else if (e.wheelDeltaY < 0) {
-          this.nextSlide()
+      if (this.spotList !== []) {
+        if (this.timer) {
+          clearTimeout(this.timer)
         }
-      }, 50)
+
+        this.timer = setTimeout(() => {
+          if (e.wheelDeltaY > 0) {
+            this.prevSlide()
+          } else if (e.wheelDeltaY < 0) {
+            this.nextSlide()
+          }
+        }, 50)
+      }
     },
     nextSlide() {
       this.scrollCount += 1

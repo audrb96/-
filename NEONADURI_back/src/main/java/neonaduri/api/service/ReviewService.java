@@ -7,6 +7,7 @@ import neonaduri.api.repository.TagRepository;
 import neonaduri.domain.Review;
 import neonaduri.domain.Tag;
 import neonaduri.dto.request.CreateReviewReq;
+import neonaduri.utils.S3Uploader;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,13 +21,12 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class ReviewService {
-
+    private final S3Uploader s3Uploader;
     private final SpotRepository spotRepository;
     private final PasswordEncoder passwordEncoder;
     private final ReviewRepository reviewRepository;
 
     public void postReview(CreateReviewReq createReviewReq) {
-
         /* Tag 먼저 생성 */
         Set<Tag> tags = Arrays.stream(createReviewReq.getTags().split(", "))
                 .map(Tag::new)

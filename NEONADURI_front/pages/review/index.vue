@@ -221,10 +221,7 @@ export default {
     ...mapState('spot', ['spot']),
     ...mapState('review', ['reviewList']),
   },
-  created() {
-    // 불러올 때 review_id도 불러옴
-    // this.callReviews(this.spot.id)
-  },
+  created() {},
   methods: {
     ...mapMutations('route', ['ADD_ROUTE']),
     ...mapActions('review', ['callReviews', 'changeContent', 'confirmPass']),
