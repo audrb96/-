@@ -1,4 +1,9 @@
-import { getReviews, modifyReview, writeReview } from '~/api/review'
+import {
+  getReviews,
+  modifyReview,
+  writeReview,
+  comparePass,
+} from '~/api/review'
 
 export const state = () => ({
   reviewList: [],
@@ -49,6 +54,18 @@ export const actions = {
   changeReview({ commit }, review) {
     modifyReview(
       review,
+      ({ data }) => {
+        console.log(data)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  },
+  confirmPass({ commit }, info) {
+    comparePass(
+      info.id,
+      info.password,
       ({ data }) => {
         console.log(data)
       },

@@ -20,13 +20,11 @@
           <img :src="preview" class="check-modal-body-img" alt="없음" />
           <div class="check-modal-body-input">
             <input
-              v-model="review.reviewContent"
               class="check-modal-body-input-line"
               type="text"
               placeholder="한 줄 입력하세요"
             />
             <input
-              v-model="review.tag"
               class="check-modal-body-input-tag"
               type="text"
               placeholder="태그를 입력하세요"
@@ -36,9 +34,9 @@
         <div class="check-model-body-bot">
           <div class="check-model-body-bot-left">
             <v-file-input
-              v-model="review.reviewImage"
+              v-model="file"
               :placeholder="fileInfo?.name"
-              @change="previewFile(review.reviewImage)"
+              @change="previewFile(file)"
             />
             <!-- <v-file-input
               v-model="file"
@@ -49,12 +47,7 @@
           <div class="check-model-body-bot-right">
             <div class="check-model-body-bot-pass">
               <div>비밀번호 설정 :</div>
-              <input
-                v-model="review.reviewPassword"
-                class="password-input"
-                type="password"
-                placeholder="비밀번호"
-              />
+              <input type="password" placeholder="비밀번호" />
             </div>
             <button @click="writeReview">입력 완료</button>
           </div>
@@ -86,11 +79,10 @@ export default {
     }
   },
   computed: {
-    ...mapState('spot', ['spot']),
     ...mapState('review', []),
   },
   methods: {
-    ...mapActions('review', ['registReview']),
+    ...mapActions('review', ['changeReview']),
     CloseCheck() {
       const modal = document.getElementsByClassName('check-modal')[0]
       const span = document.getElementsByClassName('check-modal-head-close')[0]
@@ -138,13 +130,7 @@ export default {
       }
     },
     writeReview() {
-      // console.log(1 + ' ' + this.review.reviewContent)
-      // console.log(1 + ' ' + this.review.reviewPassword)
-      // console.log(1 + ' ' + this.review.tag)
-      console.log(this.fileInfo)
-      console.log(this.review)
-      this.review.spotId = this.spot.spotId
-      this.registReview(this.review)
+      this.changeReview(this.review)
     },
   },
 }
@@ -273,12 +259,6 @@ input {
   border: 2px solid #a1d6e9;
   border-radius: 10px;
   margin: auto 0 5% 5%;
-}
-.password-input[type='password'] {
-  font-family: '맑은고딕', '돋움';
-}
-.password-input[type='password']::placeholder {
-  font-family: 'Cafe24Ssurround';
 }
 .check-model-body-bot-right > button {
   width: 150px;

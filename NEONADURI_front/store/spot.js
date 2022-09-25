@@ -5,6 +5,7 @@ export const state = () => ({
   keyword: [],
   spotList: [],
   spot: null,
+  page: 0,
 })
 
 export const mutations = {
@@ -20,6 +21,17 @@ export const mutations = {
   },
   SET_SPOT(state, spot) {
     state.spot = spot
+  },
+  ADD_SPOTLIST(state, spotList) {
+    spotList.forEach((spot) => {
+      state.spotList.content.push(spot)
+    })
+  },
+  ADD_PAGE(state) {
+    state.page += 1
+  },
+  CLEAR_PAGE(state) {
+    state.page = 0
   },
   CLEAR_QUERY(state) {
     state.query = ''
@@ -73,8 +85,19 @@ export const actions = {
         console.log(error)
       }
     )
-    commit('CLEAR_QUERY')
   },
+  addSpot({ commit }, query) {
+    search(
+      query,
+      ({ data }) => {
+        commit('ADD_SPOTLIST', data.content)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  },
+
   // 필요한 것들
   // 1. 선택된 spot 불러오기
   // 2. 선택된 spot의 리뷰 불러오기

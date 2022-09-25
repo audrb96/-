@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { mapGetters, mapActions, mapMutations, mapState } from 'vuex'
 
 export default {
   name: 'SearchPage',
@@ -281,14 +281,22 @@ export default {
   },
   computed: {
     ...mapGetters('region', ['sidoSelect', 'sigunguSelect', 'myeonSelect']),
+    ...mapState('spot', ['page']),
   },
   created() {
     this.callSidos()
+    this.CLEAR_QUERY()
+    this.CLEAR_PAGE()
   },
   methods: {
     ...mapActions('region', ['callSidos', 'callSigungus', 'callMyeons']),
     ...mapActions('spot', ['searchSpot']),
-    ...mapMutations('spot', ['SET_KEYWORD', 'SET_QUERY']),
+    ...mapMutations('spot', [
+      'SET_KEYWORD',
+      'SET_QUERY',
+      'CLEAR_QUERY',
+      'CLEAR_PAGE',
+    ]),
     sidoChange() {
       this.callSigungus(this.sido)
       this.sigungu = 'all'
@@ -311,7 +319,7 @@ export default {
     },
     moveSearchResult() {
       this.query = ''
-      this.query += 'size=50&page=0'
+      this.query += `size=50&page=${this.page}`
       if (this.selected.length > 0) {
         if (this.query !== '') this.query += '&'
         this.query += 'classification='
