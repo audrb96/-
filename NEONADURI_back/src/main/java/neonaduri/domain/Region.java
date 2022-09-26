@@ -1,9 +1,6 @@
 package neonaduri.domain;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,11 +8,11 @@ import javax.persistence.*;
 @Getter
 @Table(name = "region")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Region {
 
     @Id
     @Column(name = "region_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long regionId; //따로 지역코드가 있는것으로 알고있어 auto_increment 안함
 
     @Column(name = "sido", nullable = false)
@@ -26,4 +23,11 @@ public class Region {
 
     @Column(name = "myeon", nullable = false)
     private String myeon;
+
+    @Builder
+    public Region(String sido, String sigungu, String myeon){
+        this.sido = sido;
+        this.sigungu = sigungu;
+        this.myeon = myeon;
+    }
 }

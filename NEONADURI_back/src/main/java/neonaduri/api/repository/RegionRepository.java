@@ -14,6 +14,8 @@ import java.util.List;
 @Repository
 public interface RegionRepository extends JpaRepository<Region, Long> {
 
+    Region findRegionBySidoAndSigunguAndMyeon(String sido, String sigungu, String myeon);
+
     @Query("select new neonaduri.dto.response.SidoResponseDto(r.sido) from Region r group by r.sido")
     List<SidoResponseDto> findAllSido();
 

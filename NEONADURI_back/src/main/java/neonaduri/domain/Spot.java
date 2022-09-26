@@ -1,6 +1,7 @@
 package neonaduri.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -45,4 +46,14 @@ public class Spot {
 
     @Column(name = "spot_content")
     private String spotContent;
+
+    @Builder
+    public Spot(Long classId, Long regionId, String spotName, Float lat, Float lng, String spotImage){
+        this.classId = classId;
+        this.regionId = regionId;
+        this.spotName = spotName;
+        this.lat = lat;
+        this.lng = lng;
+        this.spotImage = spotImage;
+    }
 }

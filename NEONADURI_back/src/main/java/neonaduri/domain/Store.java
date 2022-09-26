@@ -35,4 +35,12 @@ public class Store {
 
     @Column(name = "sub_cat", nullable = false)
     private String subCategory;
+
+    public Store(Spot spot, String storeName, String mainCat, String midCat, String subCategory){
+        this.storeName = storeName;
+        this.spotId = spot;
+        this.mainCat = mainCat;
+        this.midCat = midCat;
+        this.subCategory = subCategory;
+    }
 }
