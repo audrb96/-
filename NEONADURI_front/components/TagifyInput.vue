@@ -1,6 +1,12 @@
 <template v-once>
   <textarea v-if="mode === 'textarea'" v-model="value" />
-  <input v-else :value="value" @change="onChange" />
+  <input
+    v-else
+    class="tagify-input"
+    :value="value"
+    placeholder="태그"
+    @change="onChange"
+  />
 </template>
 
 <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
@@ -22,10 +28,10 @@ export default {
     ],
   },
   props: {
-    // mode: String,
-    // settings: Object,
-    // value: [String, Array],
-    // onChange: Function,
+    mode: String,
+    settings: Object,
+    value: [String, Array],
+    onChange: Function,
   },
   watch: {
     value(newVal, oldVal) {
@@ -37,3 +43,20 @@ export default {
   },
 }
 </script>
+<style>
+.tagify {
+  /* --tags-disabled-bg: white; */
+  --tags-disabled-bg: #f1f1f1;
+  --tag-inset-shadow-size: 0px;
+  --tags-border-color: white;
+  --tags-hover-border-color: white;
+}
+.tagify__tag {
+  background-color: #f1f1f1;
+}
+.tagify__input {
+  margin-bottom: 10%;
+  border: 2px solid #a1d6e9;
+  border-radius: 10px;
+}
+</style>

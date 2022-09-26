@@ -25,12 +25,23 @@
               type="text"
               placeholder="한 줄 입력하세요"
             />
-            <input
+            <div class="check-modal-body-input-tag">
+              <!-- <tagify-component></tagify-component> -->
+              <Tags
+                id="tag-input"
+                ref="myRef"
+                :settings="tagifyStuff.tagifySettings"
+                :suggestions="tagifyStuff.suggestions"
+                :value="tagifyStuff.value"
+                :on-change="onTagsChange"
+              />
+            </div>
+            <!-- <input
               v-model="review.tag"
               class="check-modal-body-input-tag"
               type="text"
               placeholder="태그를 입력하세요"
-            />
+            /> -->
           </div>
         </div>
         <div class="check-model-body-bot">
@@ -66,8 +77,45 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { ref, reactive } from 'vue'
+// import Tags from "@yaireo/tagify/dist/tagify.vue"
+import Tags from '@/components/TagifyInput'
+
 export default {
   name: 'CheckModal',
+  components: { Tags },
+
+  setup(props) {
+    const myRef = ref(null)
+
+    const tagifyStuff = reactive({
+      value: '',
+
+      tagifySettings: {
+        whitelist: [],
+        dropdown: {
+          enabled: 0,
+        },
+        callbacks: {
+          add(e) {
+            // console.log("tag added:", e.detail);
+          },
+        },
+      },
+
+      suggestions: [],
+    })
+
+    function onTagsChange(e) {
+      //   console.log('tags changed:', e.target.value)
+    }
+
+    return {
+      onTagsChange,
+      myRef,
+      tagifyStuff,
+    }
+  },
   data() {
     return {
       preview: '/banner/no-image.png',
@@ -80,15 +128,15 @@ export default {
         reviewImage: null,
         reviewContent: null,
         reviewPassword: null,
-        tag: null,
+        tag: '',
       },
-      // 임시로 넣기
     }
   },
   computed: {
     ...mapState('spot', ['spot']),
     ...mapState('review', []),
   },
+
   methods: {
     ...mapActions('review', ['registReview']),
     CloseCheck() {
@@ -138,12 +186,22 @@ export default {
       }
     },
     writeReview() {
-      // console.log(1 + ' ' + this.review.reviewContent)
-      // console.log(1 + ' ' + this.review.reviewPassword)
-      // console.log(1 + ' ' + this.review.tag)
-      console.log(this.fileInfo)
-      console.log(this.review)
+      this.review.tag = ''
+      const arr = this.$el
+        .querySelector(`#tag-input`)
+        .value.split('"},{"value":"')
+      arr[0] = arr[0].substr(11, arr[0].length - 11)
+      arr[arr.length - 1] = arr[arr.length - 1].substr(
+        0,
+        arr[arr.length - 1].length - 3
+      )
+      arr.forEach((element) => {
+        this.review.tag += element
+        this.review.tag += ','
+      })
+      this.review.tag = this.review.tag.substr(0, this.review.tag.length - 1)
       this.review.spotId = this.spot.spotId
+      console.log(this.review)
       this.registReview(this.review)
     },
   },
@@ -155,7 +213,7 @@ input {
   padding-left: 3%;
 }
 .check-modal {
-  display: none;
+  /* display: none; */
   position: fixed;
   z-index: 1;
   left: 0;

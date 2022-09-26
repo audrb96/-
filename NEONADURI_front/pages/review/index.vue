@@ -1,33 +1,6 @@
 <template>
   <div class="review">
     <div class="main-content">
-      <!-- <div>
-        <div class="spot-img">
-          <img src="/review/deoksugung.jpg" alt="" />
-        </div>
-        <div>
-          <div class="spot-main">
-            <div class="spot-main-title">
-              <div class="title-text">
-                {{ spot.title }}
-              </div>
-              <div class="title-icon">
-                <v-icon @click="modifyContent">mdi-lead-pencil</v-icon>
-              </div>
-            </div>
-            <button>경유지추가</button>
-          </div>
-          <div class="spot-content">
-            {{ spot.content }}
-          </div>
-          <div class="content-modify" style="display: none">
-            <div class="content-modify-sub">
-              <textarea v-model="spot.content" class="modify-input" />
-              <button class="modify-button" @click="contentSave">저장</button>
-            </div>
-          </div>
-        </div>
-      </div> -->
       <div class="review-top">
         <img class="review-logo" src="/logo/review-logo.png" alt="" />
       </div>
@@ -62,7 +35,7 @@
         <div class="spot-review-top">
           <div class="spot-review-title">후기</div>
           <div>
-            <review-modal />
+            <review-modal v-if="toggle" />
             <v-icon large style="cursor: pointer" @click="MoveCheck"
               >mdi-plus-box</v-icon
             >
@@ -140,9 +113,11 @@
 </template>
 <script>
 import { mapActions, mapState, mapMutations } from 'vuex'
+
 export default {
   data() {
     return {
+      toggle: false,
       reviews: [
         {
           image: '',
@@ -221,13 +196,18 @@ export default {
     ...mapState('spot', ['spot']),
     ...mapState('review', ['reviewList']),
   },
-  created() {},
+  created() {
+    // 불러올 때 review_id도 불러옴
+    // this.callReviews(this.spot.id)
+  },
+  mounted() {},
   methods: {
     ...mapMutations('route', ['ADD_ROUTE']),
     ...mapActions('review', ['callReviews', 'changeContent', 'confirmPass']),
     MoveCheck() {
-      const modal = document.getElementsByClassName('check-modal')[0]
-      modal.style.display = 'block'
+      this.toggle = !this.toggle
+      // const modal = document.getElementsByClassName('check-modal')[0]
+      // modal.style.display = 'block'
     },
     focusOn(idx) {
       this.$el.querySelector(`#key-icon${idx}`).style.display = 'none'
@@ -256,6 +236,7 @@ export default {
         id: idx,
         password: this.$el.querySelector(`.password-input${idx}`).value,
       }
+      console.log(info)
       this.confirmPass(info)
       alert(info.id + '번째 비밀번호 : ' + info.password)
     },
