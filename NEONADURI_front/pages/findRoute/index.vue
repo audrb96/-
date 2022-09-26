@@ -9,118 +9,80 @@
           <div id="map_div"></div>
         </div>
       </div>
-
-      <div class="buttonBoxes">
-        <div class="types reInput">
-          <div class="buttons fontSize" @click="toggle(0)">시작점</div>
+      <div class="search-wrapper">
+        <div class="search-container">
+          <input
+            id="searchKeyword"
+            type="text"
+            :placeholder="
+              findStartPoint
+                ? '출발지를 입력해주세요.'
+                : '도착지를 입력해주세요'
+            "
+            @keyup.enter="findTarget()"
+          />
+          <img
+            class="search-icon"
+            src="http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon.png"
+            @click="findTarget(e)"
+          />
         </div>
-        <div class="types reInput">
-          <div class="buttons fontSize" @click="toggle(1)">도착점</div>
-        </div>
-        <!-- <div class="types reInput">
-                <div class="buttons fontSize" @click="toggle(2)">
-                    경로보기
-                </div>
-            </div> -->
       </div>
+      <div class="main-container">
+        <div class="middle">
+          <label>
+            <input type="radio" name="radio" checked @click="toggle(0)" />
+            <div class="front-end box">
+              <span>출발지 검색</span>
+            </div>
+          </label>
 
-      <div class="content">
-        <div class="inputBox">
-          <b-input-group>
-            <b-form-input
-              id="searchKeyword"
-              placeholder="시작점 검색"
-              @keyup.enter="findTarget()"
-            ></b-form-input>
-            <b-input-group-append>
-              <b-button variant="outline-primary" @click="findTarget()"
-                >검색</b-button
-              >
-            </b-input-group-append>
-          </b-input-group>
+          <label>
+            <input type="radio" name="radio" @click="toggle(1)" />
+            <div class="back-end box">
+              <span>도착지 검색</span>
+            </div>
+          </label>
         </div>
-
-        <!-- 3가지 형태()-->
-        <div class="stopover">
-          <div v-show="findStartPoint" style="border-right: 1px solid black">
-            <ul id="searchResult" name="searchResult">
-              <div v-for="(item, index) in searchResult" :key="index">
-                <img :src="item.src" style="vertical-align: middle" /><span>{{
-                  item.name
-                }}</span>
-                <b-button
-                  variant="success"
-                  name="sendBtn"
-                  @click="selected(item, 0, index)"
-                  >시작점 설정</b-button
-                >
-              </div>
-            </ul>
+        <div class="search-result">
+          <div v-show="findStartPoint">
+            <div
+              v-for="(item, index) in searchResult"
+              :key="index"
+              class="result-item"
+            >
+              <img
+                :src="item.src"
+                style="vertical-align: middle; margin-right: 10px"
+              /><span>{{ item.name }}</span>
+              <b-button
+                variant="success"
+                class="ml-3"
+                name="sendBtn"
+                @click="selected(item, 0, index)"
+                >시작점 설정</b-button
+              >
+            </div>
           </div>
           <div v-show="findEndPoint">
-            <ul id="searchResult" name="searchResult">
-              <div v-for="(item, index) in searchResult" :key="index">
-                <img :src="item.src" style="vertical-align: middle" /><span>{{
-                  item.name
-                }}</span>
-                <b-button
-                  variant="warning"
-                  name="sendBtn"
-                  @click="selected(item, 1, index)"
-                  >도착점 설정</b-button
-                >
-              </div>
-            </ul>
+            <div
+              v-for="(item, index) in searchResult"
+              :key="index"
+              class="result-item"
+            >
+              <img
+                :src="item.src"
+                style="vertical-align: middle; margin-right: 10px"
+              /><span>{{ item.name }}</span>
+              <b-button
+                variant="warning"
+                class="ml-3"
+                name="sendBtn"
+                @click="selected(item, 1, index)"
+                >도착점 설정</b-button
+              >
+            </div>
           </div>
-        </div>
-
-        <div class="itemList">
-          <!-- {{startPointObject.name}} -->
-          <img
-            v-show="Object.keys(startPointObject).length != 0"
-            src="http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_s.png"
-            style="vertical-align: middle"
-          /><span>{{ startPointObject.name }}</span>
-          <hr />
-          <p id="result"></p>
-          <select id="selectLevel">
-            <option value="0" selected="selected">교통최적+추천</option>
-            <option value="1">교통최적+무료우선</option>
-            <option value="2">교통최적+최소시간</option>
-            <option value="3">교통최적+초보</option>
-          </select>
-          <!-- <button id="btn_select" type="button"  class="btn btn-primary" >적용하기</button> -->
-          <!-- <button @click="findRouteTmap()">눌러주세용ㅇㅇㅇㅇ</button> -->
-          <b-button
-            :disabled="
-              Object.keys(startPointObject).length0 == 0 ||
-              Object.keys(endPointObject).length == 0
-            "
-            @click="findRouteTmap()"
-            >검색</b-button
-          >
-          <hr />
-          <div
-            v-for="(item, index) in stopOverList"
-            :key="index"
-            style="display: flex; justify-content: space-between"
-          >
-            <i class="fi fi-sr-Cross-circle"></i>
-            <span style="font: 25px">
-              {{ item.name }}
-            </span>
-            <img
-              src="../../static/icon/cross.png"
-              style="width: 20px; height: 20px"
-              @click="deleteStopOver(index)"
-            />
-          </div>
-          <hr />
-          <img
-            v-show="Object.keys(endPointObject).length != 0"
-            src="http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_e.png"
-            style="vertical-align: middle"
-          /><span>{{ endPointObject.name }}</span>
         </div>
       </div>
     </div>
@@ -132,9 +94,19 @@
 <script>
 // import {mapState} from 'vuex'
 import axios from 'axios'
-
+import { mapState } from 'vuex'
 
 export default {
+  head: {
+    script: [
+      {
+        src: 'https://kit.fontawesome.com/301da58328.js',
+      },
+    ],
+  },
+  computed: {
+    ...mapState('route', ['routeList']),
+  },
   data() {
     return {
       searchResult: [],
@@ -159,47 +131,13 @@ export default {
       marker_s: Object,
       marker_e: Object,
       // 경유지 test case
-      stopOverList: [
-        {
-          name: 'test1',
-          lat: 37.56626352138058,
-          lon: 126.98735015742581,
-        },
-        {
-          name: 'test2',
-          lat: 37.56568310756034,
-          lon: 127.00221495976581,
-        },
-        {
-          name: 'test3',
-          lat: 37.570369,
-          lon: 126.992153,
-        },
-        {
-          name: 'test4',
-          lat: 37.56335290252303,
-          lon: 127.00352387777271,
-        },
-        {
-          name: 'test5',
-          lat: 37.570721714117965,
-          lon: 127.00186090818215,
-        },
-        {
-          name: 'test6',
-          lat: 37.56515390827723,
-          lon: 126.99066536776698,
-        },
-      ],
+      stopOverList: [],
       stopOverObjectList: [],
 
       resultInfoArr: [],
       markerArr: [],
       labelArr: [],
       resultMarkerArr: [],
-
-      changedStart:Object,
-      changedEnd:Object,
     }
   },
   mounted() {
@@ -209,11 +147,11 @@ export default {
   methods: {
     // 경유지 찍기
     pickStopOver() {
-      for (let i = 0; i < this.stopOverList.length; i++) {
+      for (let i = 0; i < this.routeList.length; i++) {
         const mapInstance = new Tmapv2.Marker({
           position: new Tmapv2.LatLng(
-            this.stopOverList[i].lat,
-            this.stopOverList[i].lon
+            this.routeList[i].lat,
+            this.routeList[i].lng
           ),
           icon:
             'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_m_' +
@@ -269,6 +207,10 @@ export default {
         this.findEndPoint = true
       }
     },
+    resetBoxes() {
+      this.startPoint = ''
+      this.endPoint = ''
+    },
     // 지도 그리기
     makeMap() {
       let map
@@ -305,7 +247,7 @@ export default {
             reqCoordType: 'WGS84GEO', // 응답 좌표계
             count: 10, // 가져올 갯수
           },
-          success (response) {
+          success(response) {
             const resultpoisData = response.searchPoiInfo.pois.poi
 
             // 2. 기존 마커, 팝업 제거
@@ -381,7 +323,7 @@ export default {
             map.panToBounds(positionBounds) // 확장된 bounds의 중심으로 이동시키기
             map.zoomOut()
           },
-          error (request, status, error) {
+          error(request, status, error) {
             console.log(
               'code:' +
                 request.status +
@@ -417,7 +359,7 @@ export default {
           reqCoordType: 'WGS84GEO', // 응답 좌표계
           count: 10, // 가져올 갯수
         },
-        success (response) {
+        success(response) {
           const resultpoisData = response.searchPoiInfo.pois.poi
           // 2. 기존 마커, 팝업 제거
           if (markerArr.length > 0) {
@@ -446,9 +388,8 @@ export default {
             const pointCng = new Tmapv2.Point(noorLon, noorLat)
 
             // EPSG3857좌표계를 WGS84GEO좌표계로 변환
-            const projectionCng = new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(
-              pointCng
-            )
+            const projectionCng =
+              new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(pointCng)
 
             const lat = projectionCng._lat
             const lon = projectionCng._lng
@@ -486,7 +427,7 @@ export default {
           map.panToBounds(positionBounds) // 확장된 bounds의 중심으로 이동시키기
           map.zoomOut()
         },
-        error (request, status, error) {
+        error(request, status, error) {
           console.log(
             'code:' +
               request.status +
@@ -503,38 +444,29 @@ export default {
 
     // 길찾기
     async findRouteTmap() {
-
-      for(let i in this.markerArr){
-        this.markerArr[i].setMap(null);
+      for (let i in this.markerArr) {
+        this.markerArr[i].setMap(null)
       }
 
-      
-      if(this.resultInfoArr.length > 0){
-        this.changedStart.setMap(null);
-        this.changedEnd.setMap(null);
-      }
-      
-       this.changedStart=new Tmapv2.Marker({
-          position: new Tmapv2.LatLng(
-            this.startPointObject.lat,
-            this.startPointObject.lon
-          ),
-          icon:
-            'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_m_s.png',
-          iconSize: new Tmapv2.Size(24, 38),
-          map: this.map,
-        })
+      new Tmapv2.Marker({
+        position: new Tmapv2.LatLng(
+          this.startPointObject.lat,
+          this.startPointObject.lon
+        ),
+        icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_m_s.png',
+        iconSize: new Tmapv2.Size(24, 38),
+        map: this.map,
+      })
 
-        this.changedEnd=new Tmapv2.Marker({
-          position: new Tmapv2.LatLng(
-            this.endPointObject.lat,
-            this.endPointObject.lon
-          ),
-          icon:
-            'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_m_e.png',
-          iconSize: new Tmapv2.Size(24, 38),
-          map: this.map,
-        })
+      new Tmapv2.Marker({
+        position: new Tmapv2.LatLng(
+          this.endPointObject.lat,
+          this.endPointObject.lon
+        ),
+        icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_m_e.png',
+        iconSize: new Tmapv2.Size(24, 38),
+        map: this.map,
+      })
 
       const headers = {}
       headers.appKey = '	l7xx9b31967c4bc2496f8dde1d66747658c9'
@@ -567,40 +499,45 @@ export default {
       }
 
       dataInfo.viaPoints = viaPoints
-      let resultData = null;
-      let resultFeatures = null;
-      await axios.post('https://apis.openapi.sk.com/tmap/routes/routeSequential30?version=1&format=json',JSON.stringify(dataInfo),{headers})
-      .then(function(response){
-        resultData=response.data.properties
-        resultFeatures = response.data.features
-      })
+      let resultData = null
+      let resultFeatures = null
+      await axios
+        .post(
+          'https://apis.openapi.sk.com/tmap/routes/routeSequential30?version=1&format=json',
+          JSON.stringify(dataInfo),
+          { headers }
+        )
+        .then(function (response) {
+          resultData = response.data.properties
+          resultFeatures = response.data.features
+        })
 
-      console.log(JSON.stringify(resultData,null,2))
-      console.log(JSON.stringify(resultFeatures,null,2))
+      console.log(JSON.stringify(resultData, null, 2))
+      console.log(JSON.stringify(resultFeatures, null, 2))
 
       // 결과 출력
       const tDistance =
-        '총 거리 : ' +
-        (resultData.totalDistance / 1000).toFixed(1) +
-        'km,  '
-      const tTime =
-        '총 시간 : ' + (resultData.totalTime / 60).toFixed(0) + '분'
+        '총 거리 : ' + (resultData.totalDistance / 1000).toFixed(1) + 'km,  '
+      const tTime = '총 시간 : ' + (resultData.totalTime / 60).toFixed(0) + '분'
       $('#result').text(tDistance + tTime)
 
       // 기존의 길과 포인트들 전부 삭제
       if (this.resultInfoArr.length > 0) {
         for (let i in this.resultInfoArr) {
+          console.log('타입 : ')
+          console.log(typeof this.resultInfoArr[i])
+          console.log(this.resultInfoArr.length)
           this.resultInfoArr[i].setMap(null)
         }
-        this.resultInfoArr = []
       }
+      this.resultInfoArr = []
 
       if (this.resultMarkerArr.length > 0) {
         for (let i in this.resultMarkerArr) {
           this.resultMarkerArr[i].setMap(null)
         }
-        this.resultMarkerArr = []
       }
+      this.resultMarkerArr = []
 
       // 루트 그림 그리는 포인트를 담는 배열
       const drawInfoArr = []
@@ -608,7 +545,14 @@ export default {
       for (let i in resultFeatures) {
         const geometry = resultFeatures[i].geometry
         const properties = resultFeatures[i].properties
-        let polyline_;
+        let polyline_
+
+        this.resultInfoArr.push(this.startPointObject)
+        this.resultInfoArr.push(this.endPointObject)
+
+        for (const k in this.stopOverObjectList) {
+          this.resultInfoArr.push(this.stopOverObjectList[k])
+        }
 
         if (geometry.type == 'LineString') {
           for (const j in geometry.coordinates) {
@@ -662,14 +606,12 @@ export default {
             geometry.coordinates[1]
           )
           // 포인트 객체를 받아 좌표값으로 다시 변환
-          const convertPoint =
-            new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(latlon)
+          const convertPoint = new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(
+            latlon
+          )
 
           const marker_p = new Tmapv2.Marker({
-            position: new Tmapv2.LatLng(
-              convertPoint._lat,
-              convertPoint._lng
-            ),
+            position: new Tmapv2.LatLng(convertPoint._lat, convertPoint._lng),
             icon: markerImg,
             iconSize: size,
             map: this.map,
@@ -678,8 +620,6 @@ export default {
           this.resultMarkerArr.push(marker_p)
         }
       }
-
-
     },
     // 경유지 지우기
     deleteStopOver(index) {
@@ -701,6 +641,41 @@ export default {
 </script>
 
 <style>
+@font-face {
+  font-family: 'GmarketSansMedium';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
+    format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.result-item {
+  font-family: 'GmarketSansMedium';
+  margin-top: 15px;
+  margin-left: 10px;
+}
+
+.main-container {
+  display: flex;
+  justify-content: flex-start;
+  width: 100vw;
+}
+
+.search-result {
+  position: relative;
+  background: #fff;
+  border-radius: 15px;
+  width: 50%;
+  height: 98%;
+}
+
+.search-wrapper {
+  margin-top: 20px;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+}
+
 .test {
   background-color: black;
 }
@@ -708,15 +683,16 @@ export default {
 .findRoute {
   background-color: #eaf2f9;
   overflow: auto;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
 }
 
 .container {
   display: inline-flex;
   flex-direction: column;
-  width: 80%;
-  padding-left: 20%;
+  width: 1vw;
+  height: 100%;
+  /* padding-left: 20%; */
 }
 
 .banner {
@@ -787,8 +763,11 @@ export default {
 }
 
 .map {
-  height: 55%;
+  height: 50vh;
   margin-left: -10%;
+  display: flex;
+  width: 100vw;
+  justify-content: center;
 }
 
 .buttonBoxes {
@@ -827,5 +806,137 @@ export default {
 
 .fontSize {
   font-size: 2vh;
+}
+
+.search-container {
+  font-family: 'GmarketSansMedium';
+  width: 490px;
+  display: block;
+  margin: 0 auto;
+  height: 8vh;
+}
+
+input#searchKeyword {
+  margin: 0 auto;
+  width: 100%;
+  height: 45px;
+  padding: 0 20px;
+  font-size: 1rem;
+  border: 1px solid #d0cfce;
+  outline: none;
+}
+input#searchKeyword:focus {
+  border: 1px solid #008abf;
+  transition: 0.35s ease;
+  color: #008abf;
+}
+input#searchKeyword:focus::-webkit-input-placeholder {
+  transition: opacity 0.45s ease;
+  opacity: 0;
+}
+input#searchKeyword:focus::-moz-placeholder {
+  transition: opacity 0.45s ease;
+  opacity: 0;
+}
+input#searchKeyword:focus:-ms-placeholder {
+  transition: opacity 0.45s ease;
+  opacity: 0;
+}
+
+.search-icon {
+  cursor: pointer;
+  position: relative;
+  float: right;
+  width: 75px;
+  height: 75px;
+  top: -62px;
+  right: -15px;
+}
+
+@import url("https://fonts.googleapis.com/css?family=Inter:400'");
+html {
+  background-color: #1a1a1a;
+  overflow: hidden;
+}
+
+.middle {
+  width: 14%;
+  /* Made by */
+}
+.middle h1 {
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+}
+.middle input[type='radio'] {
+  display: none;
+}
+.middle input[type='radio']:checked + .box {
+  background-color: #007e90;
+}
+.middle input[type='radio']:checked + .box span {
+  color: white;
+  transform: translateY(70px);
+}
+.middle input[type='radio']:checked + .box span:before {
+  transform: translateY(0px);
+  opacity: 1;
+}
+.middle .box {
+  width: 200px;
+  height: 300px;
+  background-color: #fff;
+  transition: all 250ms ease;
+  will-change: transition;
+  display: block;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+}
+.middle .box:active {
+  transform: translateY(10px);
+}
+.middle .box span {
+  position: absolute;
+  transform: translate(0, 60px);
+  left: 0;
+  right: 0;
+  bottom: 185px;
+  transition: all 300ms ease;
+  font-size: 1.5em;
+  user-select: none;
+  color: #007e90;
+}
+.middle .box span:before {
+  font-size: 1.2em;
+  font-family: FontAwesome;
+  display: block;
+  transform: translateY(-80px);
+  opacity: 0;
+  transition: all 300ms ease-in-out;
+  font-weight: normal;
+  color: white;
+}
+.middle .front-end span:before {
+  content: '\f124';
+}
+.middle .back-end span:before {
+  content: '\f041';
+}
+.middle p {
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+}
+.middle p a {
+  text-decoration: underline;
+  font-weight: bold;
+  color: #fff;
+}
+.middle p span:after {
+  content: '\f021';
+  font-family: FontAwesome;
+  color: yellow;
 }
 </style>
