@@ -1,16 +1,13 @@
 package neonaduri.domain;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Getter
+@Getter @ToString
 @Table(name = "spot")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Spot {
@@ -26,7 +23,7 @@ public class Spot {
     @Column(name = "class_id")
     private Long classId;
 
-    @OneToMany(mappedBy = "spotId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "spotId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Review> reviews = new HashSet<>();
 
     @Column(name = "spot_name", nullable = false)
@@ -54,6 +51,10 @@ public class Spot {
         this.spotName = spotName;
         this.lat = lat;
         this.lng = lng;
+        this.spotImage = spotImage;
+    }
+
+    public void setSpotImage(String spotImage){
         this.spotImage = spotImage;
     }
 }

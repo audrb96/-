@@ -5,7 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Getter
+@Getter @ToString
 @Table(name = "region")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Region {

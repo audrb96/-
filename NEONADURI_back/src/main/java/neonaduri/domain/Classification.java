@@ -3,11 +3,12 @@ package neonaduri.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Entity
-@Getter
+@Getter @ToString
 @Table(name = "classification")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Classification {

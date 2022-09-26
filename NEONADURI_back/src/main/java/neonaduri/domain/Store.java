@@ -3,6 +3,7 @@ package neonaduri.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import neonaduri.domain.type.MainCategory;
 import neonaduri.domain.type.MiddleCategory;
 import neonaduri.domain.type.SubCategory;
@@ -10,7 +11,7 @@ import neonaduri.domain.type.SubCategory;
 import javax.persistence.*;
 
 @Entity
-@Getter
+@Getter @ToString
 @Table(name = "store")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Store {
