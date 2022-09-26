@@ -1,24 +1,23 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <div class="review">
-    <div></div>
-    <navbar-component></navbar-component>
+  <div class="review-page">
+    <nuxt-child />
   </div>
 </template>
 
 <script>
-import NavbarComponent from '~/components/NavbarComponent.vue'
-
-export default {
-  component: { NavbarComponent },
-}
+export default {}
 </script>
 
 <style scoped>
-.review {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: space-between;
+@font-face {
+  font-family: 'Cafe24Ssurround';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff')
+    format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+.review-page {
+  font-family: 'Cafe24Ssurround';
 }
 </style>

@@ -34,10 +34,10 @@ public class Spot {
     private String spotName;
 
     @Column(name = "lat", nullable = false)
-    private float lat;
+    private Float lat;
 
     @Column(name = "lng", nullable = false)
-    private float lng;
+    private Float lng;
 
     @Column(name = "tel")
     private String tel;

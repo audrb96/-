@@ -24,7 +24,6 @@ public interface RegionRepository extends JpaRepository<Region, Long> {
     @Query("select new neonaduri.dto.response.MyeonResponseDto(r.regionId,r.myeon) from Region r where r.sigungu = :sigungu and r.sido = :sido")
     List<MyeonResponseDto> findMyeonBySigungu(@Param("sido") String sido, @Param("sigungu") String sigungu);
 
-
     //시군구, 면을 넣어서 일치하는 정보를 추출
     Region findRegionBySidoAndSigunguAndMyeon(String sido, String sigungu, String myeon);
 

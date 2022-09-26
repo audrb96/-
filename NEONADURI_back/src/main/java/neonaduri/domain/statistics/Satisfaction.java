@@ -28,5 +28,5 @@ public class Satisfaction {
     private Float satScore;
 
     @Column(name = "sat_type", nullable = false)
-    private SatisfactionType satType;
+    private String satType;
 }

@@ -17,7 +17,7 @@ public class Selected {
     @Column(name = "sel_id")
     private Long selId;
 
-    @Column(name = "sel_reasion", nullable = false)
+    @Column(name = "sel_reason", nullable = false)
     private String selReason;
 
     @Column(name = "sel_year", nullable = false)

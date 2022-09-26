@@ -4,6 +4,9 @@ export const state = () => ({
   sidoList: [],
   sigunguList: [],
   myeonList: [],
+  sido: null,
+  sigungu: null,
+  myeon: null,
 })
 
 export const mutations = {
@@ -61,6 +64,7 @@ export const actions = {
     getSidos(
       ({ data }) => {
         commit('SET_SIDOLIST', data)
+        console.log(data)
       },
       (error) => {
         console.log(error)

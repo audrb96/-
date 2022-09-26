@@ -7,21 +7,25 @@
     >
       <img src="/logo/logo-white.png" alt="" class="bounce-in-top logo-image" />
     </div>
-
-    <div>
-      <img src="/banner/main-banner-white-long.jpg" class="banner" />
-    </div>
-    <div v-if="view" class="main-card-box">
-      <div class="cards" @click="moveSearch">
-        <div class="main-card">
-          <img src="/maincard/main-search.png" class="card-img" />
-          <img src="/maincard/main-move.jpg" alt="" class="card-img back" />
-        </div>
+    <div v-if="view" class="index-page">
+      <div>
+        <img src="/banner/main-banner-light.png" class="banner" />
       </div>
-      <div class="cards">
-        <div class="main-card">
-          <img src="/maincard/main-move.jpg" class="card-img back" />
-          <img src="/maincard/main-statistics.png" class="card-img" />
+      <div class="main-menu-container">
+        <img src="/banner/main-menu.png" class="main-menu" alt="" />
+      </div>
+      <div class="main-card-box">
+        <div class="cards" @click="moveSearch">
+          <div class="main-card">
+            <img src="/maincard/main-search.png" class="card-img" />
+            <img src="/maincard/main-move.jpg" alt="" class="card-img back" />
+          </div>
+        </div>
+        <div class="cards" @click="moveStatistics">
+          <div class="main-card">
+            <img src="/maincard/main-move.jpg" class="card-img back" />
+            <img src="/maincard/main-statistics.png" class="card-img" />
+          </div>
         </div>
       </div>
     </div>
@@ -48,11 +52,27 @@ export default {
     moveSearch() {
       this.$router.push('/search')
     },
+    moveStatistics() {
+      this.$router.push('/statistics')
+    },
   },
 }
 </script>
 
 <style scoped>
+.main-menu-container {
+  margin-top: 70px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.main-menu {
+  width: 50%;
+}
+.index-page {
+  height: 100vw;
+}
 .back {
   transform: rotateX(180deg);
 }
@@ -63,7 +83,7 @@ export default {
 }
 
 .main-card-box {
-  margin-top: 70px;
+  margin-top: 20px;
   padding-bottom: 20px;
   width: 100%;
   height: 100%;
