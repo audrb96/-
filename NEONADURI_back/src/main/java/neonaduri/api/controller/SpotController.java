@@ -9,6 +9,7 @@ import neonaduri.dto.response.SpotDetailsRes;
 import neonaduri.utils.S3Uploader;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,4 +34,11 @@ public class SpotController {
     public ResponseEntity<Page<SearchSpotDto>> showSpotsByCon(SearchSpotReq searchSpotReq, Pageable pageable) {
         return ResponseEntity.ok(spotService.searchSpotService(searchSpotReq,pageable));
     }
+
+    @PutMapping("/{spotId}/{spotContent}")
+    public ResponseEntity<HttpStatus> modifySpotContent(@PathVariable("spotId") Long spotId, @PathVariable("spotContent") String spotContent){
+        spotService.putSpotContent(spotId,spotContent);
+        return ResponseEntity.ok().build();
+    }
+
 }

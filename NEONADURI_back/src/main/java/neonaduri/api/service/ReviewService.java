@@ -7,6 +7,7 @@ import neonaduri.api.repository.TagRepository;
 import neonaduri.domain.Review;
 import neonaduri.domain.Tag;
 import neonaduri.dto.request.CreateReviewReq;
+import neonaduri.dto.request.ModifyReviewReq;
 import neonaduri.utils.S3Uploader;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,5 +45,26 @@ public class ReviewService {
 
         /* Review DB 반영 */
         reviewRepository.save(review);
+    }
+
+    public void putReview(ModifyReviewReq modifyReviewReq){
+
+        Review review = reviewRepository.findReviewById(modifyReviewReq.getReviewId());
+        Set<Tag> tags = Arrays.stream(modifyReviewReq.getTags().split(", "))
+                .map(Tag::new)
+                .collect(Collectors.toSet());
+
+        review.modifyReview(tags, modifyReviewReq.getReviewContent(), LocalDateTime.now(), modifyReviewReq.getReviewImage());
+
+    }
+
+
+
+    public boolean comparePass(Long reviewId, String password){
+        Review review = reviewRepository.findReviewById(reviewId);
+        if(passwordEncoder.matches(password,review.getReviewPassword())){
+            return true;
+        }
+        return false;
     }
 }

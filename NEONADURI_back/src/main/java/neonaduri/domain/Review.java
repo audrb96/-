@@ -5,11 +5,15 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import neonaduri.dto.request.CreateReviewReq;
+import neonaduri.dto.request.ModifyReviewReq;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -53,4 +57,13 @@ public class Review {
         this.reviewImage = reviewImage;
         this.reviewPassword = reviewPassword;
     }
+
+    public void modifyReview(Set<Tag> tags, String reviewContent, LocalDateTime reviewDate, String reviewImage){
+        this.tags = tags;
+        this.reviewContent = reviewContent;
+        this.reviewDate = reviewDate;
+        this.reviewImage = reviewImage;
+    }
+
+
 }
