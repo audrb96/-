@@ -1,20 +1,17 @@
 package neonaduri.api.controller;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import lombok.RequiredArgsConstructor;
 import neonaduri.api.service.SpotService;
 import neonaduri.dto.request.SearchSpotReq;
 import neonaduri.dto.response.SearchSpotDto;
 import neonaduri.dto.response.SpotDetailsRes;
-import neonaduri.utils.S3Uploader;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.net.URL;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
