@@ -35,7 +35,4 @@ public class Store {
 
     @Column(name = "sub_cat", nullable = false)
     private String subCategory;
-
-    @Column(name = "content", nullable = false)
-    private String content;
 }
