@@ -29,6 +29,12 @@ export default {
       {
         src: 'https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=l7xx9b31967c4bc2496f8dde1d66747658c9',
       },
+      {
+        src: 'https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js',
+      },
+      {
+        src: 'https://cdn.jsdelivr.net/npm/@yaireo/tagify',
+      },
     ],
   },
 
@@ -63,6 +69,12 @@ export default {
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: '/',
+    proxy: true,
+  },
+  proxy:{
+    '/data':{
+      target: 'https://echarts.apache.org/examples'
+    }
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

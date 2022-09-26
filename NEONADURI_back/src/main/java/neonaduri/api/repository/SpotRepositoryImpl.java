@@ -1,5 +1,6 @@
 package neonaduri.api.repository;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
@@ -15,6 +16,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,9 +29,10 @@ import static org.springframework.util.StringUtils.hasText;
 public class SpotRepositoryImpl implements SpotRepositoryCustom{
 
     private final JPAQueryFactory jpaQueryFactory;
-
-    public SpotRepositoryImpl(EntityManager em) {
+    private final AmazonS3Client amazonS3Client;
+    public SpotRepositoryImpl(EntityManager em,AmazonS3Client amazonS3Client) {
         this.jpaQueryFactory = new JPAQueryFactory(em);
+        this.amazonS3Client = amazonS3Client;
     }
 
     @Override
@@ -55,8 +58,6 @@ public class SpotRepositoryImpl implements SpotRepositoryCustom{
                 .limit(pageable.getPageSize())
                 .fetch();
 
-
-
         JPAQuery<SearchSpotDto> countQuery = jpaQueryFactory
                 .select(new QSearchSpotDto(
                         spot.spotId,
@@ -73,6 +74,8 @@ public class SpotRepositoryImpl implements SpotRepositoryCustom{
                         spotSigunguEq(searchSpotReq.getSigungu()),
                         spotSidoEq(searchSpotReq.getSido()),
                         spotClassIn(searchSpotReq.getClassification()));
+
+        content.stream().forEach((spot) -> spot.setSpotImage(amazonS3Client.getUrl("neonaduri",spot.getSpotImage()).toString()));
 
         return PageableExecutionUtils.getPage(content,pageable,countQuery::fetchCount);
     }
