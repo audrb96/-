@@ -17,8 +17,10 @@ import java.util.List;
 public class StatisticsController {
 
     private final StatisticsService statisticsService;
+
     
     /** A05: 만족도에 따른 통계 자료 가져온다. */
+
     @GetMapping("/sat")
     public ResponseEntity<?> getSatisfaction() {
         return new ResponseEntity<>(statisticsService.findSatisfaction(),HttpStatus.OK);
