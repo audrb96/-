@@ -15,7 +15,7 @@ public class SatisfactionRes {
 
     private final Float satScore;
 
-    private final SatisfactionType satType;
+    private final String satType;
 
     public SatisfactionRes(Satisfaction satisfaction) {
         this.satId = satisfaction.getSatId();
@@ -24,6 +24,4 @@ public class SatisfactionRes {
         this.satScore = satisfaction.getSatScore();
         this.satType = satisfaction.getSatType();
     }
-
-
 }
