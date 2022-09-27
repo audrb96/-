@@ -1,5 +1,6 @@
 package neonaduri.api.controller;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import lombok.RequiredArgsConstructor;
 import neonaduri.api.service.SpotService;
 import neonaduri.dto.request.SearchSpotReq;
@@ -17,6 +18,12 @@ import org.springframework.web.bind.annotation.*;
 public class SpotController {
 
     private final SpotService spotService;
+    private final AmazonS3Client amazonS3Client;
+
+    @GetMapping("/test")
+    public String test() {
+        return amazonS3Client.getUrl("neonaduri","spot/GE1.jfif").toString();
+    }
 
     /** A01: 특정 장소에 작성된 설명과 리뷰 출력 API */
     @GetMapping("/{spotId}")
