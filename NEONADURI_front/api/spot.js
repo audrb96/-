@@ -13,10 +13,7 @@ async function getSpot(spotId, success, fail) {
 }
 
 async function modifyContent(spotId, content, success, fail) {
-  await api
-    .put(`/api/spot/${spotId}`, JSON.stringify(content))
-    .then(success)
-    .catch(fail)
+  await api.put(`/api/spot/${spotId}/${content}`).then(success).catch(fail)
 }
 
 async function search(query, success, fail) {

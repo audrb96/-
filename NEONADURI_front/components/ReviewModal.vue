@@ -84,7 +84,9 @@ import Tags from '@/components/TagifyInput'
 export default {
   name: 'CheckModal',
   components: { Tags },
-
+  props: {
+    value: Boolean,
+  },
   setup(props) {
     const myRef = ref(null)
 
@@ -118,6 +120,7 @@ export default {
   },
   data() {
     return {
+      pvalue: this.value,
       preview: '/banner/no-image.png',
       // preview: '/banner/no-image1.png',
       // preview: '/banner/no-image2.png',
@@ -128,7 +131,7 @@ export default {
         reviewImage: null,
         reviewContent: null,
         reviewPassword: null,
-        tag: '',
+        tags: '',
       },
     }
   },
@@ -140,6 +143,7 @@ export default {
   methods: {
     ...mapActions('review', ['registReview']),
     CloseCheck() {
+      this.$emit('updateStatus', !this.pvalue)
       const modal = document.getElementsByClassName('check-modal')[0]
       const span = document.getElementsByClassName('check-modal-head-close')[0]
       span.onclick = function () {
@@ -186,7 +190,8 @@ export default {
       }
     },
     writeReview() {
-      this.review.tag = ''
+      const reviewData = new FormData()
+      this.review.tags = ''
       const arr = this.$el
         .querySelector(`#tag-input`)
         .value.split('"},{"value":"')
@@ -196,13 +201,20 @@ export default {
         arr[arr.length - 1].length - 3
       )
       arr.forEach((element) => {
-        this.review.tag += element
-        this.review.tag += ','
+        const word = element.replace('#', '')
+        this.review.tags += word
+        this.review.tags += ', '
       })
-      this.review.tag = this.review.tag.substr(0, this.review.tag.length - 1)
-      this.review.spotId = this.spot.spotId
-      console.log(this.review)
-      this.registReview(this.review)
+      this.review.tags = this.review.tags.substr(0, this.review.tags.length - 2)
+      reviewData.append('spotId', this.spot.spotId)
+      reviewData.append('reviewImage', this.review.reviewImage)
+      reviewData.append('reviewContent', this.review.reviewContent)
+      reviewData.append('reviewPassword', this.review.reviewPassword)
+      reviewData.append('tags', this.review.tags)
+      // for (const p of reviewData.entries()) {
+      //   console.log(p[0] + ',' + p[1])
+      // }
+      this.registReview(reviewData)
     },
   },
 }

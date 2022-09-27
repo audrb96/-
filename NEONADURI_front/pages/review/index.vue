@@ -23,6 +23,7 @@
           <div class="content-modify" style="display: none">
             <div class="content-modify-sub">
               <textarea :value="spot.spotContent" class="modify-input" />
+              <!-- <textarea value="임시 내용" class="modify-input" /> -->
               <button class="modify-button" @click="contentSave">저장</button>
             </div>
           </div>
@@ -35,7 +36,16 @@
         <div class="spot-review-top">
           <div class="spot-review-title">후기</div>
           <div>
-            <review-modal v-if="toggle" />
+            <review-modal
+              v-if="inputToggle"
+              :value="inputToggle"
+              @updateStatus="changeInput"
+            />
+            <modify-modal
+              v-if="modifyToggle"
+              :value="modifyToggle"
+              @updateStatus="changeModify"
+            />
             <v-icon large style="cursor: pointer" @click="MoveCheck"
               >mdi-plus-box</v-icon
             >
@@ -56,9 +66,10 @@
           <div class="slick-wrapper home-insta">
             <div class="slider card-slider slick-slider">
               <div
-                v-for="(review, idx) in reviews"
+                v-for="(review, idx) in reviewList"
                 :key="idx"
                 class="card-slider-item"
+                @mouseleave="focusOut(idx)"
               >
                 <img
                   :src="
@@ -72,7 +83,7 @@
                   <p>
                     {{ review.date }}<br /><strong>{{ idx + 1 }}</strong
                     ><br />
-                    {{ review.content }}
+                    {{ review.reviewContent }}
                   </p>
                 </div>
                 <div class="password-main">
@@ -82,10 +93,9 @@
                         class="search-container"
                         tabindex="1"
                         @mouseover="focusOn(idx)"
-                        @mouseout="focusOut(idx)"
                       >
                         <input
-                          :class="`password-input password-input` + idx"
+                          :class="`password-input password-input` + review.id"
                           placeholder="password"
                           type="password"
                         />
@@ -94,7 +104,7 @@
                           <v-icon
                             :id="'pencil-icon' + idx"
                             style="display: none"
-                            @click="enterPass(idx)"
+                            @click="enterPass(review)"
                             >mdi-lead-pencil</v-icon
                           >
                         </a>
@@ -113,83 +123,100 @@
 </template>
 <script>
 import { mapActions, mapState, mapMutations } from 'vuex'
+import ModifyModal from '~/components/ModifyModal.vue'
 
 export default {
+  components: { ModifyModal },
   data() {
     return {
-      toggle: false,
-      reviews: [
-        {
-          image: '',
-          content: '임시로 넣은 데이터1입니다.',
-          date: '2022-09-15',
-          isPass: true,
-          isEnter: false,
-        },
-        {
-          image: '',
-          content: '임시로 넣은 데이터2입니다.',
-          date: '2022-09-15',
-          isPass: true,
-          isEnter: false,
-        },
-        {
-          image: '',
-          content: '임시로 넣은 데이터3입니다.',
-          date: '2022-09-15',
-          isPass: true,
-          isEnter: false,
-        },
-        {
-          image: '',
-          content: '임시로 넣은 데이터4입니다.',
-          date: '2022-09-15',
-          isPass: true,
-          isEnter: false,
-        },
-        {
-          image: '',
-          content: '임시로 넣은 데이터5입니다.',
-          date: '2022-09-15',
-          isPass: true,
-          isEnter: false,
-        },
-        {
-          image: '',
-          content: '임시로 넣은 데이터6입니다.',
-          date: '2022-09-15',
-          isPass: true,
-          isEnter: false,
-        },
-        {
-          image: '',
-          content: '임시로 넣은 데이터7입니다.',
-          date: '2022-09-15',
-          isPass: true,
-          isEnter: false,
-        },
-        {
-          image: '',
-          content: '임시로 넣은 데이터8입니다.',
-          date: '2022-09-15',
-          isPass: true,
-          isEnter: false,
-        },
-        {
-          image: '',
-          content: '임시로 넣은 데이터9입니다.',
-          date: '2022-09-15',
-          isPass: true,
-          isEnter: false,
-        },
-        {
-          image: '',
-          content: '임시로 넣은 데이터10입니다.',
-          date: '2022-09-15',
-          isPass: true,
-          isEnter: false,
-        },
-      ],
+      inputToggle: false,
+      modifyToggle: false,
+      // reviews: [
+      //   {
+      //     id: 1,
+      //     image: '',
+      //     content: '임시로 넣은 데이터1입니다.',
+      //     date: '2022-09-15',
+      //     isPass: true,
+      //     isEnter: false,
+      //   },
+      //   {
+      //     id: 2,
+
+      //     image: '',
+      //     content: '임시로 넣은 데이터2입니다.',
+      //     date: '2022-09-15',
+      //     isPass: true,
+      //     isEnter: false,
+      //   },
+      //   {
+      //     id: 3,
+
+      //     image: '',
+      //     content: '임시로 넣은 데이터3입니다.',
+      //     date: '2022-09-15',
+      //     isPass: true,
+      //     isEnter: false,
+      //   },
+      //   {
+      //     id: 4,
+
+      //     image: '',
+      //     content: '임시로 넣은 데이터4입니다.',
+      //     date: '2022-09-15',
+      //     isPass: true,
+      //     isEnter: false,
+      //   },
+      //   {
+      //     id: 5,
+
+      //     image: '',
+      //     content: '임시로 넣은 데이터5입니다.',
+      //     date: '2022-09-15',
+      //     isPass: true,
+      //     isEnter: false,
+      //   },
+      //   {
+      //     id: 6,
+      //     image: '',
+      //     content: '임시로 넣은 데이터6입니다.',
+      //     date: '2022-09-15',
+      //     isPass: true,
+      //     isEnter: false,
+      //   },
+      //   {
+      //     id: 7,
+      //     image: '',
+      //     content: '임시로 넣은 데이터7입니다.',
+      //     date: '2022-09-15',
+      //     isPass: true,
+      //     isEnter: false,
+      //   },
+      //   {
+      //     id: 8,
+      //     image: '',
+      //     content: '임시로 넣은 데이터8입니다.',
+      //     date: '2022-09-15',
+      //     isPass: true,
+      //     isEnter: false,
+      //   },
+      //   {
+      //     id: 9,
+      //     image: '',
+      //     content: '임시로 넣은 데이터9입니다.',
+      //     date: '2022-09-15',
+      //     isPass: true,
+      //     isEnter: false,
+      //   },
+      //   {
+      //     id: 10,
+      //     image: '',
+      //     content: '임시로 넣은 데이터10입니다.',
+      //     date: '2022-09-15',
+      //     isPass: true,
+      //     isEnter: false,
+      //   },
+      // ],
     }
   },
   computed: {
@@ -198,17 +225,25 @@ export default {
   },
   created() {
     // 불러올 때 review_id도 불러옴
-    // this.callReviews(this.spot.id)
+    this.callReviews(this.spot.spotId)
+    console.log(this.reviewList)
   },
   mounted() {},
   methods: {
     ...mapMutations('route', ['ADD_ROUTE']),
-    ...mapActions('review', ['callReviews', 'changeContent', 'confirmPass']),
+    ...mapMutations('review', ['CLEAR_REVIEW', 'SET_REVIEW']),
+    ...mapActions('spot', ['changeContent']),
+    ...mapActions('review', ['callReviews', 'confirmPass']),
     MoveCheck() {
-      this.toggle = !this.toggle
-      // const modal = document.getElementsByClassName('check-modal')[0]
-      // modal.style.display = 'block'
+      this.inputToggle = !this.inputToggle
     },
+    changeInput() {
+      this.inputToggle = !this.inputToggle
+    },
+    changeModify() {
+      this.modifyToggle = !this.modifyToggle
+    },
+
     focusOn(idx) {
       this.$el.querySelector(`#key-icon${idx}`).style.display = 'none'
       this.$el.querySelector(`#pencil-icon${idx}`).style.display = 'block'
@@ -230,15 +265,22 @@ export default {
       this.changeContent(this.$el.querySelector(`.modify-input`).value)
     },
     // review 불러오면 idx -> review_id로 바꾸기
-    enterPass(idx) {
+    enterPass(review) {
       // review_id와 review_password받아오기
       const info = {
-        id: idx,
-        password: this.$el.querySelector(`.password-input${idx}`).value,
+        id: review.reviewId,
+        password: this.$el.querySelector(`.password-input${review.id}`).value,
+        // password: this.$el.querySelector(`.password-input0`).value,
       }
       console.log(info)
-      this.confirmPass(info)
-      alert(info.id + '번째 비밀번호 : ' + info.password)
+      // if (this.confirmPass(info)) {
+      //   this.modifyToggle = !this.modifyToggle
+      // this.CLEAR_REVIEW();
+      // this.SET_REVIEW(review)
+      // }
+      if (info.password === '1234') {
+        this.modifyToggle = !this.modifyToggle
+      }
     },
     addSpot() {
       const route = {
