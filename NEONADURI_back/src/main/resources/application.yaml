@@ -34,3 +34,5 @@ cloud:
     credentials:
       accessKey: AKIAVVSSTXJTQ36A5EH5
       secretKey: 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
+    stack:
+      auto: false
