@@ -1,20 +1,15 @@
 package neonaduri.api.controller;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import lombok.RequiredArgsConstructor;
 import neonaduri.api.service.SpotService;
 import neonaduri.dto.request.SearchSpotReq;
 import neonaduri.dto.response.SearchSpotDto;
 import neonaduri.dto.response.SpotDetailsRes;
-import neonaduri.utils.S3Uploader;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.net.URL;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,4 +28,11 @@ public class SpotController {
     public ResponseEntity<Page<SearchSpotDto>> showSpotsByCon(SearchSpotReq searchSpotReq, Pageable pageable) {
         return ResponseEntity.ok(spotService.searchSpotService(searchSpotReq,pageable));
     }
+
+    @PutMapping("/{spotId}/{spotContent}")
+    public ResponseEntity<HttpStatus> modifySpotContent(@PathVariable("spotId") Long spotId, @PathVariable("spotContent") String spotContent){
+        spotService.putSpotContent(spotId,spotContent);
+        return ResponseEntity.ok().build();
+    }
+
 }

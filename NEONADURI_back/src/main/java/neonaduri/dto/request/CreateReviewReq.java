@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import neonaduri.domain.Tag;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -18,7 +19,7 @@ public class CreateReviewReq {
     private final Long spotId;
 
     @NotNull
-    private final String reviewImage;
+    private final MultipartFile reviewImage;
 
     @NotNull
     private final String reviewContent;
@@ -30,7 +31,7 @@ public class CreateReviewReq {
 
     @Builder
     public CreateReviewReq(
-            Long spotId, String reviewImage, String reviewContent, String reviewPassword, String tags) {
+            Long spotId, MultipartFile reviewImage, String reviewContent, String reviewPassword, String tags) {
         this.spotId = spotId;
         this.reviewImage = reviewImage;
         this.reviewContent = reviewContent;

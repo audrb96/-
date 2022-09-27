@@ -52,4 +52,11 @@ public class SpotService {
     public Page<SearchSpotDto> searchSpotService(SearchSpotReq searchSpotReq, Pageable pageable) {
         return spotRepository.searchByCon(searchSpotReq,pageable);
     }
+
+    public void putSpotContent(Long spotId, String spotContent){
+        Spot spot = spotRepository.findSpotBySpotId(spotId);
+        spot.changeSpotContent(spotContent);
+    }
+
+
 }
