@@ -14,21 +14,17 @@
         v-if="statisticsClass === 'sightNum'"
         id="myMap"
         style="width: 800px; height: 800px"
-      > 
-      <button @click="mapopen()">얹어보자 </button>
+      >
+        <button @click="mapopen()">얹어보자</button>
       </div>
       <div v-if="statisticsClass === 'object'" id="wordCloud">
         <!-- <div id="mainCloud"></div> -->
         <vue-word-cloud
           style="height: 40vh; width: 80vw"
           :words="words"
-          :color="
-            ([, selPercent]) =>
-              colorPick(selPercent)
-          "
+          :color="([, selPercent]) => colorPick(selPercent)"
           font-family="GmarketSansMedium"
-          font-size-ratio	= 5
-
+          font-size-ratio="5"
         />
       </div>
       <div v-if="statisticsClass === 'satisfaction'">
@@ -42,13 +38,11 @@
 import * as echarts from 'echarts' // echart를 전역으로 불러옴
 // import eword from 'echarts-wordcloud'
 import VueWordCloud from 'vuewordcloud'
-import axios from 'axios';
+import axios from 'axios'
 // import krJson from '~/static/map/koreaMap.json'
 import { mapActions, mapState } from 'vuex'
 
-
 export default {
-
   name: '',
   components: {
     [VueWordCloud.name]: VueWordCloud,
@@ -62,11 +56,11 @@ export default {
       ],
       statisticsClass: 'sightNum',
       fontSizeMapper: (word) => Math.log2(word.value) * 5,
-      priceList:[],
-      foodList:[],
-      natureList:[],
+      priceList: [],
+      foodList: [],
+      natureList: [],
 
-      colorIndex:4,
+      colorIndex: 4,
 
       // ////
       // province: undefined,
@@ -77,14 +71,9 @@ export default {
     }
   },
   computed: {
-    ...mapState('statistics', [
-      'words',
-      'regionList',
-      'satList',
-    ]),
+    ...mapState('statistics', ['words', 'regionList', 'satList']),
   },
   created() {
-
     this.callSatList()
     this.callSelList()
     this.callVisitedList()
@@ -92,8 +81,8 @@ export default {
   },
   mounted() {
     // Initialize the echarts instance based on the prepared dom
-    this.mapopen();
-    this.statisticsChange();
+    this.mapopen()
+    this.statisticsChange()
     // this.visitedWords();
     // this.drawMap();
   },
@@ -105,14 +94,15 @@ export default {
     ]),
     statisticsChange() {
       // data 분류
-      this.satList.forEach((element)=>{
-          if(element.satType ==='0'){
-            this.priceList.push(element.satScore);
-          }else if(element.satType==='1'){
-            this.foodList.push(element.satScore);
-          }if(element.satType==='2'){
-            this.natureList.push(element.satScore);
-          }
+      this.satList.forEach((element) => {
+        if (element.satType === '0') {
+          this.priceList.push(element.satScore)
+        } else if (element.satType === '1') {
+          this.foodList.push(element.satScore)
+        }
+        if (element.satType === '2') {
+          this.natureList.push(element.satScore)
+        }
       })
 
       if (this.statisticsClass === 'satisfaction') {
@@ -186,50 +176,47 @@ export default {
         myChart.setOption(option)
       }
     },
-    async mapopen(){
+    async mapopen() {
+      const chartDom2 = document.getElementById('myMap')
+      const myChart2 = echarts.init(chartDom2)
+      let geoJson
 
-      const chartDom2 = document.getElementById('myMap');
-      const myChart2 = echarts.init(chartDom2);
-      let geoJson;
+      myChart2.showLoading()
 
-
-      myChart2.showLoading();
-
-      await axios.get('/data/asset/geo/USA.json').then( function (usaJson) {
-        geoJson=usaJson;
-      });
-      console.log(JSON.stringify(geoJson,null,2))
-      myChart2.hideLoading();
+      await axios.get('/data/asset/geo/USA.json').then(function (usaJson) {
+        geoJson = usaJson.data
+      })
+      console.log(geoJson)
+      myChart2.hideLoading()
       echarts.registerMap('USA', geoJson, {
         Alaska: {
           left: -131,
           top: 25,
-          width: 15
+          width: 15,
         },
         Hawaii: {
           left: -110,
           top: 28,
-          width: 5
+          width: 5,
         },
         'Puerto Rico': {
           left: -76,
           top: 26,
-          width: 2
-        }
-      });
-
+          width: 2,
+        },
+      })
 
       const option = {
         title: {
           text: 'USA Population Estimates (2012)',
           subtext: 'Data from www.census.gov',
           sublink: 'http://www.census.gov/popest/data/datasets.html',
-          left: 'right'
+          left: 'right',
         },
         tooltip: {
           trigger: 'item',
           showDelay: 0,
-          transitionDuration: 0.2
+          transitionDuration: 0.2,
         },
         visualMap: {
           left: 'right',
@@ -247,11 +234,11 @@ export default {
               '#fdae61',
               '#f46d43',
               '#d73027',
-              '#a50026'
-            ]
+              '#a50026',
+            ],
           },
           text: ['High', 'Low'],
-          calculable: true
+          calculable: true,
         },
         toolbox: {
           show: true,
@@ -260,19 +247,19 @@ export default {
           feature: {
             dataView: { readOnly: false },
             restore: {},
-            saveAsImage: {}
-          }
+            saveAsImage: {},
+          },
         },
         series: [
           {
-            name: '테스트',
+            name: 'USA PopEstimates',
             type: 'map',
-            roam: 'false',
+            roam: true,
             map: 'USA',
             emphasis: {
               label: {
-                show: false
-              }
+                show: true,
+              },
             },
             data: [
               { name: 'Alabama', value: 4822023 },
@@ -326,39 +313,33 @@ export default {
               { name: 'West Virginia', value: 1855413 },
               { name: 'Wisconsin', value: 5726398 },
               { name: 'Wyoming', value: 576412 },
-              { name: 'Puerto Rico', value: 3667084 }
-            ]
-          
-          }
-        ]
-      };
+              { name: 'Puerto Rico', value: 3667084 },
+            ],
+          },
+        ],
+      }
 
       // const confirmMap=echarts.getMap('USA').geoJSON;
 
-      console.log('테스트')
       // console.log(JSON.stringify(confirmMap,null,2))
-      myChart2.setOption(option);
+      myChart2.setOption(option)
 
-      console.log(JSON.stringify(myChart2.getOption(),null,2))
-
-      option && myChart2.setOption(option);
-
+      // console.log(JSON.stringify(myChart2.getOption(),null,2))
     },
-    colorPick(selPercent){
+    colorPick(selPercent) {
       // const colorArr=["#F24D98","#813B7C","#59D044","#F3A002","#F2F44D"]
       // const colorArr=["#3F6F76","#69B7CE","#C65840","#F4CE4B","#62496F"]
       // const colorArr=["#4368B6","#78A153","#DEC23B","#E4930A","#C53211"]
       // const colorArr=["#C1395E","#AEC17B","#F0CA50","#E07B42","#89A7C2"]
       // const colorArr=["#21344F","#8AAD05","#E2CE1B","#DF5D22","#E17976"]
-      const colorArr=["#C13E43","#376EA5","#565654","#F9D502","#E7CA6B"]
-      if(selPercent>10){
-        this.colorIndex=(this.colorIndex+1)%5;
-      }else{
-        this.colorIndex=(this.colorIndex+1)%5;
+      const colorArr = ['#C13E43', '#376EA5', '#565654', '#F9D502', '#E7CA6B']
+      if (selPercent > 10) {
+        this.colorIndex = (this.colorIndex + 1) % 5
+      } else {
+        this.colorIndex = (this.colorIndex + 1) % 5
       }
       return colorArr[this.colorIndex]
     },
-
   },
 }
 </script>
@@ -371,7 +352,6 @@ export default {
   font-weight: normal;
   font-style: normal;
 }
-
 
 .banner-container {
   display: flex;
@@ -432,7 +412,6 @@ export default {
   background-size: 100% 130%;
   width: 100%;
   height: 70vh;
-
 }
 
 .map {
@@ -454,7 +433,7 @@ export default {
   left: 20vh;
 }
 .map-wrapper {
-  position:relative;
+  position: relative;
   text-align: center;
 }
 .background {
@@ -462,11 +441,10 @@ export default {
   fill: transparent;
   pointer-events: all;
 }
-  
+
 .map-layer {
   fill: #08304b;
   stroke: #021019;
   stroke-width: 1px;
 }
-
 </style>

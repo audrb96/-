@@ -38,14 +38,16 @@
             </v-btn>
           </div>
 
-          <div v-if="keywordToggle">
+          <div
+            :class="{ 'go-bottom': keywordToggle, 'go-top': !keywordToggle }"
+          >
             <div class="search-bar">
               <h1 style="font-family: 'SEBANG_Gothic_Bold'">검색 :</h1>
               <input v-model="searchWord" type="text" class="search-input" />
             </div>
             <hr />
           </div>
-          <div v-if="regionToggle">
+          <div :class="{ 'go-bottom': regionToggle, 'go-top': !regionToggle }">
             <div class="search-bar">
               <h1 style="font-family: 'SEBANG_Gothic_Bold'">지역 :</h1>
               <b-form-select
@@ -400,6 +402,18 @@ export default {
   font-weight: normal;
   font-style: normal;
 }
+
+.go-bottom {
+  max-height: 500px;
+  transition: max-height 0.6s ease-in;
+}
+
+.go-top {
+  max-height: 0;
+  transition: max-height 0.6s ease-out;
+  overflow: hidden;
+}
+
 .mdClass-title {
   width: 8%;
   font-size: 30px;
