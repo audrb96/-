@@ -13,8 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,15 +27,16 @@ public class SpotService {
 
         /* 1. fetch join을 통해 review까지 가져와서 */
         Spot spot = spotRepository.findDetailsSpotBySpotId(spotId);
-
         /* 2. review 목록에서 리뷰 내용고 태그를 꺼내와서 ReviewTagsRes로 정리해준다. */
         List<ReviewTagsRes> reviews = spot.getReviews().stream()
                 .map(review -> ReviewTagsRes.builder()
+                        .reviewId(review.getReviewId())
                         .reviewContent(review.getReviewContent())
                         .reviewImage(review.getReviewImage())
-                        .tagContents(review.getTags().toString())
+                        .tagContents(review.getTags().stream()
+                                .map(Tag::getTagContent)
+                                .collect(Collectors.toList()))
                         .build())
-                .sorted()
                 .collect(Collectors.toList());
 
         /* 3. 마지막으로 SpotDetailsRes로 반환시켜준다. */
