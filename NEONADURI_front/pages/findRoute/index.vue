@@ -190,11 +190,11 @@ export default {
       ],
       searchResult: [],
 
-      startPointObject: {},
+      startPointObject: null,
       startIndex: -1,
       startMarker: Object,
 
-      endPointObject: {},
+      endPointObject: null,
       endIndex: -1,
       endMarker: Object,
       // 페이지 보이기
@@ -289,10 +289,6 @@ export default {
         this.findStartPoint = false
         this.findEndPoint = true
       }
-    },
-    resetBoxes() {
-      this.startPoint = ''
-      this.endPoint = ''
     },
     // 지도 그리기
     makeMap() {

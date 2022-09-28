@@ -12,7 +12,12 @@ spring:
     url: jdbc:mysql://neonaduri-db.c2k2xt6qu8x0.ap-northeast-2.rds.amazonaws.com:3306/neonaduri?serverTimezone=Asia/Seoul
     username: NEONADURI_admin
     password: ssafyA702
-
+    hikari:
+      idle-timeout: 10000
+      connection-timeout: 10000
+      validation-timeout: 10000
+      max-lifetime: 580000
+      
   jpa:
     hibernate:
       ddl-auto: update
