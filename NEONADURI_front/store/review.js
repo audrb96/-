@@ -32,7 +32,7 @@ export const actions = {
     getReviews(
       spotId,
       ({ data }) => {
-        commit('SET_REVIEWLIST', data)
+        commit('SET_REVIEWLIST', data.reviewContainsTags)
       },
       (error) => {
         console.log(error)

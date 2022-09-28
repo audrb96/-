@@ -1,6 +1,6 @@
 <template>
   <div class="findRoute">
-    <div class="container">
+    <div class="route-container">
       <!-- <div class="banner">
               <img src="/banner/banner.png" style="width: 50%;">
           </div> -->
@@ -27,6 +27,16 @@
             @click="findTarget(e)"
           />
         </div>
+        <b-button variant="danger" class="findRoute-btn" @click="findRouteTmap"
+          >경로 찾기</b-button
+        >
+        <b-form-select
+          id="selectLevel"
+          v-model="option"
+          :options="options"
+          class="route-select mr-5"
+        >
+        </b-form-select>
       </div>
       <div class="main-container">
         <div class="middle">
@@ -44,7 +54,7 @@
             </div>
           </label>
         </div>
-        <div class="search-result">
+        <div class="search-results">
           <div v-show="findStartPoint">
             <div
               v-for="(item, index) in searchResult"
@@ -84,8 +94,41 @@
             </div>
           </div>
         </div>
+        <div class="route-list">
+          <div class="mt-2">
+            <img
+              v-show="Object.keys(startPointObject).length != 0"
+              class="ml-3 mr-3"
+              src="http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_s.png"
+              style="vertical-align: middle"
+            /><span>{{ startPointObject.name }}</span>
+          </div>
+          <div
+            v-for="(item, index) in stopOverList"
+            :key="index"
+            style="display: flex; align-items: center"
+            class="mt-3"
+          >
+            <v-icon class="ml-2 mr-2">mdi-numeric-{{ index + 1 }}-box</v-icon>
+            <span style="font: 25px" class="mr-3">
+              {{ item.name }}
+            </span>
+            <v-icon class="mb-1" @click="deleteStopOver(index)"
+              >mdi-delete</v-icon
+            >
+          </div>
+          <div class="mt-3">
+            <img
+              v-show="Object.keys(endPointObject).length != 0"
+              class="ml-3 mr-3"
+              src="http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_e.png"
+              style="vertical-align: middle"
+            /><span>{{ endPointObject.name }}</span>
+          </div>
+        </div>
       </div>
     </div>
+    <navbar-component></navbar-component>
   </div>
 </template>
 
@@ -94,13 +137,16 @@
 <script>
 // import {mapState} from 'vuex'
 import axios from 'axios'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 
 export default {
   head: {
     script: [
       {
         src: 'https://kit.fontawesome.com/301da58328.js',
+      },
+      {
+        src: 'https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=l7xx9b31967c4bc2496f8dde1d66747658c9',
       },
     ],
   },
@@ -109,6 +155,25 @@ export default {
   },
   data() {
     return {
+      option: '0',
+      options: [
+        {
+          value: '0',
+          text: '교통최적 + 추천',
+        },
+        {
+          value: '1',
+          text: '교통최적 + 무료우선',
+        },
+        {
+          value: '2',
+          text: '교통최적 + 최소시간',
+        },
+        {
+          value: '3',
+          text: '교통최적 + 초보',
+        },
+      ],
       searchResult: [],
 
       startPointObject: {},
@@ -144,7 +209,11 @@ export default {
     this.makeMap()
     this.pickStopOver()
   },
+  created() {
+    this.stopOverList = JSON.parse(JSON.stringify(this.routeList))
+  },
   methods: {
+    ...mapMutations('route', ['DELETE_ROUTE']),
     // 경유지 찍기
     pickStopOver() {
       for (let i = 0; i < this.routeList.length; i++) {
@@ -155,7 +224,7 @@ export default {
           ),
           icon:
             'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_m_' +
-            i +
+            (i + 1) +
             '.png',
           iconSize: new Tmapv2.Size(24, 38),
           map: this.map,
@@ -401,10 +470,7 @@ export default {
             marker = new Tmapv2.Marker({
               position: markerPosition, // 마커가 표시될 좌표
               // icon : "http://tmapapi.sktelecom.com/upload/tmap/marker/pin_b_m_a.png",
-              icon:
-                'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_b_m_' +
-                k +
-                '.png', // 아이콘 등록
+              icon: `http://tmapapi.sktelecom.com/upload/tmap/marker/pin_b_m_${k}.png`, // 아이콘 등록
               iconSize: new Tmapv2.Size(24, 38), // 아이콘 크기 설정
               title: name, // 마커 타이틀
               map, // 마커가 등록될 지도 객체
@@ -469,7 +535,7 @@ export default {
       })
 
       const headers = {}
-      headers.appKey = '	l7xx9b31967c4bc2496f8dde1d66747658c9'
+      headers.appKey = 'l7xx9b31967c4bc2496f8dde1d66747658c9'
       headers['Content-Type'] = 'application/json'
 
       const dataInfo = {
@@ -482,7 +548,7 @@ export default {
         endName: '도착',
         endX: `${this.endPointObject.lon}`,
         endY: `${this.endPointObject.lat}`,
-        searchOption: '0',
+        searchOption: this.option,
       }
 
       const viaPoints = []
@@ -491,7 +557,7 @@ export default {
         const via = {
           viaPointId: 'test' + i,
           viaPointName: `${this.stopOverList[i].name}`,
-          viaX: `${this.stopOverList[i].lon}`,
+          viaX: `${this.stopOverList[i].lng}`,
           viaY: `${this.stopOverList[i].lat}`,
         }
 
@@ -499,6 +565,7 @@ export default {
       }
 
       dataInfo.viaPoints = viaPoints
+      console.log(dataInfo)
       let resultData = null
       let resultFeatures = null
       await axios
@@ -547,8 +614,10 @@ export default {
         const properties = resultFeatures[i].properties
         let polyline_
 
-        this.resultInfoArr.push(this.startPointObject)
-        this.resultInfoArr.push(this.endPointObject)
+        this.startPointObjcet === {} &&
+          this.resultInfoArr.push(this.startPointObject)
+        this.endPointObjcet === {} &&
+          this.resultInfoArr.push(this.endPointObject)
 
         for (const k in this.stopOverObjectList) {
           this.resultInfoArr.push(this.stopOverObjectList[k])
@@ -623,6 +692,7 @@ export default {
     },
     // 경유지 지우기
     deleteStopOver(index) {
+      this.DELETE_ROUTE(index)
       // 먼저 그려져있던 포인트들 전부 지우기
       for (const i in this.stopOverObjectList) {
         this.stopOverObjectList[i].setMap(null)
@@ -649,6 +719,12 @@ export default {
   font-style: normal;
 }
 
+.findRoute-btn {
+  color: white;
+  height: 60%;
+  margin-right: 2%;
+}
+
 .result-item {
   font-family: 'GmarketSansMedium';
   margin-top: 15px;
@@ -661,7 +737,7 @@ export default {
   width: 100vw;
 }
 
-.search-result {
+.search-results {
   position: relative;
   background: #fff;
   border-radius: 15px;
@@ -687,7 +763,7 @@ export default {
   height: 100vh;
 }
 
-.container {
+.route-container {
   display: inline-flex;
   flex-direction: column;
   width: 1vw;
@@ -854,14 +930,9 @@ input#searchKeyword:focus:-ms-placeholder {
 }
 
 @import url("https://fonts.googleapis.com/css?family=Inter:400'");
-html {
-  background-color: #1a1a1a;
-  overflow: hidden;
-}
 
 .middle {
   width: 14%;
-  /* Made by */
 }
 .middle h1 {
   font-family: 'Inter', sans-serif;
@@ -938,5 +1009,18 @@ html {
   content: '\f021';
   font-family: FontAwesome;
   color: yellow;
+}
+
+.route-list {
+  margin-left: 1vw;
+  background-color: #fff;
+  width: 32%;
+  height: 98%;
+  border-radius: 15px;
+  font-family: 'GmarketSansMedium';
+}
+
+.route-select {
+  width: 13%;
 }
 </style>

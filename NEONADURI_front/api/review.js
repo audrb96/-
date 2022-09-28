@@ -1,16 +1,14 @@
-import { apiInstance } from '.'
+import { apiInstance, multiInstance } from '.'
 
 const api = apiInstance()
+const multiApi = multiInstance()
 
 async function getReviews(spotId, success, fail) {
-  await api.get(`/api/spot/${spotId}/review`).then(success).catch(fail)
+  await api.get(`/api/spot/${spotId}`).then(success).catch(fail)
 }
 
 async function writeReview(review, success, fail) {
-  await api
-    .post(`/api/review`, JSON.stringify(review))
-    .then(success)
-    .catch(fail)
+  await multiApi.post(`/api/review`, review).then(success).catch(fail)
 }
 
 async function modifyReview(review, success, fail) {

@@ -45,6 +45,7 @@
         </div>
       </div>
     </div>
+    <navbar-component></navbar-component>
   </div>
 </template>
 

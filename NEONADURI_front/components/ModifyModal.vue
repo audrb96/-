@@ -20,23 +20,36 @@
           <img :src="preview" class="check-modal-body-img" alt="없음" />
           <div class="check-modal-body-input">
             <input
+              v-model="review.reviewContent"
               class="check-modal-body-input-line"
               type="text"
               placeholder="한 줄 입력하세요"
             />
-            <input
+            <div class="check-modal-body-input-tag">
+              <!-- <tagify-component></tagify-component> -->
+              <Tags
+                id="tag-input"
+                ref="myRef"
+                :settings="tagifyStuff.tagifySettings"
+                :suggestions="tagifyStuff.suggestions"
+                :value="tagifyStuff.value"
+                :on-change="onTagsChange"
+              />
+            </div>
+            <!-- <input
+              v-model="review.tag"
               class="check-modal-body-input-tag"
               type="text"
               placeholder="태그를 입력하세요"
-            />
+            /> -->
           </div>
         </div>
         <div class="check-model-body-bot">
           <div class="check-model-body-bot-left">
             <v-file-input
-              v-model="file"
+              v-model="review.reviewImage"
               :placeholder="fileInfo?.name"
-              @change="previewFile(file)"
+              @change="previewFile(review.reviewImage)"
             />
             <!-- <v-file-input
               v-model="file"
@@ -45,10 +58,6 @@
             /> -->
           </div>
           <div class="check-model-body-bot-right">
-            <div class="check-model-body-bot-pass">
-              <div>비밀번호 설정 :</div>
-              <input type="password" placeholder="비밀번호" />
-            </div>
             <button @click="writeReview">입력 완료</button>
           </div>
         </div>
@@ -59,10 +68,50 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { ref, reactive } from 'vue'
+// import Tags from "@yaireo/tagify/dist/tagify.vue"
+import Tags from '@/components/TagifyInput'
+
 export default {
   name: 'CheckModal',
+  components: { Tags },
+  props: {
+    value: Boolean,
+  },
+  setup(props) {
+    const myRef = ref(null)
+
+    const tagifyStuff = reactive({
+      value: '',
+
+      tagifySettings: {
+        whitelist: [],
+        dropdown: {
+          enabled: 0,
+        },
+        callbacks: {
+          add(e) {
+            // console.log("tag added:", e.detail);
+          },
+        },
+      },
+
+      suggestions: [],
+    })
+
+    function onTagsChange(e) {
+      //   console.log('tags changed:', e.target.value)
+    }
+
+    return {
+      onTagsChange,
+      myRef,
+      tagifyStuff,
+    }
+  },
   data() {
     return {
+      pvalue: this.value,
       preview: '/banner/no-image.png',
       // preview: '/banner/no-image1.png',
       // preview: '/banner/no-image2.png',
@@ -73,17 +122,19 @@ export default {
         reviewImage: null,
         reviewContent: null,
         reviewPassword: null,
-        tag: null,
+        tag: '',
       },
-      // 임시로 넣기
     }
   },
   computed: {
+    ...mapState('spot', ['spot']),
     ...mapState('review', []),
   },
+
   methods: {
-    ...mapActions('review', ['changeReview']),
+    ...mapActions('review', ['registReview']),
     CloseCheck() {
+      this.$emit('updateStatus', !this.pvalue)
       const modal = document.getElementsByClassName('check-modal')[0]
       const span = document.getElementsByClassName('check-modal-head-close')[0]
       span.onclick = function () {
@@ -130,7 +181,23 @@ export default {
       }
     },
     writeReview() {
-      this.changeReview(this.review)
+      this.review.tag = ''
+      const arr = this.$el
+        .querySelector(`#tag-input`)
+        .value.split('"},{"value":"')
+      arr[0] = arr[0].substr(11, arr[0].length - 11)
+      arr[arr.length - 1] = arr[arr.length - 1].substr(
+        0,
+        arr[arr.length - 1].length - 3
+      )
+      arr.forEach((element) => {
+        this.review.tag += element
+        this.review.tag += ','
+      })
+      this.review.tag = this.review.tag.substr(0, this.review.tag.length - 1)
+      this.review.spotId = this.spot.spotId
+      console.log(this.review)
+      this.registReview(this.review)
     },
   },
 }
@@ -141,7 +208,7 @@ input {
   padding-left: 3%;
 }
 .check-modal {
-  display: none;
+  /* display: none; */
   position: fixed;
   z-index: 1;
   left: 0;
@@ -244,8 +311,7 @@ input {
   margin: 0px 4%;
 }
 .check-model-body-bot-right {
-  display: flex;
-  justify-content: space-between;
+  margin-left: 25%;
 }
 .check-model-body-bot-pass {
   width: 60%;
@@ -260,11 +326,15 @@ input {
   border-radius: 10px;
   margin: auto 0 5% 5%;
 }
+.password-input[type='password'] {
+  font-family: '맑은고딕', '돋움';
+}
+.password-input[type='password']::placeholder {
+  font-family: 'Cafe24Ssurround';
+}
 .check-model-body-bot-right > button {
   width: 150px;
   height: 75px;
-  margin-left: 100px;
-  margin-right: 20px;
   padding: 0 5px;
   background-color: #a1d6e9;
   border-radius: 10px;

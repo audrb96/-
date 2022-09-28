@@ -29,32 +29,46 @@
       </div>
       <div class="option-content fadeInUp">
         <div class="option">
-          <div class="search-bar">
-            <h1 style="font-family: 'SEBANG_Gothic_Bold'">검색 :</h1>
-            <input v-model="searchWord" type="text" class="search-input" />
+          <div class="detail-option-btns mb-3">
+            <v-btn color="#d0bfff" @click="toggleKeyword">
+              검색 키워드 설정
+            </v-btn>
+            <v-btn color="#d0bfff" class="ml-2" @click="toggleRegion">
+              지역 설정
+            </v-btn>
           </div>
-          <hr />
-          <div class="search-bar">
-            <h1 style="font-family: 'SEBANG_Gothic_Bold'">지역 :</h1>
-            <b-form-select
-              v-model="sido"
-              :options="sidoSelect"
-              class="selected"
-              @change="sidoChange"
-            ></b-form-select>
-            <b-form-select
-              v-model="sigungu"
-              :options="sigunguSelect"
-              class="selected"
-              @change="myeonChange"
-            ></b-form-select>
-            <b-form-select
-              v-model="myeon"
-              :options="myeonSelect"
-              class="selected"
-            ></b-form-select>
+
+          <div v-if="keywordToggle">
+            <div class="search-bar">
+              <h1 style="font-family: 'SEBANG_Gothic_Bold'">검색 :</h1>
+              <input v-model="searchWord" type="text" class="search-input" />
+            </div>
+            <hr />
           </div>
-          <hr />
+          <div v-if="regionToggle">
+            <div class="search-bar">
+              <h1 style="font-family: 'SEBANG_Gothic_Bold'">지역 :</h1>
+              <b-form-select
+                v-model="sido"
+                :options="sidoSelect"
+                class="selected"
+                @change="sidoChange"
+              ></b-form-select>
+              <b-form-select
+                v-model="sigungu"
+                :options="sigunguSelect"
+                class="selected"
+                @change="myeonChange"
+              ></b-form-select>
+              <b-form-select
+                v-model="myeon"
+                :options="myeonSelect"
+                class="selected"
+              ></b-form-select>
+            </div>
+            <hr />
+          </div>
+
           <div>
             <div
               v-for="(option, index) in options"
@@ -97,6 +111,7 @@ import { mapGetters, mapActions, mapMutations, mapState } from 'vuex'
 
 export default {
   name: 'SearchPage',
+  scrollToTop: true,
   data() {
     return {
       query: '',
@@ -277,6 +292,8 @@ export default {
       myeon: 'all',
       searchWord: '',
       selected: [],
+      keywordToggle: false,
+      regionToggle: false,
     }
   },
   computed: {
@@ -352,11 +369,22 @@ export default {
       this.SET_QUERY(this.query)
       this.$router.push('search/searchResult')
     },
+    toggleKeyword() {
+      this.keywordToggle = !this.keywordToggle
+    },
+    toggleRegion() {
+      this.regionToggle = !this.regionToggle
+    },
   },
 }
 </script>
 
 <style scoped>
+.detail-option-btns {
+  display: flex;
+  justify-content: flex-end;
+}
+
 @font-face {
   font-family: 'GmarketSansMedium';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')

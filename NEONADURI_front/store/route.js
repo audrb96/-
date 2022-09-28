@@ -7,9 +7,7 @@ export const mutations = {
     state.routeList.push(route)
   },
   DELETE_ROUTE(state, idx) {
-    state.routeList = state.routeList.filters((route) => {
-      return route.idx !== idx
-    })
+    state.routeList.splice(idx, 1)
   },
 }
 
