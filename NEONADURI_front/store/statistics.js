@@ -14,18 +14,6 @@ export const state = () =>(
 
 export const mutations = {
     SET_SAT(state, payload){
-        console.log("mutataion : "+payload)
-        // payload.forEach(element => {
-        //   console.log(element.satType)
-
-        //   if(element.satType ==='0'){
-        //     state.priceList.push(payload.satScore);
-        //   }else if(element.satType==='1'){
-        //     state.foodList.push(payload.satScore);
-        //   }if(element.satType==='2'){
-        //     state.natureList.push(payload.satScore);
-        //   }
-        // });
         state.satList=payload
     },
     SET_SEL(state, payload){
@@ -39,14 +27,8 @@ export const mutations = {
       })
     },
     SET_VISITED(state, payload){
-      payload.forEach(element=>{
-        const arr=[];
-
-        arr.push(element.visitedRegion);
-        arr.push(element.visitedNum);
-
-        state.regionList.push(arr);
-      })
+      // state.words=payload
+      state.regionList=payload
     }
 }
 
