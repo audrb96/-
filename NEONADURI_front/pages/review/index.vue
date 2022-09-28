@@ -2,7 +2,7 @@
   <div class="review">
     <div class="main-content">
       <div class="review-top">
-        <img class="review-logo" src="/logo/review-logo.png" alt="" />
+        <img class="review-logo" src="/logo/review-detail-logo.png" alt="" />
       </div>
       <div class="spot-main slide-in-right">
         <div class="spot-left">
@@ -73,18 +73,28 @@
               >
                 <img
                   :src="
-                    'https://cdn.shopify.com/s/files/1/2979/3338/files/' +
-                    (idx + 1) +
-                    '.jpg'
+                    'https://neonaduri.s3.ap-northeast-2.amazonaws.com/' +
+                    review.reviewImage
                   "
                   alt="이미지"
                 />
                 <div class="insta-post">
-                  <p>
-                    {{ review.date }}<br /><strong>{{ idx + 1 }}</strong
-                    ><br />
-                    {{ review.reviewContent }}
-                  </p>
+                  <div>
+                    <strong>
+                      <div style="font-size: 20px">
+                        {{ review.reviewContent }}
+                      </div>
+                    </strong>
+                    <br />
+                    <div class="tag-box">
+                      <div
+                        v-for="(tag, i) in reviewList[idx].tagContents"
+                        :key="i"
+                      >
+                        #{{ tag }}
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div class="password-main">
                   <div class="password-content">
@@ -95,7 +105,9 @@
                         @mouseover="focusOn(idx)"
                       >
                         <input
-                          :class="`password-input password-input` + review.id"
+                          :class="
+                            `password-input password-input` + review.reviewId
+                          "
                           placeholder="password"
                           type="password"
                         />
@@ -104,7 +116,7 @@
                           <v-icon
                             :id="'pencil-icon' + idx"
                             style="display: none"
-                            @click="enterPass(review)"
+                            @click="enterPass(review, idx)"
                             >mdi-lead-pencil</v-icon
                           >
                         </a>
@@ -131,92 +143,6 @@ export default {
     return {
       inputToggle: false,
       modifyToggle: false,
-      // reviews: [
-      //   {
-      //     id: 1,
-      //     image: '',
-      //     content: '임시로 넣은 데이터1입니다.',
-      //     date: '2022-09-15',
-      //     isPass: true,
-      //     isEnter: false,
-      //   },
-      //   {
-      //     id: 2,
-
-      //     image: '',
-      //     content: '임시로 넣은 데이터2입니다.',
-      //     date: '2022-09-15',
-      //     isPass: true,
-      //     isEnter: false,
-      //   },
-      //   {
-      //     id: 3,
-
-      //     image: '',
-      //     content: '임시로 넣은 데이터3입니다.',
-      //     date: '2022-09-15',
-      //     isPass: true,
-      //     isEnter: false,
-      //   },
-      //   {
-      //     id: 4,
-
-      //     image: '',
-      //     content: '임시로 넣은 데이터4입니다.',
-      //     date: '2022-09-15',
-      //     isPass: true,
-      //     isEnter: false,
-      //   },
-      //   {
-      //     id: 5,
-
-      //     image: '',
-      //     content: '임시로 넣은 데이터5입니다.',
-      //     date: '2022-09-15',
-      //     isPass: true,
-      //     isEnter: false,
-      //   },
-      //   {
-      //     id: 6,
-      //     image: '',
-      //     content: '임시로 넣은 데이터6입니다.',
-      //     date: '2022-09-15',
-      //     isPass: true,
-      //     isEnter: false,
-      //   },
-      //   {
-      //     id: 7,
-      //     image: '',
-      //     content: '임시로 넣은 데이터7입니다.',
-      //     date: '2022-09-15',
-      //     isPass: true,
-      //     isEnter: false,
-      //   },
-      //   {
-      //     id: 8,
-      //     image: '',
-      //     content: '임시로 넣은 데이터8입니다.',
-      //     date: '2022-09-15',
-      //     isPass: true,
-      //     isEnter: false,
-      //   },
-      //   {
-      //     id: 9,
-      //     image: '',
-      //     content: '임시로 넣은 데이터9입니다.',
-      //     date: '2022-09-15',
-      //     isPass: true,
-      //     isEnter: false,
-      //   },
-      //   {
-      //     id: 10,
-      //     image: '',
-      //     content: '임시로 넣은 데이터10입니다.',
-      //     date: '2022-09-15',
-      //     isPass: true,
-      //     isEnter: false,
-      //   },
-      // ],
     }
   },
   computed: {
@@ -265,21 +191,22 @@ export default {
       this.changeContent(this.$el.querySelector(`.modify-input`).value)
     },
     // review 불러오면 idx -> review_id로 바꾸기
-    enterPass(review) {
+    async enterPass(review, index) {
       // review_id와 review_password받아오기
       const info = {
+        idx: index,
         id: review.reviewId,
-        password: this.$el.querySelector(`.password-input${review.id}`).value,
-        // password: this.$el.querySelector(`.password-input0`).value,
+        password: await this.$el.querySelector(
+          `.password-input${review.reviewId}`
+        ).value,
       }
       console.log(info)
-      // if (this.confirmPass(info)) {
-      //   this.modifyToggle = !this.modifyToggle
-      // this.CLEAR_REVIEW();
-      // this.SET_REVIEW(review)
-      // }
-      if (info.password === '1234') {
+      await this.confirmPass(info)
+      console.log('11111111111111')
+      if (this.reviewList[index].pass) {
         this.modifyToggle = !this.modifyToggle
+        this.CLEAR_REVIEW()
+        this.SET_REVIEW(review)
       }
     },
     addSpot() {
@@ -353,7 +280,7 @@ export default {
   justify-content: center;
 }
 .review-logo {
-  width: 30%;
+  width: 40%;
   margin: 0 auto;
 }
 .spot-main {
@@ -526,6 +453,14 @@ export default {
 .search-container:focus-within .password-input {
   display: inline-block;
   width: 7em;
+}
+
+.insta-post {
+  max-height: 150px;
+}
+
+.tag-box {
+  display: flex;
 }
 
 .password-input {

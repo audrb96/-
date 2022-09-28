@@ -3,6 +3,7 @@ import {
   modifyReview,
   writeReview,
   comparePass,
+  getReview,
 } from '~/api/review'
 
 export const state = () => ({
@@ -17,6 +18,15 @@ export const mutations = {
   SET_REVIEW(state, review) {
     state.review = review
   },
+  CHANGE_PASS(state, object) {
+    console.log(object)
+    state.reviewList[object.idx].pass = object.pass
+  },
+  // SET_TAG(state, reviewList){
+  //   state.reviewList.forEach((element)=>{
+  //     element.tagContents = element.tagContents
+  //   })
+  // },
   CLEAR_REVIEWLIST(state) {
     state.reviewList = []
   },
@@ -32,6 +42,9 @@ export const actions = {
     getReviews(
       spotId,
       ({ data }) => {
+        data.reviewContainsTags.forEach((element) => {
+          element.pass = false
+        })
         commit('SET_REVIEWLIST', data.reviewContainsTags)
       },
       (error) => {
@@ -62,11 +75,25 @@ export const actions = {
       }
     )
   },
-  confirmPass({ commit }, info) {
-    comparePass(
+  callReview({ commit }, reviewId) {
+    getReview(
+      reviewId,
+      ({ data }) => {
+        console.log(data)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  },
+  async confirmPass({ commit }, info) {
+    await comparePass(
       info.id,
       info.password,
       ({ data }) => {
+        const object = { pass: data, idx: info.idx }
+        commit('CHANGE_PASS', object)
+
         console.log(data)
       },
       (error) => {

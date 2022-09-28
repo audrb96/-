@@ -4,7 +4,7 @@
       <div class="check-modal-head">
         <div></div>
         <div class="check-modal-head-check">
-          <img class="head-logo" src="/logo/create-review-logo.png" alt="" />
+          <img class="head-logo" src="/logo/modify-review-logo.png" alt="" />
         </div>
         <div class="check-modal-head-close" @click="CloseCheck">
           <v-icon large>mdi-close-circle-outline</v-icon>
@@ -12,15 +12,24 @@
       </div>
       <div class="check-modal-body">
         <div class="check-model-body-top">
-          <!-- <img
+          <img
+            v-if="flag"
+            :src="preview"
             class="check-modal-body-img"
-            src="/review/deoksugung.jpg"
+            alt="없음"
+          />
+          <img
+            v-else
+            :src="
+              'https://neonaduri.s3.ap-northeast-2.amazonaws.com/' +
+              review.reviewImage
+            "
             alt=""
-          /> -->
-          <img :src="preview" class="check-modal-body-img" alt="없음" />
+            class="head-logo"
+          />
           <div class="check-modal-body-input">
             <input
-              v-model="review.reviewContent"
+              v-model="reviewForm.reviewContent"
               class="check-modal-body-input-line"
               type="text"
               placeholder="한 줄 입력하세요"
@@ -36,26 +45,19 @@
                 :on-change="onTagsChange"
               />
             </div>
-            <!-- <input
-              v-model="review.tag"
-              class="check-modal-body-input-tag"
-              type="text"
-              placeholder="태그를 입력하세요"
-            /> -->
           </div>
         </div>
         <div class="check-model-body-bot">
           <div class="check-model-body-bot-left">
             <v-file-input
-              v-model="review.reviewImage"
+              v-if="flag"
+              v-model="reviewForm.reviewImage"
               :placeholder="fileInfo?.name"
-              @change="previewFile(review.reviewImage)"
+              @change="previewFile(reviewForm.reviewImage)"
             />
-            <!-- <v-file-input
-              v-model="file"
-              text="fileInfo?.name"
-              @change="previewFile(file)"
-            /> -->
+            <div v-else class="modify-box">
+              <button class="modify-img" @click="modifyImg">사진 수정</button>
+            </div>
           </div>
           <div class="check-model-body-bot-right">
             <button @click="writeReview">입력 완료</button>
@@ -117,22 +119,39 @@ export default {
       // preview: '/banner/no-image2.png',
       fileInfo: null,
       // 리뷰 post
-      review: {
+      reviewForm: {
         spotId: null,
         reviewImage: null,
         reviewContent: null,
         reviewPassword: null,
-        tag: '',
+        tags: '',
       },
+      flag: false,
     }
   },
+
   computed: {
     ...mapState('spot', ['spot']),
-    ...mapState('review', []),
+    ...mapState('review', ['review']),
+  },
+  created() {
+    const promise = new Promise((resolve, reject) => {
+      resolve()
+    })
+    promise.then(async () => {
+      await this.callReview(this.review.reviewId)
+      // this.reviewForm.reviewImage = this.review.reviewImage
+      this.reviewForm.reviewContent = this.review.reviewContent
+      const arr = []
+      this.review.tagContents.forEach((element) => {
+        arr.push(element)
+      })
+      this.tagifyStuff.value = arr
+    })
   },
 
   methods: {
-    ...mapActions('review', ['registReview']),
+    ...mapActions('review', ['changeReview', 'callReview']),
     CloseCheck() {
       this.$emit('updateStatus', !this.pvalue)
       const modal = document.getElementsByClassName('check-modal')[0]
@@ -181,7 +200,8 @@ export default {
       }
     },
     writeReview() {
-      this.review.tag = ''
+      const reviewData = new FormData()
+      this.reviewForm.tags = ''
       const arr = this.$el
         .querySelector(`#tag-input`)
         .value.split('"},{"value":"')
@@ -191,13 +211,26 @@ export default {
         arr[arr.length - 1].length - 3
       )
       arr.forEach((element) => {
-        this.review.tag += element
-        this.review.tag += ','
+        const word = element.replace('#', '')
+        if (word !== '') {
+          this.reviewForm.tags += word
+          this.reviewForm.tags += ', '
+        }
       })
-      this.review.tag = this.review.tag.substr(0, this.review.tag.length - 1)
-      this.review.spotId = this.spot.spotId
-      console.log(this.review)
-      this.registReview(this.review)
+      this.reviewForm.tags = this.reviewForm.tags.substr(
+        0,
+        this.reviewForm.tags.length - 2
+      )
+      reviewData.append('spotId', this.spot.spotId)
+      reviewData.append('reviewImage', this.reviewForm.reviewImage)
+      reviewData.append('reviewContent', this.reviewForm.reviewContent)
+      reviewData.append('reviewPassword', this.reviewForm.reviewPassword)
+      reviewData.append('tags', this.reviewForm.tags)
+      this.registReview(reviewData)
+      this.$emit('updateStatus', !this.pvalue)
+    },
+    modifyImg() {
+      this.flag = true
     },
   },
 }
@@ -295,6 +328,19 @@ input {
   display: flex;
   flex-direction: column;
 }
+.modify-box {
+  display: flex;
+  justify-content: flex-end;
+}
+.modify-img {
+  margin-top: 20px;
+  font-size: 15px;
+  background-color: #a1d6e9;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+}
+
 .check-modal-body-input > input {
   margin-bottom: 10%;
   border: 2px solid #a1d6e9;
