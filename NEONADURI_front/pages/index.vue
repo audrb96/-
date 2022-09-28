@@ -28,6 +28,7 @@
           </div>
         </div>
       </div>
+      <footer-component></footer-component>
     </div>
   </div>
 </template>
@@ -84,6 +85,7 @@ export default {
 
 .main-card-box {
   margin-top: 20px;
+  margin-bottom: 10vh;
   padding-bottom: 20px;
   width: 100%;
   height: 100%;

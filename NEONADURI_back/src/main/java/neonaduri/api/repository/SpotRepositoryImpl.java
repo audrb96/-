@@ -2,6 +2,7 @@ package neonaduri.api.repository;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -12,6 +13,7 @@ import neonaduri.dto.response.QSearchSpotDto;
 import neonaduri.dto.response.SearchSpotDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
@@ -59,14 +61,16 @@ public class SpotRepositoryImpl implements SpotRepositoryCustom{
                 .fetch();
 
         JPAQuery<SearchSpotDto> countQuery = jpaQueryFactory
-                .select(new QSearchSpotDto(
-                        spot.spotId,
-                        spot.spotImage,
-                        spot.spotContent,
-                        spot.spotName,
-                        spot.lat,
-                        spot.lng,
-                        spot.tel))
+                .select(
+                        Projections.constructor(SearchSpotDto.class,
+                                spot.spotId,
+                                spot.spotImage, //spot/AC01
+                                spot.spotContent,
+                                spot.spotName,
+                                spot.lat,
+                                spot.lng,
+                                spot.tel
+                        ))
                 .from(spot, region, classification)
                 .where(spotRegionJoin(),
                         spotClassJoin(),
@@ -74,8 +78,6 @@ public class SpotRepositoryImpl implements SpotRepositoryCustom{
                         spotSigunguEq(searchSpotReq.getSigungu()),
                         spotSidoEq(searchSpotReq.getSido()),
                         spotClassIn(searchSpotReq.getClassification()));
-
-        content.stream().forEach((spot) -> spot.setSpotImage(amazonS3Client.getUrl("neonaduri",spot.getSpotImage()).toString()));
 
         return PageableExecutionUtils.getPage(content,pageable,countQuery::fetchCount);
     }

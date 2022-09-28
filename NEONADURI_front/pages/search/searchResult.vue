@@ -17,7 +17,14 @@
               @click="slideClick(spot)"
             >
               <div>
-                <img :src="spot.spotImage" class="spot-image" alt="spotImage" />
+                <img
+                  :src="
+                    'https://neonaduri.s3.ap-northeast-2.amazonaws.com/' +
+                    spot.spotImage
+                  "
+                  class="spot-image"
+                  alt="spotImage"
+                />
               </div>
               <div class="ml-4">
                 <div class="spot-name">{{ spot.spotName }}</div>
@@ -45,6 +52,7 @@
         </div>
       </div>
     </div>
+    <navbar-component></navbar-component>
   </div>
 </template>
 
