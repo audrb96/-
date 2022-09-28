@@ -26,7 +26,7 @@ public class Review {
     private Spot spotId;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "reivew_tag",
+    @JoinTable(name = "review_tag",
             joinColumns = @JoinColumn(name = "review_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )

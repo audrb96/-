@@ -23,7 +23,7 @@ public class Spot {
     @Column(name = "class_id")
     private Long classId;
 
-    @OneToMany(mappedBy = "spotId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "spotId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Review> reviews = new HashSet<>();
 
     @Column(name = "spot_name", nullable = false)

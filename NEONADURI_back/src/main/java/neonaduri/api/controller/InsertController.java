@@ -40,9 +40,8 @@ public class InsertController {
 
     private final AmazonS3Client amazonS3Client;
 
-    private final S3Utils s3Utils;
+    private static int a = 1;
 
-    private static int a = 114;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -52,7 +51,7 @@ public class InsertController {
     @Transactional
     public String insert() throws IOException {
         InsertData insertData = new InsertData(
-                "C:\\Users\\SSAFY\\Desktop\\neonaduri\\S07P22A702\\NEONADURI_back\\src\\main\\resources\\data"
+                "C:\\Users\\82108\\Desktop\\neonaduri\\S07P22A702\\NEONADURI_back\\src\\main\\resources\\data.txt"
         );
         String[] line = null;
         System.out.println("start");
@@ -94,9 +93,9 @@ public class InsertController {
                     cls.getClassId(),
                     reg.getRegionId(),
                     line[0],
-                    Float.parseFloat(line[8]),
                     Float.parseFloat(line[9]),
-                    "EA" + (a++)
+                    Float.parseFloat(line[8]),
+                    "null"
             );
             return spotRepository.saveAndFlush(spot);
         }
@@ -106,7 +105,7 @@ public class InsertController {
     public void getStore(Spot spot, String[] line) {
         /* Store 저장 */
         Store store = new Store(spot, line[1], line[2], line[3], line[4]);
-        log.info(String.valueOf(a));
+        log.info(String.valueOf(spot.getSpotName()));
         storeRepository.save(store);
     }
 
@@ -116,7 +115,7 @@ public class InsertController {
 
     @Transactional
     public Spot setSpotImg(String[] line, Spot spot) throws IOException {
-        if (spot.getSpotImage() == null) {
+        if (spot.getSpotImage().equals("null")) {
             String url = "https://www.google.com/search?q=" + line[0] + "&tbm=isch";
             Connection cn = Jsoup.connect(url);
             Document doc = cn.get();
