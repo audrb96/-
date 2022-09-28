@@ -510,7 +510,6 @@ export default {
 }
 .search {
   font-family: 'GmarketSansMedium';
-  height: 65vw;
 }
 .btn-group {
   width: 90%;
@@ -569,6 +568,7 @@ export default {
   border-radius: 15px;
   background-color: white;
   width: 90%;
+  margin-bottom: 5vh;
 }
 .recommand-left {
   display: flex;

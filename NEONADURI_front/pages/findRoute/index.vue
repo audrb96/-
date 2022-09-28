@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="search-wrapper">
-        <div class="search-container">
+        <div class="route-search-container">
           <input
             id="searchKeyword"
             type="text"
@@ -54,7 +54,7 @@
             </div>
           </label>
         </div>
-        <div class="search-results">
+        <div class="route-search-results">
           <div v-show="findStartPoint">
             <div
               v-for="(item, index) in searchResult"
@@ -128,6 +128,20 @@
         </div>
       </div>
     </div>
+    <b-modal id="route-modal" size="md" hide-footer>
+      <template #modal-title> 안내 </template>
+      <div class="d-block text-center">
+        <div>시작점과 도착점, 경유지를 지정해주세요!</div>
+      </div>
+      <div style="display: flex; justify-content: flex-end">
+        <b-button
+          class="mt-3"
+          variant="danger"
+          @click="$bvModal.hide('route-modal')"
+          >닫기</b-button
+        >
+      </div>
+    </b-modal>
     <navbar-component></navbar-component>
   </div>
 </template>
@@ -510,6 +524,15 @@ export default {
 
     // 길찾기
     async findRouteTmap() {
+      if (
+        this.startPointObject === undefined ||
+        this.endPointObject === undefined ||
+        this.stopOverList.length === 0
+      ) {
+        this.$bvModal.show('route-modal')
+        return
+      }
+
       for (let i in this.markerArr) {
         this.markerArr[i].setMap(null)
       }
@@ -719,6 +742,10 @@ export default {
   font-style: normal;
 }
 
+#route-modal {
+  font-family: 'GmarketSansMedium';
+}
+
 .findRoute-btn {
   color: white;
   height: 60%;
@@ -737,7 +764,7 @@ export default {
   width: 100vw;
 }
 
-.search-results {
+.route-search-results {
   position: relative;
   background: #fff;
   border-radius: 15px;
@@ -768,10 +795,9 @@ export default {
   flex-direction: column;
   width: 1vw;
   height: 100%;
-  /* padding-left: 20%; */
 }
 
-.banner {
+.route-banner {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -785,12 +811,6 @@ export default {
   margin-bottom: 3vh;
   margin-left: 4vw;
   margin-right: 4vw;
-}
-
-.search {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .box {
@@ -884,7 +904,7 @@ export default {
   font-size: 2vh;
 }
 
-.search-container {
+.route-search-container {
   font-family: 'GmarketSansMedium';
   width: 490px;
   display: block;
