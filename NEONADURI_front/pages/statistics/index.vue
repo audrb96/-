@@ -1,7 +1,7 @@
 <template>
   <div class="statistics">
     <div class="banner-container">
-      <img src="/banner/statistics-logo-star.png" alt="banner" class="banner" />
+      <img src="/banner/statistics-logo2.png" alt="banner" class="banner" />
     </div>
     <div class="white-back slide-in-right">
       <b-form-select
@@ -13,14 +13,13 @@
       <div
         v-if="statisticsClass === 'sightNum'"
         id="myMap"
-        style="width: 800px; height: 800px"
-      >
-        <button @click="mapopen()">얹어보자</button>
+        style="width: 780px; height: 700px; left:25%; z-index: 99999 "
+      > 
+      <!-- <button @click="mapopen()">얹어보자 </button> -->
       </div>
       <div v-if="statisticsClass === 'object'" id="wordCloud">
-        <!-- <div id="mainCloud"></div> -->
         <vue-word-cloud
-          style="height: 40vh; width: 80vw"
+          style="height: 40vh; width: 70vw"
           :words="words"
           :color="([, selPercent]) => colorPick(selPercent)"
           font-family="GmarketSansMedium"
@@ -30,7 +29,19 @@
       <div v-if="statisticsClass === 'satisfaction'">
         <div id="main"></div>
       </div>
+      <div class="buttonPlace">
+        <div class="buttons">
+          <b-button class="changeButton" variant="primary" size="lg">Primary</b-button>
+        </div>
+        <div class="buttons">
+          <b-button class="changeButton" variant="primary" size="lg">Primary</b-button>
+        </div>
+        <div class="buttons">
+          <b-button class="changeButton" variant="primary" size="lg">Primary</b-button>
+        </div>
+      </div>
     </div>
+    <navbar-component></navbar-component>
   </div>
 </template>
 
@@ -38,7 +49,7 @@
 import * as echarts from 'echarts' // echart를 전역으로 불러옴
 // import eword from 'echarts-wordcloud'
 import VueWordCloud from 'vuewordcloud'
-import axios from 'axios'
+// import axios from 'axios';
 // import krJson from '~/static/map/koreaMap.json'
 import { mapActions, mapState } from 'vuex'
 
@@ -55,23 +66,23 @@ export default {
         { value: 'satisfaction', text: '만족도' },
       ],
       statisticsClass: 'sightNum',
-      fontSizeMapper: (word) => Math.log2(word.value) * 5,
-      priceList: [],
-      foodList: [],
-      natureList: [],
+      fontSizeMapper: (word) => Math.log2(word.value) * 4,
+      priceList:[],
+      foodList:[],
+      natureList:[],
 
       colorIndex: 4,
 
-      // ////
-      // province: undefined,
-      // currentProvince: undefined,
-      // mapArea: MAP_AREA,
-
-      // localSeatInfo : null,
     }
   },
   computed: {
-    ...mapState('statistics', ['words', 'regionList', 'satList']),
+    ...mapState('statistics', [
+      'words',
+      'regionList',
+      'satList',
+      'koreaMap',
+      'introData' // 지도의 범례를 위한 값. 최대값과 최솟값 가짐
+    ]),
   },
   created() {
     this.callSatList()
@@ -176,43 +187,29 @@ export default {
         myChart.setOption(option)
       }
     },
-    async mapopen() {
-      const chartDom2 = document.getElementById('myMap')
-      const myChart2 = echarts.init(chartDom2)
-      let geoJson
+    mapopen(){
+
+      const chartDom2 = document.getElementById('myMap');
+      const myChart2 = echarts.init(chartDom2);
+      // const kr
+      const geoJson=this.koreaMap;
 
       myChart2.showLoading()
 
-      await axios.get('/data/asset/geo/USA.json').then(function (usaJson) {
-        geoJson = usaJson.data
-      })
-      console.log(geoJson)
-      myChart2.hideLoading()
-      echarts.registerMap('USA', geoJson, {
-        Alaska: {
-          left: -131,
-          top: 25,
-          width: 15,
-        },
-        Hawaii: {
-          left: -110,
-          top: 28,
-          width: 5,
-        },
-        'Puerto Rico': {
-          left: -76,
-          top: 26,
-          width: 2,
-        },
-      })
+      myChart2.showLoading();
+
+      myChart2.hideLoading();
+      echarts.registerMap('korea', geoJson);
+      console.log(JSON.stringify(this.introData,null,2))
+      console.log(JSON.stringify(this.regionList,null,2))
 
       const option = {
-        title: {
-          text: 'USA Population Estimates (2012)',
-          subtext: 'Data from www.census.gov',
-          sublink: 'http://www.census.gov/popest/data/datasets.html',
-          left: 'right',
-        },
+        // title: {
+        //   text: 'USA Population Estimates (2012)',
+        //   subtext: 'Data from www.census.gov',
+        //   sublink: 'http://www.census.gov/popest/data/datasets.html',
+        //   left: 'right'
+        // },
         tooltip: {
           trigger: 'item',
           showDelay: 0,
@@ -220,8 +217,9 @@ export default {
         },
         visualMap: {
           left: 'right',
-          min: 500000,
-          max: 38000000,
+          top:'center',
+          min: 0,
+          max: 45000,
           inRange: {
             color: [
               '#313695',
@@ -240,89 +238,34 @@ export default {
           text: ['High', 'Low'],
           calculable: true,
         },
-        toolbox: {
-          show: true,
-          left: 'left',
-          top: 'top',
-          feature: {
-            dataView: { readOnly: false },
-            restore: {},
-            saveAsImage: {},
-          },
-        },
+        // toolbox: {
+        //   show: true,
+        //   left: 'left',
+        //   top: 'top',
+        //   feature: {
+        //     dataView: { readOnly: false },
+        //     restore: {},
+        //     saveAsImage: {}
+        //   }
+        // },
         series: [
           {
-            name: 'USA PopEstimates',
+            name: '방문횟수',
             type: 'map',
-            roam: true,
-            map: 'USA',
+            roam: 'false',
+            map: 'korea',
             emphasis: {
               label: {
-                show: true,
-              },
+                show: true
+              }
             },
-            data: [
-              { name: 'Alabama', value: 4822023 },
-              { name: 'Alaska', value: 731449 },
-              { name: 'Arizona', value: 6553255 },
-              { name: 'Arkansas', value: 2949131 },
-              { name: 'California', value: 38041430 },
-              { name: 'Colorado', value: 5187582 },
-              { name: 'Connecticut', value: 3590347 },
-              { name: 'Delaware', value: 917092 },
-              { name: 'District of Columbia', value: 632323 },
-              { name: 'Florida', value: 19317568 },
-              { name: 'Georgia', value: 9919945 },
-              { name: 'Hawaii', value: 1392313 },
-              { name: 'Idaho', value: 1595728 },
-              { name: 'Illinois', value: 12875255 },
-              { name: 'Indiana', value: 6537334 },
-              { name: 'Iowa', value: 3074186 },
-              { name: 'Kansas', value: 2885905 },
-              { name: 'Kentucky', value: 4380415 },
-              { name: 'Louisiana', value: 4601893 },
-              { name: 'Maine', value: 1329192 },
-              { name: 'Maryland', value: 5884563 },
-              { name: 'Massachusetts', value: 6646144 },
-              { name: 'Michigan', value: 9883360 },
-              { name: 'Minnesota', value: 5379139 },
-              { name: 'Mississippi', value: 2984926 },
-              { name: 'Missouri', value: 6021988 },
-              { name: 'Montana', value: 1005141 },
-              { name: 'Nebraska', value: 1855525 },
-              { name: 'Nevada', value: 2758931 },
-              { name: 'New Hampshire', value: 1320718 },
-              { name: 'New Jersey', value: 8864590 },
-              { name: 'New Mexico', value: 2085538 },
-              { name: 'New York', value: 19570261 },
-              { name: 'North Carolina', value: 9752073 },
-              { name: 'North Dakota', value: 699628 },
-              { name: 'Ohio', value: 11544225 },
-              { name: 'Oklahoma', value: 3814820 },
-              { name: 'Oregon', value: 3899353 },
-              { name: 'Pennsylvania', value: 12763536 },
-              { name: 'Rhode Island', value: 1050292 },
-              { name: 'South Carolina', value: 4723723 },
-              { name: 'South Dakota', value: 833354 },
-              { name: 'Tennessee', value: 6456243 },
-              { name: 'Texas', value: 26059203 },
-              { name: 'Utah', value: 2855287 },
-              { name: 'Vermont', value: 626011 },
-              { name: 'Virginia', value: 8185867 },
-              { name: 'Washington', value: 6897012 },
-              { name: 'West Virginia', value: 1855413 },
-              { name: 'Wisconsin', value: 5726398 },
-              { name: 'Wyoming', value: 576412 },
-              { name: 'Puerto Rico', value: 3667084 },
-            ],
-          },
-        ],
-      }
+            data : this.regionList
+          }
+        ]
+      };
+      myChart2.setOption(option);
 
-      // const confirmMap=echarts.getMap('USA').geoJSON;
-
-      // console.log(JSON.stringify(confirmMap,null,2))
-      myChart2.setOption(option)
+      option && myChart2.setOption(option);
 
       // console.log(JSON.stringify(myChart2.getOption(),null,2))
     },
@@ -358,8 +301,9 @@ export default {
   justify-content: center;
 }
 .banner {
-  width: 30%;
-  margin-bottom: -2vh;
+  margin-top: 1vh;
+  width: 40%;
+  margin-bottom: -1vh;
 }
 .slide-in-right {
   -webkit-animation: slide-in-right 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
@@ -405,11 +349,11 @@ export default {
 
 .white-back {
   position: relative;
-  background-image: url('/banner/statistics-background.png');
+  background-image: url('/banner/statistics-ticket-background.png');
   background-position-y: 100%;
   background-position-x: 20px;
   background-repeat: no-repeat;
-  background-size: 100% 130%;
+  background-size: 100% 100%;
   width: 100%;
   height: 70vh;
 }
@@ -421,10 +365,28 @@ export default {
   height: 50%;
 }
 
+.buttonPlace{
+  position:absolute; 
+  top:1px;
+  right:-2%;
+  width:14%;
+  height:73%;
+  
+  display:flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.buttons{
+
+}
+
+
 #main {
   position: absolute;
   bottom: 5vh;
-  right: 35vh;
+  right: 65vh;
+
 }
 #wordCloud {
   position: absolute;
@@ -432,13 +394,13 @@ export default {
   bottom: 20vh;
   left: 20vh;
 }
-.map-wrapper {
-  position: relative;
+/* .map-wrapper {
+  position:relative;
   text-align: center;
 }
 .background {
   /* fill: #021019; */
-  fill: transparent;
+  /* fill: transparent;
   pointer-events: all;
 }
 
@@ -446,5 +408,6 @@ export default {
   fill: #08304b;
   stroke: #021019;
   stroke-width: 1px;
-}
+} */ 
+
 </style>
