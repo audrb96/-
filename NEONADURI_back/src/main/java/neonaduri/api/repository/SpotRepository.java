@@ -12,6 +12,6 @@ public interface SpotRepository extends JpaRepository<Spot, Long>, SpotRepositor
 
     Spot findSpotBySpotId(Long spotId); // Optional X. 빈 값 있지 않음.
 
-    @Query("select s from Spot s join fetch s.reviews")
+    @Query("select s from Spot s left join fetch s.reviews where s.spotId=:spotId")
     Spot findDetailsSpotBySpotId(Long spotId);
 }

@@ -6,11 +6,8 @@ import lombok.ToString;
 import neonaduri.domain.Tag;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
-import java.util.Set;
 
 @Getter @ToString
 public class CreateReviewReq {
@@ -38,4 +35,5 @@ public class CreateReviewReq {
         this.reviewPassword = reviewPassword;
         this.tags = tags;
     }
+
 }

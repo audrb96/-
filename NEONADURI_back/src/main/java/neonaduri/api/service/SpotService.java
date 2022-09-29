@@ -2,6 +2,7 @@ package neonaduri.api.service;
 
 import lombok.RequiredArgsConstructor;
 import neonaduri.api.repository.SpotRepository;
+import neonaduri.domain.Review;
 import neonaduri.domain.Spot;
 import neonaduri.domain.Tag;
 import neonaduri.dto.request.SearchSpotReq;
@@ -13,7 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,16 +32,19 @@ public class SpotService {
         /* 1. fetch join을 통해 review까지 가져와서 */
         Spot spot = spotRepository.findDetailsSpotBySpotId(spotId);
         /* 2. review 목록에서 리뷰 내용고 태그를 꺼내와서 ReviewTagsRes로 정리해준다. */
-        List<ReviewTagsRes> reviews = spot.getReviews().stream()
-                .map(review -> ReviewTagsRes.builder()
-                        .reviewId(review.getReviewId())
-                        .reviewContent(review.getReviewContent())
-                        .reviewImage(review.getReviewImage())
-                        .tagContents(review.getTags().stream()
-                                .map(Tag::getTagContent)
-                                .collect(Collectors.toList()))
-                        .build())
-                .collect(Collectors.toList());
+        Set<Review> reviewSet = Optional.of(spot.getReviews()).orElse(new HashSet<>());
+        List<ReviewTagsRes> reviews = reviewSet.stream()
+                    .map(review -> ReviewTagsRes.builder()
+                            .reviewId(review.getReviewId())
+                            .reviewContent(review.getReviewContent())
+                            .reviewImage(review.getReviewImage())
+                            .tagContents(review.getTags().stream()
+                                    .map(Tag::getTagContent)
+                                    .collect(Collectors.toList()))
+                            .build())
+                    .collect(Collectors.toList());
+
+
 
         /* 3. 마지막으로 SpotDetailsRes로 반환시켜준다. */
         return SpotDetailsRes.builder()

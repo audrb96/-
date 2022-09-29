@@ -35,10 +35,14 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
-
-    @GetMapping("/pass/{reviewId}/{password}")
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<?> showReview(@PathVariable("reviewId") Long reviewId) {
+        return new ResponseEntity<>(reviewService.getReviewDetailsInfo(reviewId),HttpStatus.OK);
+    }
+    @GetMapping("pass/{reviewId}/{password}")
     public ResponseEntity<?> confirmPassword(@PathVariable("reviewId") Long reviewId, @PathVariable("password") String password) {
         return new ResponseEntity<>(reviewService.comparePass(reviewId,password),HttpStatus.OK);
     }
+
 
 }
