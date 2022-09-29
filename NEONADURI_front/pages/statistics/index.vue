@@ -3,6 +3,7 @@
     <div class="banner-container">
       <img src="/banner/statistics-logo2.png" alt="banner" class="banner" />
     </div>
+    {{statisticsClass}}
     <div class="white-back slide-in-right">
       <b-form-select
         v-model="statisticsClass"
@@ -11,13 +12,14 @@
         @change="statisticsChange"
       ></b-form-select>
       <div
-        v-if="statisticsClass === 'sightNum'"
+        v-show="statisticsClass === 'sightNum'"
         id="myMap"
-        style="width: 780px; height: 700px; left:25%; z-index: 99999 "
-      > 
+        style="width: 780px; height: 700px; left:25%"
+      >
+
       <!-- <button @click="mapopen()">얹어보자 </button> -->
       </div>
-      <div v-if="statisticsClass === 'object'" id="wordCloud">
+      <div v-show="statisticsClass === 'object'" id="wordCloud">
         <vue-word-cloud
           style="height: 40vh; width: 70vw"
           :words="words"
@@ -26,18 +28,18 @@
           font-size-ratio="5"
         />
       </div>
-      <div v-if="statisticsClass === 'satisfaction'">
+      <div v-show="statisticsClass === 'satisfaction'">
         <div id="main"></div>
       </div>
       <div class="buttonPlace">
         <div class="buttons">
-          <b-button class="changeButton" variant="primary" size="lg">Primary</b-button>
+          <b-button class="changeButton" variant="primary" size="lg" @click="changePage(0)">관광 여행 횟수</b-button>
         </div>
         <div class="buttons">
-          <b-button class="changeButton" variant="primary" size="lg">Primary</b-button>
+          <b-button class="changeButton" variant="primary" size="lg" @click="changePage(1)">관광 목적</b-button>
         </div>
         <div class="buttons">
-          <b-button class="changeButton" variant="primary" size="lg">Primary</b-button>
+          <b-button class="changeButton" variant="primary" size="lg" @click="changePage(2)">만족도</b-button>
         </div>
       </div>
     </div>
@@ -47,10 +49,7 @@
 
 <script>
 import * as echarts from 'echarts' // echart를 전역으로 불러옴
-// import eword from 'echarts-wordcloud'
 import VueWordCloud from 'vuewordcloud'
-// import axios from 'axios';
-// import krJson from '~/static/map/koreaMap.json'
 import { mapActions, mapState } from 'vuex'
 
 export default {
@@ -66,7 +65,7 @@ export default {
         { value: 'satisfaction', text: '만족도' },
       ],
       statisticsClass: 'sightNum',
-      fontSizeMapper: (word) => Math.log2(word.value) * 4,
+      fontSizeMapper: (word) => Math.log2(word.value) * 5,
       priceList:[],
       foodList:[],
       natureList:[],
@@ -84,18 +83,32 @@ export default {
       'introData' // 지도의 범례를 위한 값. 최대값과 최솟값 가짐
     ]),
   },
-  created() {
-    this.callSatList()
-    this.callSelList()
-    this.callVisitedList()
-    // this.test()
+  watch:{
+    statisticsClass(newVal, oldVal){
+      if(oldVal==='sightNum'){
+        console.log('붕괴')
+        // echarts.dispose('myChart2');
+        // echarts.disconnect()
+      }
+      else if(newVal==='sightNum'){
+        console.log('생성')
+        this.mapopen();
+      }
+      else if(newVal==='satisfaction'){
+        this.statisticsChange()
+      }
+    }
   },
+  created() {
+    },
   mounted() {
     // Initialize the echarts instance based on the prepared dom
+    // this.callSatList()
+    // this.callSelList()
+    // this.callVisitedList()
     this.mapopen()
     this.statisticsChange()
-    // this.visitedWords();
-    // this.drawMap();
+
   },
   methods: {
     ...mapActions('statistics', [
@@ -104,6 +117,11 @@ export default {
       'callVisitedList',
     ]),
     statisticsChange() {
+
+      this.priceList=[]
+      this.foodList=[]
+      this.natureList=[]
+
       // data 분류
       this.satList.forEach((element) => {
         if (element.satType === '0') {
@@ -117,10 +135,7 @@ export default {
       })
 
       if (this.statisticsClass === 'satisfaction') {
-        const myChart = echarts.init(document.getElementById('main'), null, {
-          width: 1000,
-          height: 500,
-        })
+        const myChart = echarts.init(document.getElementById('main'))
         // Specify the configuration items and data for the chart
         const option = {
           tooltip: {},
@@ -185,23 +200,39 @@ export default {
 
         // Display the chart using the configuration items and data just specified.
         myChart.setOption(option)
+
+        window.onresize = function () {
+          myChart.resize();
+        };
       }
     },
-    mapopen(){
+    changePage(idx){
+      if(idx===0){
+        this.statisticsClass='sightNum'
+      }else if(idx===1){
+        this.statisticsClass='object'
+      }else{
+        this.statisticsClass='satisfaction'
+      }
+    },
+    async mapopen(){
+
+      await this.callSatList()
+      await this.callSelList()
+      await this.callVisitedList()
 
       const chartDom2 = document.getElementById('myMap');
+      // if (myChart2 != null && myChart2 !== '' && myChart2 !== undefined) {
+      //   myChart2.dispose();
+      // }
+      // echarts.dispose(chartDom2);
       const myChart2 = echarts.init(chartDom2);
+
       // const kr
       const geoJson=this.koreaMap;
-
       myChart2.showLoading()
-
-      myChart2.showLoading();
-
       myChart2.hideLoading();
       echarts.registerMap('korea', geoJson);
-      console.log(JSON.stringify(this.introData,null,2))
-      console.log(JSON.stringify(this.regionList,null,2))
 
       const option = {
         // title: {
@@ -266,6 +297,10 @@ export default {
       myChart2.setOption(option);
 
       option && myChart2.setOption(option);
+
+      window.onresize = function () {
+        myChart2.resize();
+      };
 
       // console.log(JSON.stringify(myChart2.getOption(),null,2))
     },
@@ -366,26 +401,25 @@ export default {
 }
 
 .buttonPlace{
-  position:absolute; 
+  position:absolute;
   top:1px;
   right:-2%;
   width:14%;
   height:73%;
-  
+
   display:flex;
   flex-direction: column;
   justify-content: space-evenly;
 }
 
-.buttons{
-
-}
 
 
 #main {
   position: absolute;
   bottom: 5vh;
   right: 65vh;
+  width: 600px;
+  height: 600px;
 
 }
 #wordCloud {
@@ -394,20 +428,5 @@ export default {
   bottom: 20vh;
   left: 20vh;
 }
-/* .map-wrapper {
-  position:relative;
-  text-align: center;
-}
-.background {
-  /* fill: #021019; */
-  /* fill: transparent;
-  pointer-events: all;
-}
-
-.map-layer {
-  fill: #08304b;
-  stroke: #021019;
-  stroke-width: 1px;
-} */ 
 
 </style>
