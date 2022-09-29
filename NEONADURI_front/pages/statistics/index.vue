@@ -3,22 +3,8 @@
     <div class="banner-container">
       <img src="/banner/statistics-logo2.png" alt="banner" class="banner" />
     </div>
-    {{statisticsClass}}
     <div class="white-back slide-in-right">
-      <b-form-select
-        v-model="statisticsClass"
-        :options="statisticsOption"
-        class="selected"
-        @change="statisticsChange"
-      ></b-form-select>
-      <div
-        v-show="statisticsClass === 'sightNum'"
-        id="myMap"
-        style="width: 780px; height: 700px; left:25%"
-      >
-
-      <!-- <button @click="mapopen()">얹어보자 </button> -->
-      </div>
+      <div  v-show="statisticsClass === 'sightNum'" id="myMap"></div>
       <div v-show="statisticsClass === 'object'" id="wordCloud">
         <vue-word-cloud
           style="height: 40vh; width: 70vw"
@@ -32,14 +18,16 @@
         <div id="main"></div>
       </div>
       <div class="buttonPlace">
-        <div class="buttons">
-          <b-button class="changeButton" variant="primary" size="lg" @click="changePage(0)">관광 여행 횟수</b-button>
+        <div>
+          <v-btn elevation="15" color="#E07B42" large @click="changePage(0)">여행 횟수</v-btn>
         </div>
-        <div class="buttons">
-          <b-button class="changeButton" variant="primary" size="lg" @click="changePage(1)">관광 목적</b-button>
+        <div>
+          <v-hover>
+            <v-btn color="#E07B42" @click="changePage(1)">관광 목적</v-btn>
+          </v-hover>
         </div>
-        <div class="buttons">
-          <b-button class="changeButton" variant="primary" size="lg" @click="changePage(2)">만족도</b-button>
+        <div>
+          <v-btn color="#E07B42" @click="changePage(2)">만족도</v-btn>
         </div>
       </div>
     </div>
@@ -85,13 +73,7 @@ export default {
   },
   watch:{
     statisticsClass(newVal, oldVal){
-      if(oldVal==='sightNum'){
-        console.log('붕괴')
-        // echarts.dispose('myChart2');
-        // echarts.disconnect()
-      }
-      else if(newVal==='sightNum'){
-        console.log('생성')
+      if(newVal==='sightNum'){
         this.mapopen();
       }
       else if(newVal==='satisfaction'){
@@ -222,10 +204,7 @@ export default {
       await this.callVisitedList()
 
       const chartDom2 = document.getElementById('myMap');
-      // if (myChart2 != null && myChart2 !== '' && myChart2 !== undefined) {
-      //   myChart2.dispose();
-      // }
-      // echarts.dispose(chartDom2);
+
       const myChart2 = echarts.init(chartDom2);
 
       // const kr
@@ -235,12 +214,12 @@ export default {
       echarts.registerMap('korea', geoJson);
 
       const option = {
-        // title: {
-        //   text: 'USA Population Estimates (2012)',
-        //   subtext: 'Data from www.census.gov',
-        //   sublink: 'http://www.census.gov/popest/data/datasets.html',
-        //   left: 'right'
-        // },
+        title: {
+          text: '대한민국 방문횟수(2021)',
+          // subtext: 'Data from www.census.gov',
+          // sublink: 'http://www.census.gov/popest/data/datasets.html',
+          left: 'center'
+        },
         tooltip: {
           trigger: 'item',
           showDelay: 0,
@@ -412,14 +391,29 @@ export default {
   justify-content: space-evenly;
 }
 
-
+        /* style="width: 780px; height: 700px; left:25%" */
+#myMap{
+  /* width: 780px; */
+  /* margin-top:3vh; */
+  padding-top:10px;
+  height: 100%;
+  width: 40%;
+  left:10%;
+}
 
 #main {
   position: absolute;
-  bottom: 5vh;
-  right: 65vh;
-  width: 600px;
-  height: 600px;
+
+  /* bottom: 5vh; */
+  /* right: 65vh; */
+  padding-top:2%;
+  left:20%;
+  /* width: 40%;
+  height: 100%; */
+  /* width: 600px;
+  height: 600px; */
+  width: 100vh;
+  height: 70vh;
 
 }
 #wordCloud {
@@ -427,6 +421,10 @@ export default {
   width: 40vw;
   bottom: 20vh;
   left: 20vh;
+}
+
+.changeButton{
+  color: "#00BFFF"
 }
 
 </style>
