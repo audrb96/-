@@ -1,13 +1,13 @@
 import {getSat,getVisited,getSel} from '~/api/statistics'
+import koreaMap from '~/static/map/koreaMap.json'
 
 export const state = () =>(
     {
         words:[],
-        // priceList:[],
-        // foodList:[],
-        // natureList:[],
         satList:[],
         regionList:[],
+        koreaMap,
+        introData:{},
     }
 )
 
@@ -17,6 +17,7 @@ export const mutations = {
         state.satList=payload
     },
     SET_SEL(state, payload){
+      state.words=[]
       payload.forEach(element=>{
         const arr=[]
 
@@ -27,8 +28,27 @@ export const mutations = {
       })
     },
     SET_VISITED(state, payload){
-      // state.words=payload
-      state.regionList=payload
+      state.regionList=[]
+
+      state.introData.maxValue=0;
+      state.introData.minValue=payload[0].visitedNum
+
+      payload.forEach(element=>{
+        const obj={}
+
+        obj.name=element.visitedRegion;
+        obj.value=element.visitedNum;
+
+        state.regionList.push(obj);
+        // ///////////////////////
+        if(state.introData.maxValue < obj.value){
+            state.introData.maxValue=obj.value
+        }
+
+        if(state.introData.minValue > obj.value){
+            state.introData.minValue=obj.value
+        }
+      })
     }
 }
 
@@ -58,8 +78,8 @@ export const actions = {
             }
         )
     },
-    callVisitedList({commit}){
-        getVisited(
+    async callVisitedList({commit}){
+        await getVisited(
             ({data})=>{
                 commit('SET_VISITED',data)
             },

@@ -1,9 +1,6 @@
 <template>
   <div class="findRoute">
     <div class="route-container">
-      <!-- <div class="banner">
-              <img src="/banner/banner.png" style="width: 50%;">
-          </div> -->
       <div class="map">
         <div id="map_wrap" class="map_wrap">
           <div id="map_div"></div>
@@ -149,7 +146,6 @@
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=l7xx9b31967c4bc2496f8dde1d66747658c9"></script>
 <script>
-// import {mapState} from 'vuex'
 import axios from 'axios'
 import { mapState, mapMutations } from 'vuex'
 
@@ -190,11 +186,11 @@ export default {
       ],
       searchResult: [],
 
-      startPointObject: null,
+      startPointObject: {},
       startIndex: -1,
       startMarker: Object,
 
-      endPointObject: null,
+      endPointObject: {},
       endIndex: -1,
       endMarker: Object,
       // 페이지 보이기
@@ -219,8 +215,8 @@ export default {
       resultMarkerArr: [],
     }
   },
-  mounted() {
-    this.makeMap()
+  async mounted() {
+    await this.makeMap()
     this.pickStopOver()
   },
   created() {
@@ -243,7 +239,6 @@ export default {
           iconSize: new Tmapv2.Size(24, 38),
           map: this.map,
         })
-
         this.stopOverObjectList.push(mapInstance)
       }
     },
@@ -529,7 +524,7 @@ export default {
         return
       }
 
-      for (let i in this.markerArr) {
+      for (const i in this.markerArr) {
         this.markerArr[i].setMap(null)
       }
 
@@ -609,7 +604,7 @@ export default {
 
       // 기존의 길과 포인트들 전부 삭제
       if (this.resultInfoArr.length > 0) {
-        for (let i in this.resultInfoArr) {
+        for (const i in this.resultInfoArr) {
           console.log('타입 : ')
           console.log(typeof this.resultInfoArr[i])
           console.log(this.resultInfoArr.length)
@@ -619,7 +614,7 @@ export default {
       this.resultInfoArr = []
 
       if (this.resultMarkerArr.length > 0) {
-        for (let i in this.resultMarkerArr) {
+        for (const i in this.resultMarkerArr) {
           this.resultMarkerArr[i].setMap(null)
         }
       }
@@ -628,7 +623,7 @@ export default {
       // 루트 그림 그리는 포인트를 담는 배열
       const drawInfoArr = []
 
-      for (let i in resultFeatures) {
+      for (const i in resultFeatures) {
         const geometry = resultFeatures[i].geometry
         const properties = resultFeatures[i].properties
         let polyline_

@@ -4,7 +4,7 @@
       <div class="check-modal-head">
         <div></div>
         <div class="check-modal-head-check">
-          <img class="head-logo" src="/logo/create-review-logo.png" alt="" />
+          <img class="head-logo" src="/logo/write-review-logo.png" alt="" />
         </div>
         <div class="check-modal-head-close" @click="CloseCheck">
           <v-icon large>mdi-close-circle-outline</v-icon>
@@ -20,7 +20,7 @@
           <img :src="preview" class="check-modal-body-img" alt="없음" />
           <div class="check-modal-body-input">
             <input
-              v-model="review.reviewContent"
+              v-model="reviewForm.reviewContent"
               class="check-modal-body-input-line"
               type="text"
               placeholder="한 줄 입력하세요"
@@ -47,9 +47,9 @@
         <div class="check-model-body-bot">
           <div class="check-model-body-bot-left">
             <v-file-input
-              v-model="review.reviewImage"
+              v-model="reviewForm.reviewImage"
               :placeholder="fileInfo?.name"
-              @change="previewFile(review.reviewImage)"
+              @change="previewFile(reviewForm.reviewImage)"
             />
             <!-- <v-file-input
               v-model="file"
@@ -61,7 +61,7 @@
             <div class="check-model-body-bot-pass">
               <div>비밀번호 설정 :</div>
               <input
-                v-model="review.reviewPassword"
+                v-model="reviewForm.reviewPassword"
                 class="password-input"
                 type="password"
                 placeholder="비밀번호"
@@ -126,7 +126,7 @@ export default {
       // preview: '/banner/no-image2.png',
       fileInfo: null,
       // 리뷰 post
-      review: {
+      reviewForm: {
         spotId: null,
         reviewImage: null,
         reviewContent: null,
@@ -137,7 +137,7 @@ export default {
   },
   computed: {
     ...mapState('spot', ['spot']),
-    ...mapState('review', []),
+    ...mapState('review', ['review', 'reviewList']),
   },
 
   methods: {
@@ -191,7 +191,7 @@ export default {
     },
     writeReview() {
       const reviewData = new FormData()
-      this.review.tags = ''
+      this.reviewForm.tags = ''
       const arr = this.$el
         .querySelector(`#tag-input`)
         .value.split('"},{"value":"')
@@ -200,21 +200,31 @@ export default {
         0,
         arr[arr.length - 1].length - 3
       )
+      console.log(this.$el.querySelector(`#tag-input`).value)
       arr.forEach((element) => {
         const word = element.replace('#', '')
-        this.review.tags += word
-        this.review.tags += ', '
+        if (word !== '') {
+          this.reviewForm.tags += word
+          this.reviewForm.tags += ', '
+        }
       })
-      this.review.tags = this.review.tags.substr(0, this.review.tags.length - 2)
+      this.reviewForm.tags = this.reviewForm.tags.substr(
+        0,
+        this.reviewForm.tags.length - 2
+      )
       reviewData.append('spotId', this.spot.spotId)
-      reviewData.append('reviewImage', this.review.reviewImage)
-      reviewData.append('reviewContent', this.review.reviewContent)
-      reviewData.append('reviewPassword', this.review.reviewPassword)
-      reviewData.append('tags', this.review.tags)
+      // this.reviewForm.reviewImage.name = 'RV' + this.reviewList.length
+      // console.log(tempFile.name)
+      console.log(this.reviewList.length)
+      reviewData.append('reviewImage', this.reviewForm.reviewImage)
+      reviewData.append('reviewContent', this.reviewForm.reviewContent)
+      reviewData.append('reviewPassword', this.reviewForm.reviewPassword)
+      reviewData.append('tags', this.reviewForm.tags)
       // for (const p of reviewData.entries()) {
       //   console.log(p[0] + ',' + p[1])
       // }
       this.registReview(reviewData)
+      this.$emit('updateStatus', !this.pvalue)
     },
   },
 }

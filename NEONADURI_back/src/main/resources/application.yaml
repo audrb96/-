@@ -17,7 +17,7 @@ spring:
       connection-timeout: 10000
       validation-timeout: 10000
       max-lifetime: 580000
-      
+
   jpa:
     hibernate:
       ddl-auto: update

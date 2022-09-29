@@ -12,11 +12,18 @@ async function writeReview(review, success, fail) {
 }
 
 async function modifyReview(review, success, fail) {
-  await api.put(`/api/review`, JSON.stringify(review)).then(success).catch(fail)
+  await multiApi.put(`/api/review`, review).then(success).catch(fail)
 }
 
-async function comparePass(id, pass, success, fail) {
-  await api.get(`/api/review/pass/${id}/${pass}`).then(success).catch(fail)
+async function comparePass(reviewId, pass, success, fail) {
+  await api
+    .get(`/api/review/pass/${reviewId}/${pass}`)
+    .then(success)
+    .catch(fail)
 }
 
-export { writeReview, getReviews, modifyReview, comparePass }
+async function getReview(reviewId, success, fail) {
+  await api.get(`/api/review/${reviewId}`).then(success).catch(fail)
+}
+
+export { writeReview, getReviews, modifyReview, comparePass, getReview }
