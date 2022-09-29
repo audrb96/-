@@ -39,7 +39,7 @@ public class ReviewController {
     public ResponseEntity<?> showReview(@PathVariable("reviewId") Long reviewId) {
         return new ResponseEntity<>(reviewService.getReviewDetailsInfo(reviewId),HttpStatus.OK);
     }
-    @GetMapping("/{reviewId}/{password}")
+    @GetMapping("pass/{reviewId}/{password}")
     public ResponseEntity<?> confirmPassword(@PathVariable("reviewId") Long reviewId, @PathVariable("password") String password) {
         return new ResponseEntity<>(reviewService.comparePass(reviewId,password),HttpStatus.OK);
     }
