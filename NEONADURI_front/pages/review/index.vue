@@ -13,7 +13,13 @@
             "
             alt=""
           /> -->
-          <img :src="spot.spotImage" alt="" />
+          <img
+            :src="
+              'https://neonaduri.s3.ap-northeast-2.amazonaws.com/' +
+              spot.spotImage
+            "
+            alt=""
+          />
         </div>
         <div class="spot-right">
           <div class="spot-main-title">
@@ -38,6 +44,12 @@
             <button class="add-btn" @click="addSpot">경유지추가</button>
           </div>
         </div>
+        <div class="spot-routeList">
+          <div v-for="(route, i) in routeList" :key="i" class="spot-route">
+            {{ route.name }}
+            <v-icon class="mb-1" @click="deleteStopOver(i)">mdi-delete</v-icon>
+          </div>
+        </div>
       </div>
       <div class="spot-review">
         <div class="spot-review-top">
@@ -58,7 +70,7 @@
             >
           </div>
         </div>
-        <div class="spot-review-content" style="height: 100px">
+        <div class="spot-review-content">
           <link
             rel="stylesheet"
             type="text/css"
@@ -150,19 +162,22 @@ export default {
     return {
       inputToggle: false,
       modifyToggle: false,
+      stopOverList: [],
     }
   },
   computed: {
     ...mapState('spot', ['spot']),
     ...mapState('review', ['reviewList']),
+    ...mapState('route', ['routeList']),
   },
   created() {
     // 불러올 때 review_id도 불러옴
     this.callReviews(this.spot.spotId)
+    this.stopOverList = JSON.parse(JSON.stringify(this.routeList))
   },
   mounted() {},
   methods: {
-    ...mapMutations('route', ['ADD_ROUTE']),
+    ...mapMutations('route', ['ADD_ROUTE', 'DELETE_ROUTE']),
     ...mapMutations('review', ['CLEAR_REVIEW', 'SET_REVIEW']),
     ...mapActions('spot', ['changeContent']),
     ...mapActions('review', ['callReviews', 'confirmPass']),
@@ -220,7 +235,20 @@ export default {
         lat: this.spot.lat,
         lng: this.spot.lng,
       }
-      this.ADD_ROUTE(route)
+      let flag = false
+      this.routeList.forEach((element) => {
+        if (element.id === route.id) {
+          flag = true
+        }
+      })
+      if (!flag) {
+        this.ADD_ROUTE(route)
+      }
+    },
+    deleteStopOver(index) {
+      this.DELETE_ROUTE(index)
+      // 지울 부분을 리스트에서 제거
+      this.stopOverList.splice(index, 1)
     },
   },
 }
@@ -307,34 +335,35 @@ export default {
 }
 .review-top {
   width: 100%;
-  height: 25%;
+  height: 20%;
   display: flex;
   justify-content: center;
 }
 .review-logo {
-  width: 40%;
+  width: 30%;
+  height: 100%;
   margin: 0 auto;
 }
 .spot-main {
   position: relative;
-  height: 65%;
-  background-image: url('/banner/statistics-background.png');
-  background-position-y: 100%;
+  height: 60%;
+  background-image: url('/banner/ticket-background.png');
+  background-position-y: 0%;
   background-position-x: 20px;
   background-repeat: no-repeat;
-  background-size: 100% 130%;
+  background-size: 100% 100%;
 }
 .spot-left {
   position: absolute;
   /* text-align: center; */
   /* margin: 40px 0; */
   left: 10%;
-  top: 13%;
+  top: 7%;
   bottom: inherit;
 }
 .spot-left > img {
-  width: 500px;
-  height: 330px;
+  width: 40.2vw;
+  height: 51.6vh;
 }
 .spot-right {
   position: absolute;
@@ -346,6 +375,19 @@ export default {
   max-height: 100%;
   left: 50%;
   top: 13%;
+  margin-left: 5%;
+}
+.spot-routeList {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 55%;
+  top: 8%;
+  right: 2%;
+}
+.spot-route {
+  margin-bottom: 3%;
 }
 .spot-main-title {
   width: 90%;
@@ -384,7 +426,7 @@ export default {
 }
 .spot-add {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   margin-right: 10%;
 }
 .add-btn {
@@ -433,7 +475,7 @@ export default {
 .spot-review-title {
   font-size: 25px;
   font-weight: bold;
-  margin-right: 20px;
+  margin: 1% 1% 0.5% 1%;
 }
 @media (max-width: 420px) {
   .card-slider-item {
@@ -467,7 +509,7 @@ export default {
   height: 2.5em;
   width: 2.5em;
   border-radius: 2em;
-  margin-bottom: 5px;
+  margin-bottom: 13%;
   box-shadow: 0 0 5px #6a5d4f;
   -moz-transition: all 0.35s;
   -webkit-transition: all 0.35s;

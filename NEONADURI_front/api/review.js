@@ -16,7 +16,10 @@ async function modifyReview(review, success, fail) {
 }
 
 async function comparePass(reviewId, pass, success, fail) {
-  await api.get(`/api/review/${reviewId}/${pass}`).then(success).catch(fail)
+  await api
+    .get(`/api/review/pass/${reviewId}/${pass}`)
+    .then(success)
+    .catch(fail)
 }
 
 async function getReview(reviewId, success, fail) {

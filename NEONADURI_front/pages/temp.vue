@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <div id="cart" class="cart" data-totalitems="0">
+    <div id="cart" data-totalitems="0">
       <i class="fas fa-shopping-cart"></i>
     </div>
 
@@ -21,13 +21,13 @@ export default {
       const cart = document.getElementById('cart')
       const cartTotal = cart.getAttribute('data-totalitems')
       const newCartTotal = parseInt(cartTotal) + 1
-      button.className = 'sendtocart'
+      button.className += 'sendtocart'
       setTimeout(function () {
         button.classList.remove('sendtocart')
         cart.className += 'shake'
         cart.setAttribute('data-totalitems', newCartTotal)
         setTimeout(function () {
-          button.classList.remove('shake')
+          cart.classList.remove('shake')
         }, 500)
       }, 1000)
     },
@@ -42,11 +42,6 @@ body {
   /* min-height: 100%; */
 /* font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; */
 /* } */
-*/ *,
-*:before,
-*:after {
-  box-sizing: border-box;
-}
 
 .box {
   width: 100vw;
@@ -59,7 +54,7 @@ body {
   align-items: center;
   justify-content: center;
 }
-.page-wrapper button {
+#addtocart {
   padding: 20px;
   border: none;
   background: #d5d8e7;
@@ -69,14 +64,14 @@ body {
   color: #292d48;
   font-size: 18px;
 }
-.page-wrapper button .cart-item {
+#addtocart .cart-item {
   position: absolute;
   height: 24px;
   width: 24px;
   top: -10px;
   right: -10px;
 }
-.page-wrapper button .cart-item:before {
+#addtocart .cart-item:before {
   content: '1';
   display: block;
   line-height: 24px;
@@ -89,15 +84,15 @@ body {
   border-radius: 20px;
   text-align: center;
 }
-.page-wrapper button.sendtocart .cart-item {
+#addtocart.sendtocart .cart-item {
   display: block;
   animation: xAxis 1s forwards cubic-bezier(1, 0.44, 0.84, 0.165);
 }
-.page-wrapper button.sendtocart .cart-item:before {
+#addtocart.sendtocart .cart-item:before {
   animation: yAxis 1s alternate forwards cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.cart {
+#cart {
   position: fixed;
   top: 20px;
   right: 20px;
@@ -109,11 +104,11 @@ body {
   justify-content: center;
   border-radius: 5px;
 }
-.cart i {
+#cart i {
   font-size: 25px;
   color: white;
 }
-.cart:before {
+#cart:before {
   content: attr(data-totalitems);
   font-size: 12px;
   font-weight: 600;
@@ -129,7 +124,7 @@ body {
   text-align: center;
   border-radius: 24px;
 }
-.cart.shake {
+#cart.shake {
   animation: shakeCart 0.4s ease-in-out forwards;
 }
 

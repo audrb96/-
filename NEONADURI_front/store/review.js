@@ -19,7 +19,6 @@ export const mutations = {
     state.review = review
   },
   CHANGE_PASS(state, object) {
-    console.log(object)
     state.reviewList[object.idx].pass = object.pass
   },
   // SET_TAG(state, reviewList){
@@ -64,8 +63,8 @@ export const actions = {
       }
     )
   },
-  changeReview({ commit }, review) {
-    modifyReview(
+  async changeReview({ commit }, review) {
+    await modifyReview(
       review,
       ({ data }) => {
         console.log(data)
@@ -91,10 +90,9 @@ export const actions = {
       info.id,
       info.password,
       ({ data }) => {
+        console.log(data)
         const object = { pass: data, idx: info.idx }
         commit('CHANGE_PASS', object)
-
-        console.log(data)
       },
       (error) => {
         console.log(error)

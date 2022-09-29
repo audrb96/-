@@ -158,7 +158,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('review', ['changeReview', 'callReview']),
+    ...mapActions('review', ['changeReview', 'callReviews', 'callReview']),
     CloseCheck() {
       this.$emit('updateStatus', !this.pvalue)
       const modal = document.getElementsByClassName('check-modal')[0]
@@ -206,7 +206,7 @@ export default {
         )
       }
     },
-    modifyReview() {
+    async modifyReview() {
       const reviewData = new FormData()
       this.reviewForm.tags = ''
       const arr = this.$el
@@ -232,7 +232,8 @@ export default {
       reviewData.append('reviewImage', this.reviewForm.reviewImage)
       reviewData.append('reviewContent', this.reviewForm.reviewContent)
       reviewData.append('tags', this.reviewForm.tags)
-      this.changeReview(reviewData)
+      await this.changeReview(reviewData)
+      // this.callReviews(this.spot.spotId)
       this.$emit('updateStatus', !this.pvalue)
     },
     modifyImg() {
