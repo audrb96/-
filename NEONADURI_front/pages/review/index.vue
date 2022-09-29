@@ -6,6 +6,13 @@
       </div>
       <div class="spot-main slide-in-right">
         <div class="spot-left">
+          <!-- <img
+            :src="
+              'https://neonaduri.s3.ap-northeast-2.amazonaws.com/' +
+              spot.spotImage
+            "
+            alt=""
+          /> -->
           <img :src="spot.spotImage" alt="" />
         </div>
         <div class="spot-right">
@@ -57,7 +64,6 @@
             type="text/css"
             href="https://cdn.shopify.com/s/files/1/2979/3338/files/UGC-style.css"
           />
-
           <script
             type="text/javascript"
             src="https://cdn.shopify.com/s/files/1/2979/3338/files/UGC_-_new_v.3.js"
@@ -76,9 +82,10 @@
                     'https://neonaduri.s3.ap-northeast-2.amazonaws.com/' +
                     review.reviewImage
                   "
+                  style="width: 100%; height: 45%"
                   alt="이미지"
                 />
-                <div class="insta-post">
+                <div class="insta-post" style="height: 55%">
                   <div>
                     <strong>
                       <div style="font-size: 20px">
@@ -130,7 +137,7 @@
         </div>
       </div>
     </div>
-    <navbar-component></navbar-component>
+    <navbar-component> </navbar-component>
   </div>
 </template>
 <script>
@@ -152,7 +159,6 @@ export default {
   created() {
     // 불러올 때 review_id도 불러옴
     this.callReviews(this.spot.spotId)
-    console.log(this.reviewList)
   },
   mounted() {},
   methods: {
@@ -200,9 +206,7 @@ export default {
           `.password-input${review.reviewId}`
         ).value,
       }
-      console.log(info)
       await this.confirmPass(info)
-      console.log('11111111111111')
       if (this.reviewList[index].pass) {
         this.modifyToggle = !this.modifyToggle
         this.CLEAR_REVIEW()
@@ -228,6 +232,11 @@ export default {
     both;
   animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
+.slide-out-top {
+  -webkit-animation: slide-out-top 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53)
+    both;
+  animation: slide-out-top 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+}
 @-webkit-keyframes slide-in-right {
   0% {
     -webkit-transform: translateX(1000px);
@@ -252,7 +261,30 @@ export default {
     opacity: 1;
   }
 }
-
+@-webkit-keyframes slide-out-top {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: translateY(-1000px);
+    transform: translateY(-1000px);
+    opacity: 0;
+  }
+}
+@keyframes slide-out-top {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: translateY(-1000px);
+    transform: translateY(-1000px);
+    opacity: 0;
+  }
+}
 @font-face {
   font-family: 'Cafe24Ssurround';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff')
@@ -456,7 +488,7 @@ export default {
 }
 
 .insta-post {
-  max-height: 150px;
+  max-height: 230px;
 }
 
 .tag-box {

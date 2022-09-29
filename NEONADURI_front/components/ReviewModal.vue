@@ -223,7 +223,7 @@ export default {
       // for (const p of reviewData.entries()) {
       //   console.log(p[0] + ',' + p[1])
       // }
-      // this.registReview(reviewData)
+      this.registReview(reviewData)
       this.$emit('updateStatus', !this.pvalue)
     },
   },

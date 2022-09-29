@@ -60,7 +60,7 @@
             </div>
           </div>
           <div class="check-model-body-bot-right">
-            <button @click="writeReview">입력 완료</button>
+            <button @click="modifyReview">수정 완료</button>
           </div>
         </div>
       </div>
@@ -134,6 +134,14 @@ export default {
     ...mapState('spot', ['spot']),
     ...mapState('review', ['review']),
   },
+  // watch: {
+  //   reviewForm(newReview) {
+  //     console.log(111111111111)
+  //     console.log(newReview)
+  //     console.log(11111111111)
+  //   },
+  // },
+
   created() {
     const promise = new Promise((resolve, reject) => {
       resolve()
@@ -149,7 +157,6 @@ export default {
       this.tagifyStuff.value = arr
     })
   },
-
   methods: {
     ...mapActions('review', ['changeReview', 'callReview']),
     CloseCheck() {
@@ -199,7 +206,7 @@ export default {
         )
       }
     },
-    writeReview() {
+    modifyReview() {
       const reviewData = new FormData()
       this.reviewForm.tags = ''
       const arr = this.$el
@@ -221,12 +228,11 @@ export default {
         0,
         this.reviewForm.tags.length - 2
       )
-      reviewData.append('spotId', this.spot.spotId)
+      reviewData.append('reviewId', this.review.reviewId)
       reviewData.append('reviewImage', this.reviewForm.reviewImage)
       reviewData.append('reviewContent', this.reviewForm.reviewContent)
-      reviewData.append('reviewPassword', this.reviewForm.reviewPassword)
       reviewData.append('tags', this.reviewForm.tags)
-      this.registReview(reviewData)
+      this.changeReview(reviewData)
       this.$emit('updateStatus', !this.pvalue)
     },
     modifyImg() {
