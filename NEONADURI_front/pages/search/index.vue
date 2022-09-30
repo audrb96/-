@@ -523,6 +523,9 @@ export default {
   transform: rotateX(-90deg);
 }
 .search {
+  min-height: 100vh;
+  background-image: url('/background/cloud-background.svg');
+  background-size: cover;
   font-family: 'GmarketSansMedium';
 }
 .btn-group {
@@ -608,15 +611,17 @@ export default {
 }
 .recommand {
   width: 80vw;
-  padding-top: 2%;
+  margin-top: 2%;
   background-color: #eaf2f9;
+  border-radius: 15px;
 }
 .recommand-content {
   border-radius: 15px;
   padding: 1%;
   display: flex;
   justify-content: space-between;
-  background-color: #cbe7f0;
+  /* background-color: #cbe7f0; */
+  background-color: #fff;
 }
 .top-title {
   width: 110px;

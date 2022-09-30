@@ -271,6 +271,7 @@ export default {
   border-radius: 15px;
   width: 80%;
   padding: 2%;
+  box-shadow: 10px 10px 10px rgb(196, 196, 196);
 }
 .title-text {
   font-family: 'SEBANG_Gothic_Bold';
@@ -278,6 +279,8 @@ export default {
 }
 
 .result-page {
+  background-image: url('/background/cloud-background.svg');
+  background-size: cover;
   width: 100%;
   height: 100vh;
 }

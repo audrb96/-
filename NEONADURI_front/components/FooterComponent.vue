@@ -11,7 +11,6 @@ export default {}
 <style>
 .footer {
   width: 100%;
-  position: absolute;
 }
 .footer-img {
   width: 100vw;

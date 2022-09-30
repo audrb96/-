@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import neonaduri.dto.request.ModifyReviewReq;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -30,8 +31,8 @@ public class ReviewController {
     }
 
     @PutMapping
-    public ResponseEntity<HttpStatus> modifyReview(@Valid ModifyReviewReq modifyReviewReq) throws IOException{
-        reviewService.putReview(modifyReviewReq);
+    public ResponseEntity<HttpStatus> modifyReview( @RequestPart(value = "reviewImage",required = false) MultipartFile reviewImage, @Valid ModifyReviewReq modifyReviewReq) throws IOException{
+        reviewService.putReview(modifyReviewReq,reviewImage);
         return ResponseEntity.ok().build();
     }
 
