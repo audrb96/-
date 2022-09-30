@@ -19,15 +19,19 @@
       </div>
       <div class="buttonPlace">
         <div>
-          <v-btn elevation="15" color="#E07B42" large @click="changePage(0)">여행 횟수</v-btn>
+          <a href="#" :class="{btn2:buttonActive[0],btnActive: !buttonActive[0]}" @click="changePage(0)">
+            여행 횟수
+          </a>
         </div>
         <div>
-          <v-hover>
-            <v-btn color="#E07B42" @click="changePage(1)">관광 목적</v-btn>
-          </v-hover>
+          <a href="#" :class="{btn2:buttonActive[1],btnActive: !buttonActive[1]}" @click="changePage(1)">
+            관광 목적
+          </a>
         </div>
         <div>
-          <v-btn color="#E07B42" @click="changePage(2)">만족도</v-btn>
+          <a href="#" :class="{btn2:buttonActive[2],btnActive: !buttonActive[2]}" @click="changePage(2)">
+            만족도
+          </a>
         </div>
       </div>
     </div>
@@ -47,6 +51,9 @@ export default {
   },
   data() {
     return {
+      buttonActive:[
+        false, true, true
+      ],
       statisticsOption: [
         { value: 'sightNum', text: '관광여행횟수' },
         { value: 'object', text: '관광목적' },
@@ -85,9 +92,6 @@ export default {
     },
   mounted() {
     // Initialize the echarts instance based on the prepared dom
-    // this.callSatList()
-    // this.callSelList()
-    // this.callVisitedList()
     this.mapopen()
     this.statisticsChange()
 
@@ -191,10 +195,19 @@ export default {
     changePage(idx){
       if(idx===0){
         this.statisticsClass='sightNum'
+        this.buttonActive[0]=false;
+        this.buttonActive[1]=true;
+        this.buttonActive[2]=true;
       }else if(idx===1){
         this.statisticsClass='object'
+        this.buttonActive[0]=true;
+        this.buttonActive[1]=false;
+        this.buttonActive[2]=true;
       }else{
         this.statisticsClass='satisfaction'
+        this.buttonActive[0]=true;
+        this.buttonActive[1]=true;
+        this.buttonActive[2]=false;
       }
     },
     async mapopen(){
@@ -302,6 +315,92 @@ export default {
 </script>
 
 <style scoped>
+.btnActive{
+  width:100%;
+  padding: 15px 15px;
+  margin:10px 4px;
+  color: rgb(46, 31, 31);
+  background: #ddf416;
+  font-family: 'SEBANG_Gothic_Bold';
+  text-transform: uppercase;
+  text-align: center;
+  position: relative;
+  text-decoration: none;
+  display:inline-block;
+  /* border: 1px solid black; */
+  border-radius: 10%;
+}
+
+@font-face {
+  font-family: 'SEBANG_Gothic_Bold';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2104@1.0/SEBANG_Gothic_Bold.woff')
+    format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.btn2{
+  width:100%;
+  padding: 15px 15px;
+  margin:10px 4px;
+  color: rgb(46, 31, 31);
+  font-family: 'SEBANG_Gothic_Bold';
+  text-transform: uppercase;
+  text-align: center;
+  position: relative;
+  text-decoration: none;
+  display:inline-block;
+  /* border: 1px solid black; */
+  border-radius: 10%;
+}
+
+.btn2::before{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-color: rgb(220, 38, 38);
+  -webkit-transform: scaleY(.3);
+  transform: scaleY(.3);
+  opacity: 0;
+  transition: all .3s
+}
+
+.btn2:hover{
+  color:#ddf416;
+}
+.btn2:hover::before{
+  opacity: 1;
+  background-color: #3aa8e3;
+  -webkit-transform: scaleY(1);
+  transform: scaleY(1);
+  transition: -webkit-transform .6s cubic-bezier(.08, .35, .13, 1.02), opacity .4s;
+  transition: transform .6s cubic-bezier(.08, .35, .13, 1.02), opacity;
+  border-radius: 10%;
+}
+.btn2:active{
+  opacity: 1;
+  background-color: #3aa8e3;
+  -webkit-transform: scaleY(1);
+  transform: scaleY(1);
+  transition: -webkit-transform .6s cubic-bezier(.08, .35, .13, 1.02), opacity .4s;
+  transition: transform .6s cubic-bezier(.08, .35, .13, 1.02), opacity;
+  border-radius: 10%;
+}
+
+a:active{
+  opacity: 1;
+  background-color: #3aa8e3;
+  -webkit-transform: scaleY(1);
+  transform: scaleY(1);
+  transition: -webkit-transform .6s cubic-bezier(.08, .35, .13, 1.02), opacity .4s;
+  transition: transform .6s cubic-bezier(.08, .35, .13, 1.02), opacity;
+  border-radius: 10%;
+}
 @font-face {
   font-family: 'GmarketSansMedium';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
@@ -347,6 +446,9 @@ export default {
     opacity: 1;
   }
 }
+
+
+
 .selected {
   position: absolute;
   top: 5vh;
@@ -381,10 +483,10 @@ export default {
 
 .buttonPlace{
   position:absolute;
-  top:1px;
-  right:-2%;
+  top:24px;
+  right:1%;
   width:14%;
-  height:73%;
+  height:43%;
 
   display:flex;
   flex-direction: column;
