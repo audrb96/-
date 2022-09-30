@@ -12,10 +12,12 @@ import neonaduri.utils.S3Utils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -52,7 +54,7 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
-    public void putReview(ModifyReviewReq modifyReviewReq) throws IOException {
+    public void putReview(ModifyReviewReq modifyReviewReq, MultipartFile reviewImage) throws IOException {
 
         Review review = reviewRepository.findReviewByReviewId(modifyReviewReq.getReviewId());
         Set<Tag> tags = Arrays.stream(modifyReviewReq.getTags()
@@ -60,10 +62,15 @@ public class ReviewService {
                 .map(Tag::new)
                 .collect(Collectors.toSet());
         String dirName = review.getReviewImage().split("/")[0]+"/"+review.getReviewImage().split("/")[1];
-
-        s3Utils.upload(modifyReviewReq.getReviewImage(), dirName);
-        review.modifyReview(tags, modifyReviewReq.getReviewContent(), LocalDateTime.now(),
-                dirName+"/"+modifyReviewReq.getReviewImage().getOriginalFilename());
+        Optional<MultipartFile> reviewImageOp = Optional.ofNullable(reviewImage);
+        if(reviewImageOp.isPresent()) {
+            s3Utils.upload(reviewImageOp.get(), dirName);
+            review.modifyReview(tags, modifyReviewReq.getReviewContent(), LocalDateTime.now(),
+                    dirName+"/"+reviewImage.getOriginalFilename());
+        } else {
+            review.modifyReview(tags, modifyReviewReq.getReviewContent(), LocalDateTime.now(),
+                    review.getReviewImage());
+        }
     }
 
     public ReviewTagsRes getReviewDetailsInfo(Long reviewId){

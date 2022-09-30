@@ -65,5 +65,4 @@ public class Review {
         this.reviewImage = reviewImage;
     }
 
-
 }
