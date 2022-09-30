@@ -9,6 +9,9 @@ export const mutations = {
   DELETE_ROUTE(state, idx) {
     state.routeList.splice(idx, 1)
   },
+  CHANGE_ROUTE(state, routes){
+    state.routeList=routes
+  }
 }
 
 export const getters = {}

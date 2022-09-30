@@ -102,20 +102,25 @@
               style="vertical-align: middle"
             /><span>{{ startPointObject.name }}</span>
           </div>
-          <div
-            v-for="(item, index) in stopOverList"
-            :key="index"
-            style="display: flex; align-items: center"
-            class="mt-3"
-          >
-            <v-icon class="ml-2 mr-2">mdi-numeric-{{ index + 1 }}-box</v-icon>
-            <span style="font: 25px" class="mr-3">
-              {{ item.name }}
-            </span>
-            <v-icon class="mb-1" @click="deleteStopOver(index)"
-              >mdi-delete</v-icon
-            >
-          </div>
+          <draggable v-model="stopOverList">
+            <transition-group>
+              <div
+                v-for="(item, index) in stopOverList"
+                :key="index"
+                style="display: flex; align-items: center; cursor: pointer;"
+                class="mt-3"
+
+              >
+                <v-icon class="ml-2 mr-2">mdi-numeric-{{ index + 1 }}-box</v-icon>
+                <span style="font: 25px" class="mr-3">
+                  {{ item.name }}
+                </span>
+                <v-icon class="mb-1" @click="deleteStopOver(index)"
+                  >mdi-delete</v-icon
+                >
+              </div>
+            </transition-group>
+          </draggable>
           <div class="mt-3">
             <img
               v-show="Object.keys(endPointObject).length != 0"
@@ -153,11 +158,12 @@
 <script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=l7xx9b31967c4bc2496f8dde1d66747658c9"></script>
 <script>
 import axios from 'axios'
+import draggable from 'vuedraggable'
 import { mapState, mapMutations } from 'vuex'
 import LoadingComponent from '../../components/LoadingComponent.vue'
 
 export default {
-  components: { LoadingComponent },
+  components: { LoadingComponent,draggable },
   head: {
     script: [
       {
@@ -170,6 +176,23 @@ export default {
   },
   computed: {
     ...mapState('route', ['routeList']),
+  },
+  watch:{
+    stopOverList(){
+      // console.log('바뀝니다')
+      this.CHANGE_ROUTE(this.stopOverList);
+      // console.log(JSON.stringify(this.stopOverList,null,2))
+      // 먼저 그려져있던 포인트들 전부 지우기
+      for (const i in this.stopOverObjectList) {
+        this.stopOverObjectList[i].setMap(null)
+      }
+      // 이전 포인트들 담아두었던 배열 초기화
+      this.stopOverObjectList = []
+
+      // // this.stopOverList = JSON.parse(JSON.stringify(this.routeList))
+
+      this.pickStopOver();
+    }
   },
   data() {
     return {
@@ -234,14 +257,14 @@ export default {
     this.stopOverList = JSON.parse(JSON.stringify(this.routeList))
   },
   methods: {
-    ...mapMutations('route', ['DELETE_ROUTE']),
+    ...mapMutations('route', ['DELETE_ROUTE','CHANGE_ROUTE']),
     // 경유지 찍기
     pickStopOver() {
-      for (let i = 0; i < this.routeList.length; i++) {
+      for (let i = 0; i < this.stopOverList.length; i++) {
         const mapInstance = new Tmapv2.Marker({
           position: new Tmapv2.LatLng(
-            this.routeList[i].lat,
-            this.routeList[i].lng
+            this.stopOverList[i].lat,
+            this.stopOverList[i].lng
           ),
           icon:
             'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_m_' +
@@ -423,7 +446,6 @@ export default {
         })
       })
     },
-
     // 검색결과
     findTarget() {
       this.searchResult = []
@@ -603,6 +625,7 @@ export default {
         .then(function (response) {
           resultData = response.data.properties
           resultFeatures = response.data.features
+          this.CHANGE_ROUTE(this.stopOverList);
           this.isLoading = false
         })
         .catch((error) => {
@@ -711,6 +734,8 @@ export default {
           })
 
           this.resultMarkerArr.push(marker_p)
+
+          
         }
       }
       this.isLoading = false

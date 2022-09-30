@@ -34,6 +34,7 @@
     "vue-server-renderer": "^2.6.14",
     "vue-template-compiler": "^2.6.14",
     "vue-wordcloud": "^1.1.1",
+    "vuedraggable": "^2.24.3",
     "vuetify": "^2.6.1",
     "vuewordcloud": "^18.7.12",
     "vuex-persistedstate": "^4.1.0",
@@ -50,5 +51,4 @@
     "eslint-plugin-vue": "^8.2.0",
     "prettier": "^2.5.1"
   }
-  
 }

@@ -168,6 +168,10 @@ export default {
             },
           ],
           series: [
+            // {
+            //   pointWidth:1
+            // }
+            // ,
             {
               name: '물가',
               type: 'line',
@@ -231,12 +235,12 @@ export default {
       echarts.registerMap('korea', geoJson)
 
       const option = {
-        title: {
-          text: '대한민국 방문횟수(2021)',
-          // subtext: 'Data from www.census.gov',
-          // sublink: 'http://www.census.gov/popest/data/datasets.html',
-          left: 'center',
-        },
+        // title: {
+        //   text: '대한민국 방문횟수(2021)',
+        //   // subtext: 'Data from www.census.gov',
+        //   // sublink: 'http://www.census.gov/popest/data/datasets.html',
+        //   left: 'center'
+        // },
         tooltip: {
           trigger: 'item',
           showDelay: 0,
