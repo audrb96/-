@@ -16,7 +16,7 @@
               class="slide"
               @click="slideClick(spot)"
             >
-              <div>
+              <div class="spot-image-container">
                 <img
                   :src="
                     'https://neonaduri.s3.ap-northeast-2.amazonaws.com/' +
@@ -176,19 +176,23 @@ export default {
 .spot-name {
   font-family: 'SEBANG_Gothic_Bold';
   font-size: 5vh;
-  width: 75vh;
-  height: 10vh;
+  width: 100%;
+  height: 50%;
 }
 .spot-content {
   font-family: 'GmarketSansMedium';
   font-size: 3vh;
-  width: 75vh;
-  height: 25vh;
+  width: 100%;
+  height: 60%;
+}
+.spot-image-container {
+  width: 40%;
+  height: 100%;
 }
 
 .spot-image {
-  width: 60vh;
-  height: 40vh;
+  width: 100%;
+  height: 100%;
 }
 .container {
   display: flex;
