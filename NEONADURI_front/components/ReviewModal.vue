@@ -1,30 +1,42 @@
 <template>
   <div class="check-modal">
-    <div class="check-modal-box">
+    <div class="check-modal-box slide-top">
       <div class="check-modal-head">
         <div></div>
         <div class="check-modal-head-check">
-          <img class="head-logo" src="/logo/write-review-logo.png" alt="" />
+          <img
+            class="head-logo"
+            style="width: 40%"
+            src="/logo/write-review-logo.png"
+            alt=""
+          />
         </div>
         <div class="check-modal-head-close" @click="CloseCheck">
-          <v-icon large>mdi-close-circle-outline</v-icon>
+          <v-icon style="margin-right: 40%" large>mdi-close</v-icon>
         </div>
       </div>
       <div class="check-modal-body">
         <div class="check-model-body-top">
-          <!-- <img
-            class="check-modal-body-img"
-            src="/review/deoksugung.jpg"
-            alt=""
-          /> -->
-          <img :src="preview" class="check-modal-body-img" alt="없음" />
+          <div class="check-model-body-left">
+            <img :src="preview" class="check-modal-body-img" alt="없음" />
+            <v-file-input
+              v-model="reviewForm.reviewImage"
+              :placeholder="fileInfo?.name"
+              style="margin: 0 10%"
+              @change="previewFile(reviewForm.reviewImage)"
+            />
+          </div>
+
           <div class="check-modal-body-input">
-            <input
+            <div class="input-name">한줄평</div>
+            <v-text-field
               v-model="reviewForm.reviewContent"
               class="check-modal-body-input-line"
+              style="padding: 0px flex:none"
+              :rules="rules"
               type="text"
-              placeholder="한 줄 입력하세요"
             />
+            <div class="input-name">태그</div>
             <div class="check-modal-body-input-tag">
               <!-- <tagify-component></tagify-component> -->
               <Tags
@@ -34,6 +46,16 @@
                 :suggestions="tagifyStuff.suggestions"
                 :value="tagifyStuff.value"
                 :on-change="onTagsChange"
+              />
+            </div>
+            <div class="check-model-body-bot-pass">
+              <div class="input-name">비밀번호 설정</div>
+              <v-text-field
+                v-model="reviewForm.reviewPassword"
+                class="password-input"
+                style="padding: 0px"
+                :rules="rules"
+                type="password"
               />
             </div>
             <!-- <input
@@ -46,11 +68,6 @@
         </div>
         <div class="check-model-body-bot">
           <div class="check-model-body-bot-left">
-            <v-file-input
-              v-model="reviewForm.reviewImage"
-              :placeholder="fileInfo?.name"
-              @change="previewFile(reviewForm.reviewImage)"
-            />
             <!-- <v-file-input
               v-model="file"
               text="fileInfo?.name"
@@ -58,16 +75,16 @@
             /> -->
           </div>
           <div class="check-model-body-bot-right">
-            <div class="check-model-body-bot-pass">
-              <div>비밀번호 설정 :</div>
-              <input
-                v-model="reviewForm.reviewPassword"
-                class="password-input"
-                type="password"
-                placeholder="비밀번호"
-              />
-            </div>
-            <button @click="writeReview">입력 완료</button>
+            <v-btn
+              class="mx-2"
+              fab
+              dark
+              large
+              color="cyan"
+              @click="writeReview"
+            >
+              <v-icon dark> mdi-pencil </v-icon>
+            </v-btn>
           </div>
         </div>
       </div>
@@ -121,7 +138,7 @@ export default {
   data() {
     return {
       pvalue: this.value,
-      preview: '/banner/no-image.png',
+      preview: '/banner/no-img.png',
       // preview: '/banner/no-image1.png',
       // preview: '/banner/no-image2.png',
       fileInfo: null,
@@ -141,7 +158,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('review', ['registReview']),
+    ...mapActions('review', ['registReview', 'callReviews']),
     CloseCheck() {
       this.$emit('updateStatus', !this.pvalue)
       const modal = document.getElementsByClassName('check-modal')[0]
@@ -189,7 +206,7 @@ export default {
         )
       }
     },
-    writeReview() {
+    async writeReview() {
       const reviewData = new FormData()
       this.reviewForm.tags = ''
       const arr = this.$el
@@ -215,7 +232,6 @@ export default {
       reviewData.append('spotId', this.spot.spotId)
       // this.reviewForm.reviewImage.name = 'RV' + this.reviewList.length
       // console.log(tempFile.name)
-      console.log(this.reviewList.length)
       reviewData.append('reviewImage', this.reviewForm.reviewImage)
       reviewData.append('reviewContent', this.reviewForm.reviewContent)
       reviewData.append('reviewPassword', this.reviewForm.reviewPassword)
@@ -223,14 +239,40 @@ export default {
       // for (const p of reviewData.entries()) {
       //   console.log(p[0] + ',' + p[1])
       // }
-      this.registReview(reviewData)
+      await this.registReview(reviewData)
+      await this.callReviews(this.spot.spotId)
       this.$emit('updateStatus', !this.pvalue)
+      this.$emit('refresh')
     },
   },
 }
 </script>
 
 <style scoped>
+@-webkit-keyframes slide-top {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-100px);
+    transform: translateY(-100px);
+  }
+}
+@keyframes slide-top {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-100px);
+    transform: translateY(-100px);
+  }
+}
+.slide-top {
+  -webkit-animation: slide-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation: slide-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
 input {
   padding-left: 3%;
 }
@@ -238,12 +280,17 @@ input {
   /* display: none; */
   position: fixed;
   z-index: 1;
-  left: 0;
-  top: -50px;
+  padding-top: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100vw;
   height: 100vh;
+  left: 0;
+  top: 0;
   /* overflow: auto; */
-  font-size: 30px;
+  font-size: 17px;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 /* Modal Content/Box */
@@ -252,23 +299,18 @@ input {
   flex-direction: column;
   justify-content: space-between;
   background-color: white;
-  /* color: white; */
-  /* 15% from the top and centered */
-  /* margin: 15% auto;
-  padding: 15px; */
-  /* width: 35%; Could be more or less, depending on screen size */
-  /* height: 30%; */
   width: 70%;
-  height: 90%;
-  margin: 10vh auto;
+  margin: 20vh auto;
+  border: 2px solid black;
+  border-radius: 15px;
 }
 
 .check-modal-head {
   width: 100%;
   height: 15%;
-  background-color: #cbdcf0;
   display: flex;
   justify-content: space-between;
+  margin-top: 2%;
 }
 .check-modal-head-check {
   width: 90%;
@@ -294,10 +336,11 @@ input {
 
 .check-modal-body {
   width: 100%;
-  height: 80%;
+  height: 85%;
   display: flex;
   flex-direction: column;
   background-color: white;
+  border-radius: 15px;
 }
 
 .check-modal-body-head {
@@ -311,14 +354,18 @@ input {
 .check-model-body-top {
   display: flex;
   width: 100%;
+  height: 100%;
+  margin: 5% 0;
 }
 .check-modal-body-img {
-  width: 40%;
+  width: 100%;
+  height: 70%;
   max-height: 400px;
-  margin: 4% 4% 0 4%;
+  margin: 2% 2% 0 2%;
 }
 .check-modal-body-input {
-  margin: 10% 4% 4% 0;
+  width: 50%;
+  margin: 4% 4% 4% 0;
   display: flex;
   flex-direction: column;
 }
@@ -328,24 +375,28 @@ input {
   border-radius: 10px;
 }
 .check-modal-body-input-tag {
-  font-size: 20px;
+  font-size: 15px;
 }
 .check-model-body-bot {
+  height: 30%;
   display: flex;
 }
 .check-model-body-bot-left {
   width: 40%;
-  margin: 0px 4%;
+  margin: 0px 4% 0px 0px;
 }
 .check-model-body-bot-right {
+  position: relative;
+  width: 16%;
+  margin-left: 40%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 .check-model-body-bot-pass {
-  width: 60%;
-  display: flex;
+  /* width: 60%; */
   font-size: 15px;
   margin-top: auto;
+  margin-right: 30%;
 }
 
 .check-model-body-bot-pass > input {
@@ -354,21 +405,16 @@ input {
   border-radius: 10px;
   margin: auto 0 5% 5%;
 }
-.password-input[type='password'] {
+.password-input {
   font-family: '맑은고딕', '돋움';
 }
-.password-input[type='password']::placeholder {
+/* .password-input[type='password']::placeholder {
   font-family: 'Cafe24Ssurround';
-}
-.check-model-body-bot-right > button {
-  width: 150px;
-  height: 75px;
-  margin-left: 100px;
-  margin-right: 20px;
-  padding: 0 5px;
-  background-color: #a1d6e9;
-  border-radius: 10px;
-  color: white;
-  font-size: 25px;
+} */
+.theme--dark.v-btn.v-btn--has-bg {
+  background-color: rgba(5, 203, 203, 0.992);
+  position: fixed;
+  bottom: 6%;
+  right: 3%;
 }
 </style>

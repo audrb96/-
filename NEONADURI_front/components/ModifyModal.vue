@@ -114,7 +114,7 @@ export default {
   data() {
     return {
       pvalue: this.value,
-      preview: '/banner/no-image.png',
+      preview: '/banner/no-img.png',
       // preview: '/banner/no-image1.png',
       // preview: '/banner/no-image2.png',
       fileInfo: null,
@@ -233,7 +233,7 @@ export default {
       reviewData.append('reviewContent', this.reviewForm.reviewContent)
       reviewData.append('tags', this.reviewForm.tags)
       await this.changeReview(reviewData)
-      // this.callReviews(this.spot.spotId)
+      await this.callReviews(this.spot.spotId)
       this.$emit('updateStatus', !this.pvalue)
     },
     modifyImg() {
@@ -274,6 +274,8 @@ input {
   width: 70%;
   height: 90%;
   margin: 10vh auto;
+  border-radius: 15px;
+  border: 2px solid black;
 }
 
 .check-modal-head {
@@ -281,6 +283,7 @@ input {
   height: 15%;
   background-color: #cbdcf0;
   display: flex;
+  border-radius: 15px;
   justify-content: space-between;
 }
 .check-modal-head-check {

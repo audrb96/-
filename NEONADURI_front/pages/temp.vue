@@ -1,155 +1,19 @@
 <template>
-  <div class="box">
-    <div id="cart" data-totalitems="0">
-      <i class="fas fa-shopping-cart"></i>
-    </div>
+  <v-card class="mx-auto" outlined>
+    <v-list-item three-line>
+      <v-list-item-content>
+        <div class="text-overline mb-4">OVERLINE</div>
+        <v-list-item-title class="text-h5 mb-1"> Headline 5 </v-list-item-title>
+        <v-list-item-subtitle
+          >Greyhound divisely hello coldly fonwderfully</v-list-item-subtitle
+        >
+      </v-list-item-content>
 
-    <div class="page-wrapper">
-      <button id="addtocart" @click="addRoute">
-        Add to Cart
-        <span class="cart-item"></span>
-      </button>
-    </div>
-  </div>
+      <v-list-item-avatar tile size="665" color="grey"></v-list-item-avatar>
+    </v-list-item>
+
+    <v-card-actions>
+      <v-btn outlined rounded text> Button </v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
-
-<script>
-export default {
-  methods: {
-    addRoute() {
-      const button = document.getElementById('addtocart')
-      const cart = document.getElementById('cart')
-      const cartTotal = cart.getAttribute('data-totalitems')
-      const newCartTotal = parseInt(cartTotal) + 1
-      button.className += 'sendtocart'
-      setTimeout(function () {
-        button.classList.remove('sendtocart')
-        cart.className += 'shake'
-        cart.setAttribute('data-totalitems', newCartTotal)
-        setTimeout(function () {
-          cart.classList.remove('shake')
-        }, 500)
-      }, 1000)
-    },
-  },
-}
-</script>
-
-<style>
-/* html,
-body {
-  height: 100%;
-  /* min-height: 100%; */
-/* font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; */
-/* } */
-
-.box {
-  width: 100vw;
-  height: 100vh;
-}
-
-.page-wrapper {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-#addtocart {
-  padding: 20px;
-  border: none;
-  background: #d5d8e7;
-  position: relative;
-  outline: none;
-  border-radius: 5px;
-  color: #292d48;
-  font-size: 18px;
-}
-#addtocart .cart-item {
-  position: absolute;
-  height: 24px;
-  width: 24px;
-  top: -10px;
-  right: -10px;
-}
-#addtocart .cart-item:before {
-  content: '1';
-  display: block;
-  line-height: 24px;
-  height: 24px;
-  width: 24px;
-  font-size: 12px;
-  font-weight: 600;
-  background: #2bd156;
-  color: white;
-  border-radius: 20px;
-  text-align: center;
-}
-#addtocart.sendtocart .cart-item {
-  display: block;
-  animation: xAxis 1s forwards cubic-bezier(1, 0.44, 0.84, 0.165);
-}
-#addtocart.sendtocart .cart-item:before {
-  animation: yAxis 1s alternate forwards cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-#cart {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 50px;
-  height: 50px;
-  background: #292d48;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-}
-#cart i {
-  font-size: 25px;
-  color: white;
-}
-#cart:before {
-  content: attr(data-totalitems);
-  font-size: 12px;
-  font-weight: 600;
-  position: absolute;
-  top: -12px;
-  right: -12px;
-  background: #2bd156;
-  line-height: 24px;
-  padding: 0 5px;
-  height: 24px;
-  min-width: 24px;
-  color: white;
-  text-align: center;
-  border-radius: 24px;
-}
-#cart.shake {
-  animation: shakeCart 0.4s ease-in-out forwards;
-}
-
-@keyframes xAxis {
-  100% {
-    transform: translateX(calc(50vw - 105px));
-  }
-}
-@keyframes yAxis {
-  100% {
-    transform: translateY(calc(-50vh + 75px));
-  }
-}
-@keyframes shakeCart {
-  25% {
-    transform: translateX(6px);
-  }
-  50% {
-    transform: translateX(-4px);
-  }
-  75% {
-    transform: translateX(2px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-</style>

@@ -6,13 +6,6 @@
       </div>
       <div class="spot-main slide-in-right">
         <div class="spot-left">
-          <!-- <img
-            :src="
-              'https://neonaduri.s3.ap-northeast-2.amazonaws.com/' +
-              spot.spotImage
-            "
-            alt=""
-          /> -->
           <img
             :src="
               'https://neonaduri.s3.ap-northeast-2.amazonaws.com/' +
@@ -26,33 +19,65 @@
             <div class="title-text">
               {{ spot.spotName }}
             </div>
-            <div class="title-icon">
-              <v-icon @click="modifyContent">mdi-lead-pencil</v-icon>
-            </div>
           </div>
-          <div class="spot-content">
-            {{ spot.spotContent }}
-          </div>
+
           <div class="content-modify" style="display: none">
             <div class="content-modify-sub">
               <textarea :value="spot.spotContent" class="modify-input" />
-              <!-- <textarea value="임시 내용" class="modify-input" /> -->
-              <button class="modify-button" @click="contentSave">저장</button>
+              <v-btn
+                class="modify-button"
+                style="background-color: lightgreen; color: black"
+                @click="contentSave"
+                >저장</v-btn
+              >
             </div>
           </div>
-          <div class="spot-add">
-            <button class="add-btn" @click="addSpot">경유지추가</button>
+          <div class="spot-content-box">
+            <div class="spot-content">
+              <div>
+                {{ spot.spotContent }}
+              </div>
+            </div>
+            <div class="content-btns">
+              <div class="title-icon" style="z-index: 10">
+                <v-btn
+                  class="mx-2"
+                  fab
+                  dark
+                  large
+                  style="background-color: rgba(5, 203, 203, 0.992)"
+                  @click="modifyContent"
+                >
+                  <v-icon dark> mdi-pencil </v-icon>
+                </v-btn>
+              </div>
+              <div class="spot-add">
+                <!-- <button class="add-btn" @click="addSpot">경유지추가</button> -->
+                <v-btn x-large class="review-btns ml-3" @click="addSpot">
+                  경유지추가
+                </v-btn>
+              </div>
+            </div>
           </div>
         </div>
         <div class="spot-routeList">
           <draggable v-model="stopOverList">
             <transition-group>
-              <div v-for="(stopOver, i) in stopOverList" :key="i" class="spot-route">
+              <div
+                v-for="(stopOver, i) in stopOverList"
+                :key="i"
+                class="spot-route"
+              >
                 {{ stopOver.name }}
-                <v-icon class="mb-1" @click="deleteStopOver(i)">mdi-delete</v-icon>
+                <v-icon class="mb-1" @click="deleteStopOver(i)"
+                  >mdi-delete</v-icon
+                >
               </div>
-            </transition-group>    
+            </transition-group>
           </draggable>
+          <div class="spot-route-search">
+            <v-btn class="review-btns" @click="routeSearch">경로찾기</v-btn>
+          </div>
         </div>
       </div>
       <div class="spot-review">
@@ -63,6 +88,7 @@
               v-if="inputToggle"
               :value="inputToggle"
               @updateStatus="changeInput"
+              @refresh="forceRerender"
             />
             <modify-modal
               v-if="modifyToggle"
@@ -75,58 +101,58 @@
           </div>
         </div>
         <div class="spot-review-content">
-          <link
-            rel="stylesheet"
-            type="text/css"
-            href="https://cdn.shopify.com/s/files/1/2979/3338/files/UGC-style.css"
-          />
-          <script
-            type="text/javascript"
-            src="https://cdn.shopify.com/s/files/1/2979/3338/files/UGC_-_new_v.3.js"
-          ></script>
-          <!--<script type="text/javascript" src="https://cdn.shopify.com/s/files/1/2979/3338/files/UGC-js-2.0-min.js"></script> -->
-          <div class="slick-wrapper home-insta">
-            <div class="slider card-slider slick-slider">
-              <div
-                v-for="(review, idx) in reviewList"
-                :key="idx"
-                class="card-slider-item"
-                @mouseleave="focusOut(idx)"
-              >
-                <img
-                  :src="
-                    'https://neonaduri.s3.ap-northeast-2.amazonaws.com/' +
-                    review.reviewImage
-                  "
-                  style="width: 100%; height: 45%"
-                  alt="이미지"
-                />
-                <div class="insta-post" style="height: 55%">
-                  <div>
-                    <strong>
-                      <div style="font-size: 20px">
-                        {{ review.reviewContent }}
-                      </div>
-                    </strong>
-                    <br />
-                    <div class="tag-box">
-                      <div
-                        v-for="(tag, i) in reviewList[idx].tagContents"
-                        :key="i"
-                      >
-                        #{{ tag }}
-                      </div>
+          <div class="left-button">
+            <v-icon x-large @click="countDown"
+              >mdi-arrow-left-circle-outline</v-icon
+            >
+          </div>
+          <div
+            v-for="(review, i) in reviewList.slice(count, count + 3)"
+            :key="i"
+          >
+            <v-card class="mx-auto my-12" max-width="374">
+              <template slot="progress">
+                <v-progress-linear
+                  color="deep-purple"
+                  height="10"
+                  indeterminate
+                ></v-progress-linear>
+              </template>
+
+              <v-img
+                height="250"
+                :src="
+                  'https://neonaduri.s3.ap-northeast-2.amazonaws.com/' +
+                  review.reviewImage
+                "
+              ></v-img>
+
+              <v-card-title>{{ review.reviewContent }}</v-card-title>
+
+              <v-divider class="mx-4"></v-divider>
+
+              <v-card-text>
+                <v-chip-group
+                  active-class="deep-purple accent-4 white--text"
+                  column
+                >
+                  <div class="tag-box">
+                    <div
+                      v-for="(tag, index) in reviewList[count + i].tagContents"
+                      :key="index"
+                      class="tags"
+                    >
+                      #{{ tag }}
                     </div>
                   </div>
-                </div>
+                </v-chip-group>
+              </v-card-text>
+
+              <v-card-actions style="justify-content: flex-end">
                 <div class="password-main">
                   <div class="password-content">
                     <div class="password-container" tabindex="1">
-                      <div
-                        class="search-container"
-                        tabindex="1"
-                        @mouseover="focusOn(idx)"
-                      >
+                      <div class="search-container" tabindex="1">
                         <input
                           :class="
                             `password-input password-input` + review.reviewId
@@ -135,20 +161,23 @@
                           type="password"
                         />
                         <a class="password-button">
-                          <v-icon :id="'key-icon' + idx">mdi-key</v-icon>
                           <v-icon
-                            :id="'pencil-icon' + idx"
-                            style="display: none"
-                            @click="enterPass(review, idx)"
-                            >mdi-lead-pencil</v-icon
+                            :id="'key-icon' + (count + i)"
+                            @click="enterPass(review, count + i)"
+                            >mdi-key</v-icon
                           >
                         </a>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </v-card-actions>
+            </v-card>
+          </div>
+          <div class="right-button">
+            <v-icon x-large @click="countUp"
+              >mdi-arrow-right-circle-outline</v-icon
+            >
           </div>
         </div>
       </div>
@@ -156,18 +185,21 @@
     <navbar-component> </navbar-component>
   </div>
 </template>
+
 <script>
 import { mapActions, mapState, mapMutations } from 'vuex'
 import draggable from 'vuedraggable'
 import ModifyModal from '~/components/ModifyModal.vue'
 
 export default {
-  components: { ModifyModal,draggable },
+  components: { ModifyModal, draggable },
   data() {
     return {
       inputToggle: false,
       modifyToggle: false,
       stopOverList: [],
+      reviewForm: [],
+      count: 0,
     }
   },
   computed: {
@@ -175,19 +207,21 @@ export default {
     ...mapState('review', ['reviewList']),
     ...mapState('route', ['routeList']),
   },
+  watch: {
+    stopOverList() {
+      this.CHANGE_ROUTE(this.stopOverList)
+    },
+  },
   created() {
     // 불러올 때 review_id도 불러옴
     this.callReviews(this.spot.spotId)
     this.stopOverList = JSON.parse(JSON.stringify(this.routeList))
   },
+
   mounted() {},
-  watch:{
-    stopOverList(){
-      this.CHANGE_ROUTE(this.stopOverList)
-    }
-  },
+
   methods: {
-    ...mapMutations('route', ['ADD_ROUTE', 'DELETE_ROUTE','CHANGE_ROUTE']),
+    ...mapMutations('route', ['ADD_ROUTE', 'DELETE_ROUTE', 'CHANGE_ROUTE']),
     ...mapMutations('review', ['CLEAR_REVIEW', 'SET_REVIEW']),
     ...mapActions('spot', ['changeContent']),
     ...mapActions('review', ['callReviews', 'confirmPass']),
@@ -201,14 +235,6 @@ export default {
       this.modifyToggle = !this.modifyToggle
     },
 
-    focusOn(idx) {
-      this.$el.querySelector(`#key-icon${idx}`).style.display = 'none'
-      this.$el.querySelector(`#pencil-icon${idx}`).style.display = 'block'
-    },
-    focusOut(idx) {
-      this.$el.querySelector(`#key-icon${idx}`).style.display = 'block'
-      this.$el.querySelector(`#pencil-icon${idx}`).style.display = 'none'
-    },
     modifyContent() {
       this.$el.querySelector(`.content-modify`).style.display = 'block'
       this.$el.querySelector(`.spot-content`).style.display = 'none'
@@ -258,7 +284,27 @@ export default {
     deleteStopOver(index) {
       this.DELETE_ROUTE(index)
       // 지울 부분을 리스트에서 제거
-      this.stopOverList.splice(index, 1)
+    },
+    routeSearch() {
+      this.$router.push('/findRoute')
+    },
+    spotSearch() {
+      this.$router.push('/search/searchResult')
+    },
+    forceRerender() {
+      this.$forceUpdate()
+    },
+    countDown() {
+      document.getElementsByClassName(`password-input`)[0].value = ''
+      document.getElementsByClassName(`password-input`)[1].value = ''
+      document.getElementsByClassName(`password-input`)[2].value = ''
+      this.count = Math.max(this.count - 1, 0)
+    },
+    countUp() {
+      document.getElementsByClassName(`password-input`)[0].value = ''
+      document.getElementsByClassName(`password-input`)[1].value = ''
+      document.getElementsByClassName(`password-input`)[2].value = ''
+      this.count = Math.min(this.count + 1, this.reviewList.length - 3)
     },
   },
 }
@@ -324,16 +370,23 @@ export default {
   }
 }
 @font-face {
-  font-family: 'Cafe24Ssurround';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff')
+  font-family: 'GmarketSansMedium';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
     format('woff');
-  font-weight: bold;
+  font-weight: normal;
   font-style: normal;
 }
-* {
-  font-family: 'Cafe24Ssurround';
+
+@font-face {
+  font-family: 'SEBANG_Gothic_Bold';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2104@1.0/SEBANG_Gothic_Bold.woff')
+    format('woff');
+  font-weight: normal;
+  font-style: normal;
 }
+
 .review {
+  font-family: 'GmarketSansMedium';
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -371,6 +424,9 @@ export default {
   top: 7%;
   bottom: inherit;
 }
+.review-btns {
+  background-color: #96c8f4 !important;
+}
 .spot-left > img {
   width: 40.2vw;
   height: 51.6vh;
@@ -379,7 +435,6 @@ export default {
   position: absolute;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   width: 40%;
   height: 70%;
   max-height: 100%;
@@ -396,6 +451,15 @@ export default {
   top: 8%;
   right: 2%;
 }
+.spot-route-search {
+  height: 7%;
+  display: flex;
+  justify-content: flex-end;
+  margin: 15px 0 0 15px;
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+}
 .spot-route {
   margin-bottom: 3%;
   cursor: pointer;
@@ -407,6 +471,7 @@ export default {
   font-size: 35px;
   font-weight: bold;
   margin-bottom: 20px;
+  font-family: 'SEBANG_Gothic_Bold';
 }
 .title-icon {
   margin-left: 1%;
@@ -415,16 +480,15 @@ export default {
 .spot-content {
   width: 70%;
   height: 60%;
-  margin-bottom: 40px;
 }
-.content-modify {
-  height: 60%;
+.content-btns {
+  display: flex;
 }
 .content-modify-sub {
   display: flex;
 }
 .modify-input {
-  width: 70%;
+  width: 55%;
   margin-bottom: 40px;
 }
 .modify-button {
@@ -438,6 +502,7 @@ export default {
 .spot-add {
   display: flex;
   justify-content: flex-start;
+  align-content: flex-start;
   margin-right: 10%;
 }
 .add-btn {
@@ -446,34 +511,6 @@ export default {
   border-radius: 5px;
   color: white;
 }
-
-/* .spot-img {
-  text-align: center;
-  margin: 40px 0;
-}
-.spot-img > img {
-  width: 500px;
-}
-.spot-main {
-  display: flex;
-  justify-content: space-between;
-}
-
-.content-modify-sub {
-  display: flex;
-}
-.modify-input {
-  width: 70%;
-  margin-bottom: 40px;
-}
-.modify-button {
-  height: 5%;
-  margin: 15px 0 0 15px;
-  padding: 5px;
-  background-color: #45a9c8;
-  border-radius: 5px;
-  color: white;
-} */
 .spot-review {
   width: 85%;
   margin: auto;
@@ -482,98 +519,36 @@ export default {
 .spot-review-top {
   display: flex;
   align-items: center;
+  margin-left: 4%;
 }
 .spot-review-title {
   font-size: 25px;
   font-weight: bold;
   margin: 1% 1% 0.5% 1%;
 }
-@media (max-width: 420px) {
-  .card-slider-item {
-    width: 100%;
-  }
+.left-button {
+  display: flex;
+  align-items: center;
 }
-.password-main {
-  box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  font-family: 'Cabin';
-  height: 10%;
+.right-button {
+  display: flex;
+  align-items: center;
 }
-
-.password-content {
-  height: 100%;
+.spot-review-content {
+  display: flex;
+  justify-content: space-between;
 }
-
-.password-container {
-  display: block;
-  max-width: 900px;
-  margin: auto;
-  padding: 5px;
-  height: 100%;
-  outline: none;
-}
-
-.search-container {
-  overflow: hidden;
-  float: right;
-  height: 2.5em;
-  width: 2.5em;
-  border-radius: 2em;
-  margin-bottom: 13%;
-  box-shadow: 0 0 5px #6a5d4f;
-  -moz-transition: all 0.35s;
-  -webkit-transition: all 0.35s;
-  transition: 0ms;
-}
-.search-container:hover,
-.search-container:focus,
-.search-container:focus-within {
-  width: 10em;
-  border-radius: 5px 2em 2em 5px;
-  outline: none;
-}
-.search-container:hover .password-input,
-.search-container:focus .password-input,
-.search-container:focus-within .password-input {
-  display: inline-block;
-  width: 7em;
-}
-
-.insta-post {
-  max-height: 230px;
-}
-
 .tag-box {
+  width: 100%;
+  height: 20%;
   display: flex;
 }
-
-.password-input {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  appearance: none;
-  float: left;
-  width: 0em;
-  height: 2em;
-  margin: 0.3em;
-  margin-right: -4.5em;
-  background: #fff;
-  color: #6a5d4f;
-  font-size: 1em;
-  font-weight: 600;
-  padding: 0px;
-  border: 0;
-  border-radius: 5px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2) inset;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
-  -moz-transition: all 0.25s;
-  -webkit-transition: all 0.25s;
-  transition: 0ms;
+.tags {
+  margin-right: 3%;
 }
-.password-input:focus {
-  outline: none;
-  box-shadow: 0 -1px 1px rgba(255, 255, 255, 0.25),
-    0 1px 5px rgba(0, 0, 0, 0.15);
+.password-main {
+  display: flex;
+  align-items: flex-end;
 }
 .password-input[type='password'] {
   font-family: '맑은고딕', '돋움';
@@ -581,7 +556,6 @@ export default {
 .password-input[type='password']::placeholder {
   font-family: 'Cafe24Ssurround';
 }
-
 .password-button {
   display: flex;
   align-items: center;
@@ -593,7 +567,7 @@ export default {
   /* background: #6a5d4f; */
   text-align: center;
   font-size: 2em;
-  color: #eaf2f9;
+  color: white;
 
   border-radius: 50%;
   cursor: pointer;
@@ -601,20 +575,25 @@ export default {
     0 1px 1px rgba(0, 0, 0, 0.25); */
   /* text-shadow: 0 -2px 1px rgba(0, 0, 0, 0.3); */
 }
-.password-button:active {
-  border: 0 !important;
-  text-shadow: 0 0 0;
+.search-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
-.password-button i {
-  font-size: 85%;
-}
-.button-icon {
-  display: none;
+.search-container > input {
+  width: 40%;
 }
 .Pass {
   display: block;
 }
 .Enter {
   display: block;
+}
+.v-btn--fab.v-size--large {
+  width: 48px;
+  height: 48px;
+}
+.mdi:before {
+  font-size: 24px;
 }
 </style>

@@ -37,8 +37,8 @@ export const mutations = {
 export const getters = {}
 
 export const actions = {
-  callReviews({ commit }, spotId) {
-    getReviews(
+  async callReviews({ commit }, spotId) {
+    await getReviews(
       spotId,
       ({ data }) => {
         data.reviewContainsTags.forEach((element) => {
@@ -63,10 +63,12 @@ export const actions = {
       }
     )
   },
-  async changeReview({ commit }, review) {
-    await modifyReview(
+  changeReview({ commit }, review) {
+    modifyReview(
       review,
       ({ data }) => {
+        console.log(11111)
+        console.log(review)
         console.log(data)
       },
       (error) => {
