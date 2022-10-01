@@ -102,9 +102,7 @@
         </div>
         <div class="spot-review-content">
           <div class="left-button">
-            <v-icon x-large @click="countDown"
-              >mdi-arrow-left-circle-outline</v-icon
-            >
+            <v-icon x-large @click="countDown">mdi-chevron-left</v-icon>
           </div>
           <div
             v-for="(review, i) in reviewList.slice(count, count + 3)"
@@ -118,7 +116,6 @@
                   indeterminate
                 ></v-progress-linear>
               </template>
-
               <v-img
                 height="250"
                 :src="
@@ -126,11 +123,8 @@
                   review.reviewImage
                 "
               ></v-img>
-
               <v-card-title>{{ review.reviewContent }}</v-card-title>
-
               <v-divider class="mx-4"></v-divider>
-
               <v-card-text>
                 <v-chip-group
                   active-class="deep-purple accent-4 white--text"
@@ -175,9 +169,7 @@
             </v-card>
           </div>
           <div class="right-button">
-            <v-icon x-large @click="countUp"
-              >mdi-arrow-right-circle-outline</v-icon
-            >
+            <v-icon x-large @click="countUp">mdi-chevron-right</v-icon>
           </div>
         </div>
       </div>
@@ -449,7 +441,7 @@ export default {
   justify-content: flex-start;
   height: 55%;
   top: 8%;
-  right: 2%;
+  right: 1.3%;
 }
 .spot-route-search {
   height: 7%;
@@ -533,6 +525,9 @@ export default {
 .right-button {
   display: flex;
   align-items: center;
+}
+.mdi[data-v-30921a58]:before {
+  font-size: 50px;
 }
 .spot-review-content {
   display: flex;

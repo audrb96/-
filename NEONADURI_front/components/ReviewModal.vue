@@ -1,6 +1,6 @@
 <template>
   <div class="check-modal">
-    <div class="check-modal-box slide-top">
+    <div id="check-modal-box" class="check-modal-box slide-top">
       <div class="check-modal-head">
         <div></div>
         <div class="check-modal-head-check">
@@ -160,6 +160,7 @@ export default {
   methods: {
     ...mapActions('review', ['registReview', 'callReviews']),
     CloseCheck() {
+      // document.getElementById('check-modal-box').className += 'slide-out-bottom'
       this.$emit('updateStatus', !this.pvalue)
       const modal = document.getElementsByClassName('check-modal')[0]
       const span = document.getElementsByClassName('check-modal-head-close')[0]
@@ -269,9 +270,38 @@ export default {
     transform: translateY(-100px);
   }
 }
+@-webkit-keyframes slide-out-bottom {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: translateY(1000px);
+    transform: translateY(1000px);
+    opacity: 0;
+  }
+}
+@keyframes slide-out-bottom {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: translateY(1000px);
+    transform: translateY(1000px);
+    opacity: 0;
+  }
+}
 .slide-top {
   -webkit-animation: slide-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   animation: slide-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.slide-out-bottom {
+  -webkit-animation: slide-out-bottom 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53)
+    both;
+  animation: slide-out-bottom 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
 }
 input {
   padding-left: 3%;
@@ -408,9 +438,6 @@ input {
 .password-input {
   font-family: '맑은고딕', '돋움';
 }
-/* .password-input[type='password']::placeholder {
-  font-family: 'Cafe24Ssurround';
-} */
 .theme--dark.v-btn.v-btn--has-bg {
   background-color: rgba(5, 203, 203, 0.992);
   position: fixed;

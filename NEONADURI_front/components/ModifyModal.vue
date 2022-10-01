@@ -1,39 +1,60 @@
 <template>
   <div class="check-modal">
-    <div class="check-modal-box">
+    <div class="check-modal-box slide-top">
       <div class="check-modal-head">
         <div></div>
         <div class="check-modal-head-check">
-          <img class="head-logo" src="/logo/modify-review-logo.png" alt="" />
+          <img
+            class="head-logo"
+            style="width: 40%"
+            src="/logo/modify-review-logo.png"
+            alt=""
+          />
         </div>
         <div class="check-modal-head-close" @click="CloseCheck">
-          <v-icon large>mdi-close-circle-outline</v-icon>
+          <v-icon style="margin-right: 40%" large>mdi-close</v-icon>
         </div>
       </div>
       <div class="check-modal-body">
         <div class="check-model-body-top">
-          <img
-            v-if="flag"
-            :src="preview"
-            class="check-modal-body-img"
-            alt="없음"
-          />
-          <img
-            v-else
-            :src="
-              'https://neonaduri.s3.ap-northeast-2.amazonaws.com/' +
-              review.reviewImage
-            "
-            alt=""
-            class="head-logo"
-          />
+          <div class="check-model-body-left">
+            <img
+              v-if="flag"
+              :src="preview"
+              class="check-modal-body-img"
+              alt="없음"
+            />
+            <img
+              v-else
+              :src="
+                'https://neonaduri.s3.ap-northeast-2.amazonaws.com/' +
+                review.reviewImage
+              "
+              alt=""
+              style="width: 90%"
+              class="check-modal-body-img"
+            />
+            <v-file-input
+              v-if="flag"
+              v-model="reviewForm.reviewImage"
+              :placeholder="fileInfo?.name"
+              @change="previewFile(reviewForm.reviewImage)"
+            />
+            <div v-else class="modify-box">
+              <button class="modify-img" @click="modifyImg">사진 수정</button>
+            </div>
+          </div>
           <div class="check-modal-body-input">
-            <input
+            <div class="input-name">한줄평</div>
+
+            <v-text-field
               v-model="reviewForm.reviewContent"
               class="check-modal-body-input-line"
               type="text"
-              placeholder="한 줄 입력하세요"
+              style="padding: 0px flex:none"
             />
+            <div class="input-name">태그</div>
+
             <div class="check-modal-body-input-tag">
               <!-- <tagify-component></tagify-component> -->
               <Tags
@@ -48,19 +69,18 @@
           </div>
         </div>
         <div class="check-model-body-bot">
-          <div class="check-model-body-bot-left">
-            <v-file-input
-              v-if="flag"
-              v-model="reviewForm.reviewImage"
-              :placeholder="fileInfo?.name"
-              @change="previewFile(reviewForm.reviewImage)"
-            />
-            <div v-else class="modify-box">
-              <button class="modify-img" @click="modifyImg">사진 수정</button>
-            </div>
-          </div>
+          <div class="check-model-body-bot-left"></div>
           <div class="check-model-body-bot-right">
-            <button @click="modifyReview">수정 완료</button>
+            <v-btn
+              class="mx-2"
+              fab
+              dark
+              large
+              color="cyan"
+              @click="modifyReview"
+            >
+              <v-icon dark> mdi-pencil </v-icon>
+            </v-btn>
           </div>
         </div>
       </div>
@@ -244,6 +264,30 @@ export default {
 </script>
 
 <style scoped>
+@-webkit-keyframes slide-top {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-100px);
+    transform: translateY(-100px);
+  }
+}
+@keyframes slide-top {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-100px);
+    transform: translateY(-100px);
+  }
+}
+.slide-top {
+  -webkit-animation: slide-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation: slide-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
 input {
   padding-left: 3%;
 }
@@ -251,12 +295,17 @@ input {
   /* display: none; */
   position: fixed;
   z-index: 1;
-  left: 0;
-  top: -50px;
+  padding-top: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100vw;
   height: 100vh;
+  left: 0;
+  top: 0;
   /* overflow: auto; */
-  font-size: 30px;
+  font-size: 17px;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 /* Modal Content/Box */
@@ -272,8 +321,7 @@ input {
   /* width: 35%; Could be more or less, depending on screen size */
   /* height: 30%; */
   width: 70%;
-  height: 90%;
-  margin: 10vh auto;
+  margin: 20vh auto;
   border-radius: 15px;
   border: 2px solid black;
 }
@@ -281,10 +329,9 @@ input {
 .check-modal-head {
   width: 100%;
   height: 15%;
-  background-color: #cbdcf0;
   display: flex;
-  border-radius: 15px;
   justify-content: space-between;
+  margin-top: 2%;
 }
 .check-modal-head-check {
   width: 90%;
@@ -310,10 +357,11 @@ input {
 
 .check-modal-body {
   width: 100%;
-  height: 80%;
+  height: 85%;
   display: flex;
   flex-direction: column;
   background-color: white;
+  border-radius: 15px;
 }
 
 .check-modal-body-head {
@@ -327,25 +375,33 @@ input {
 .check-model-body-top {
   display: flex;
   width: 100%;
+  height: 100%;
+  margin: 5% 0;
+}
+.check-model-body-left {
+  width: 50%;
 }
 .check-modal-body-img {
-  width: 40%;
+  width: 100%;
+  height: 70%;
   max-height: 400px;
-  margin: 4% 4% 0 4%;
+  margin: 2% 2% 0 2%;
 }
 .check-modal-body-input {
-  margin: 10% 4% 4% 0;
+  width: 50%;
+  margin: 4% 4% 4% 0;
   display: flex;
   flex-direction: column;
 }
 .modify-box {
   display: flex;
   justify-content: flex-end;
+  margin-right: 10%;
 }
 .modify-img {
   margin-top: 20px;
   font-size: 15px;
-  background-color: #a1d6e9;
+  background-color: #96c8f4;
   padding: 10px;
   border-radius: 5px;
   color: white;
@@ -357,44 +413,33 @@ input {
   border-radius: 10px;
 }
 .check-modal-body-input-tag {
-  font-size: 20px;
+  font-size: 15px;
 }
 .check-model-body-bot {
+  height: 30%;
   display: flex;
 }
 .check-model-body-bot-left {
   width: 40%;
-  margin: 0px 4%;
+  margin: 0px 4% 0px 0px;
 }
 .check-model-body-bot-right {
-  margin-left: 25%;
-}
-.check-model-body-bot-pass {
-  width: 60%;
+  position: relative;
+  width: 16%;
+  margin-left: 40%;
   display: flex;
-  font-size: 15px;
-  margin-top: auto;
+  justify-content: flex-end;
 }
-
 .check-model-body-bot-pass > input {
   width: 50%;
   border: 2px solid #a1d6e9;
   border-radius: 10px;
   margin: auto 0 5% 5%;
 }
-.password-input[type='password'] {
-  font-family: '맑은고딕', '돋움';
-}
-.password-input[type='password']::placeholder {
-  font-family: 'Cafe24Ssurround';
-}
-.check-model-body-bot-right > button {
-  width: 150px;
-  height: 75px;
-  padding: 0 5px;
-  background-color: #a1d6e9;
-  border-radius: 10px;
-  color: white;
-  font-size: 25px;
+.theme--dark.v-btn.v-btn--has-bg {
+  background-color: rgba(5, 203, 203, 0.992);
+  position: fixed;
+  bottom: 6%;
+  right: 3%;
 }
 </style>
