@@ -5,7 +5,7 @@
 // export default ({ store, req, isDev }) => {
 //   createPersistedState({
 //     key: 'neonaduriStore',
-//     paths: ['spot'],
+//     paths: ['statistics'],
 //     storage: {
 //       getItem: (key) =>
 //         process.client

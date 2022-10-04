@@ -4,7 +4,15 @@
       <img src="/banner/statistics-logo2.png" alt="banner" class="banner" />
     </div>
     <div class="white-back slide-in-right">
-      <div v-show="statisticsClass === 'sightNum'" id="myMap"></div>
+      <div v-show="statisticsClass === 'sightNum'" class="map-box">
+        <div id="myMap"></div>
+        <div class="map-right">
+          <div class="map-title">지역 별 여행객들의 여행 횟수입니다.</div>
+          <div class="map-desc">HOT한 여행지가 어딘지 확인해보세요!</div>
+          <div class="map-desc">사람이 많은 게 싫다구요?</div>
+          <div class="map-desc">우리만 아는 꿀여행지가 어딜지 찾아봐요!</div>
+        </div>
+      </div>
       <div v-show="statisticsClass === 'object'" id="wordCloud">
         <vue-word-cloud
           style="height: 40vh; width: 70vw"
@@ -16,6 +24,12 @@
       </div>
       <div v-show="statisticsClass === 'satisfaction'" class="sat-box">
         <canvas id="myChart" width="800" height="450"></canvas>
+        <div>
+          <div class="sat-title">여행을 할때, 무엇이 중요하신가요?</div>
+          <div class="sat-desc">물가를 비교해서 가성비 여행이 가고싶다!</div>
+          <div class="sat-desc">역시 여행은 먹으러 가는 거지!</div>
+          <div class="sat-desc">자연을 보면서 힐링하는 여행이 좋아!</div>
+        </div>
       </div>
       <div class="buttonPlace">
         <div>
@@ -138,10 +152,10 @@ export default {
     },
   },
   created() {},
-  mounted() {
-    this.fillSat()
+  async mounted() {
     // Initialize the echarts instance based on the prepared dom
-    this.mapopen()
+    await this.mapopen()
+    this.fillSat()
   },
   methods: {
     fillSat() {
@@ -185,7 +199,6 @@ export default {
           maintainAspectRatio: true,
         },
       })
-      console.log(this.myChart)
     },
     ...mapActions('statistics', [
       'callSatList',
@@ -338,7 +351,11 @@ export default {
   font-weight: normal;
   font-style: normal;
 }
-
+.map-box {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
 .btn2 {
   cursor: pointer;
   width: 100%;
@@ -354,7 +371,21 @@ export default {
   /* border: 1px solid black; */
   border-radius: 10%;
 }
+.map-right {
+  margin-top: 5%;
+  margin-left: 3%;
+}
 
+.map-title {
+  font-family: 'SEBANG_Gothic_Bold';
+  font-size: 40px;
+  margin-bottom: 5%;
+}
+.map-desc {
+  font-family: 'GmarketSansMedium';
+  font-size: 20px;
+  margin-bottom: 2%;
+}
 .btn2::before {
   content: '';
   position: absolute;
@@ -448,7 +479,17 @@ a:active {
     opacity: 1;
   }
 }
+.sat-title {
+  margin-top: 10%;
+  margin-bottom: 10%;
+  font-family: 'SEBANG_Gothic_Bold';
+  font-size: 20px;
+}
 
+.sat-desc {
+  font-family: 'GmarketSansMedium';
+  margin-bottom: 5%;
+}
 .selected {
   position: absolute;
   top: 5vh;
@@ -484,6 +525,7 @@ a:active {
 }
 .sat-box {
   position: absolute;
+  display: flex;
   left: 10%;
   top: 6%;
 }
@@ -506,7 +548,7 @@ a:active {
   padding-top: 10px;
   height: 100%;
   width: 40%;
-  left: 10%;
+  /* left: 3%; */
 }
 
 #main {

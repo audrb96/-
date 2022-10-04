@@ -86,8 +86,8 @@ export const getters = {
 }
 
 export const actions = {
-  callSatList({ commit }) {
-    getSat(
+  async callSatList({ commit }) {
+    await getSat(
       ({ data }) => {
         commit('SET_SAT', data)
       },
@@ -96,8 +96,8 @@ export const actions = {
       }
     )
   },
-  callSelList({ commit }) {
-    getSel(
+  async callSelList({ commit }) {
+    await getSel(
       ({ data }) => {
         commit('SET_SEL', data)
       },
