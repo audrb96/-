@@ -11,39 +11,44 @@
           :words="words"
           :color="([, selPercent]) => colorPick(selPercent)"
           font-family="GmarketSansMedium"
-          font-size-ratio="5"
+          :font-size-ratio="5"
         />
       </div>
-      <div v-show="statisticsClass === 'satisfaction'">
-        <div id="main"></div>
+      <div v-show="statisticsClass === 'satisfaction'" class="sat-box">
+        <div id="main" style="font-family: 'GmarketSansMedium'">
+          <line-chart
+            :chart-data="chartData"
+            :width="500"
+            :height="300"
+            :chart-options="options"
+          >
+          </line-chart>
+        </div>
       </div>
       <div class="buttonPlace">
         <div>
-          <a
-            href="#"
+          <div
             :class="{ btn2: buttonActive[0], btnActive: !buttonActive[0] }"
             @click="changePage(0)"
           >
             여행 횟수
-          </a>
+          </div>
         </div>
         <div>
-          <a
-            href="#"
+          <div
             :class="{ btn2: buttonActive[1], btnActive: !buttonActive[1] }"
             @click="changePage(1)"
           >
             관광 목적
-          </a>
+          </div>
         </div>
         <div>
-          <a
-            href="#"
+          <div
             :class="{ btn2: buttonActive[2], btnActive: !buttonActive[2] }"
             @click="changePage(2)"
           >
             만족도
-          </a>
+          </div>
         </div>
       </div>
     </div>
@@ -54,7 +59,7 @@
 <script>
 import * as echarts from 'echarts' // echart를 전역으로 불러옴
 import VueWordCloud from 'vuewordcloud'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 
 export default {
   name: '',
@@ -71,11 +76,11 @@ export default {
       ],
       statisticsClass: 'sightNum',
       fontSizeMapper: (word) => Math.log2(word.value) * 5,
-      priceList: [],
-      foodList: [],
-      natureList: [],
-
       colorIndex: 4,
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+      },
     }
   },
   computed: {
@@ -86,13 +91,56 @@ export default {
       'koreaMap',
       'introData', // 지도의 범례를 위한 값. 최대값과 최솟값 가짐
     ]),
+    ...mapGetters('statistics', ['priceList', 'foodList', 'natureList']),
+    chartData() {
+      const chartData = {
+        labels: [
+          '서울',
+          '부산',
+          '대구',
+          '인천',
+          '광주',
+          '대전',
+          '울산',
+          '세종',
+          '경기',
+          '강원',
+          '충북',
+          '충남',
+          '전북',
+          '전남',
+          '경북',
+          '경남',
+          '제주',
+        ],
+        datasets: [
+          {
+            label: '물가',
+            backgroundColor: '#f87979',
+            borderColor: '#f87979',
+            data: this.priceList,
+          },
+          {
+            label: '식당 및 음식',
+            backgroundColor: '#00FFFF',
+            borderColor: '#00FFFF',
+            data: this.foodList,
+          },
+          {
+            label: '자연경관',
+            backgroundColor: '#FF00FF',
+            borderColor: '#FF00FF',
+            data: this.natureList,
+          },
+        ],
+      }
+      return chartData
+    },
   },
   watch: {
     statisticsClass(newVal, oldVal) {
       if (newVal === 'sightNum') {
         this.mapopen()
-      } else if (newVal === 'satisfaction') {
-        this.statisticsChange()
       }
     },
   },
@@ -100,7 +148,6 @@ export default {
   mounted() {
     // Initialize the echarts instance based on the prepared dom
     this.mapopen()
-    this.statisticsChange()
   },
   methods: {
     ...mapActions('statistics', [
@@ -108,99 +155,6 @@ export default {
       'callSelList',
       'callVisitedList',
     ]),
-    statisticsChange() {
-      this.priceList = []
-      this.foodList = []
-      this.natureList = []
-
-      // data 분류
-      this.satList.forEach((element) => {
-        if (element.satType === '0') {
-          this.priceList.push(element.satScore)
-        } else if (element.satType === '1') {
-          this.foodList.push(element.satScore)
-        }
-        if (element.satType === '2') {
-          this.natureList.push(element.satScore)
-        }
-      })
-
-      if (this.statisticsClass === 'satisfaction') {
-        const myChart = echarts.init(document.getElementById('main'))
-        // Specify the configuration items and data for the chart
-        const option = {
-          tooltip: {},
-          legend: {
-            data: ['물가', '식당 및 음식', '자연경관'],
-          },
-          xAxis: {
-            data: [
-              '서울',
-              '부산',
-              '대구',
-              '인천',
-              '광주',
-              '대전',
-              '울산',
-              '세종',
-              '경기',
-              '강원',
-              '충북',
-              '충남',
-              '전북',
-              '전남',
-              '경북',
-              '경남',
-              '제주',
-            ],
-            name: '도시',
-          },
-          yAxis: [
-            {
-              type: 'value',
-              name: 'percent',
-              min: 60,
-              max: 100,
-              position: 'left',
-              axisLabel: {
-                formatter: '{value} %',
-              },
-            },
-          ],
-          series: [
-            // {
-            //   pointWidth:1
-            // }
-            // ,
-            {
-              name: '물가',
-              type: 'line',
-              // data: [15, 70, 64, 57, 87, 100]
-              data: this.priceList,
-            },
-            {
-              name: '식당 및 음식',
-              type: 'line',
-              // data: [10, 23, 5, 17, 3, 34]
-              data: this.foodList,
-            },
-            {
-              name: '자연경관',
-              type: 'line',
-              // data: [43, 33,75, 67, 93, 64]
-              data: this.natureList,
-            },
-          ],
-        }
-
-        // Display the chart using the configuration items and data just specified.
-        myChart.setOption(option)
-
-        window.onresize = function () {
-          myChart.resize()
-        }
-      }
-    },
     changePage(idx) {
       if (idx === 0) {
         this.statisticsClass = 'sightNum'
@@ -324,6 +278,7 @@ export default {
 
 <style scoped>
 .btnActive {
+  cursor: pointer;
   width: 100%;
   padding: 15px 15px;
   margin: 10px 4px;
@@ -348,6 +303,7 @@ export default {
 }
 
 .btn2 {
+  cursor: pointer;
   width: 100%;
   padding: 15px 15px;
   margin: 10px 4px;
@@ -377,7 +333,6 @@ export default {
   opacity: 0;
   transition: all 0.3s;
 }
-
 .btn2:hover {
   color: #ddf416;
 }
@@ -419,7 +374,6 @@ a:active {
   font-weight: normal;
   font-style: normal;
 }
-
 .banner-container {
   display: flex;
   justify-content: center;
@@ -491,7 +445,11 @@ a:active {
   align-items: center;
   height: 50%;
 }
-
+.sat-box {
+  position: absolute;
+  left: 10%;
+  top: 6%;
+}
 .buttonPlace {
   position: absolute;
   top: 24px;

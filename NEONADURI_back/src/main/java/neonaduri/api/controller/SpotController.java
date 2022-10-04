@@ -20,11 +20,6 @@ public class SpotController {
     private final SpotService spotService;
     private final AmazonS3Client amazonS3Client;
 
-    @GetMapping("/test")
-    public String test() {
-        return amazonS3Client.getUrl("neonaduri","spot/GE1.jfif").toString();
-    }
-
     /** A01: 특정 장소에 작성된 설명과 리뷰 출력 API */
     @GetMapping("/{spotId}")
     public ResponseEntity<SpotDetailsRes> showDetailsSpotInfo(@PathVariable("spotId") Long spotId) {

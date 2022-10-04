@@ -1,14 +1,18 @@
-import { getSpot, modifyContent, search } from '~/api/spot'
+import { getSpot, modifyContent, search, recommend } from '~/api/spot'
 
 export const state = () => ({
   query: '',
   keyword: [],
   spotList: [],
   spot: null,
+  recommendSpot: null,
   page: 0,
 })
 
 export const mutations = {
+  SET_RECOMMEND(state, spot) {
+    state.recommendSpot = spot
+  },
   SET_QUERY(state, query) {
     state.query = query
   },
@@ -97,8 +101,14 @@ export const actions = {
       }
     )
   },
-
-  // 필요한 것들
-  // 1. 선택된 spot 불러오기
-  // 2. 선택된 spot의 리뷰 불러오기
+  callRecommendSpot({ commit }) {
+    recommend(
+      ({ data }) => {
+        commit('SET_RECOMMEND', data)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  },
 }

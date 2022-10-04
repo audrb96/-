@@ -46,8 +46,7 @@ public class Spot {
     @Column(name = "spot_content")
     private String spotContent;
 
-    public void changeSpotContent(String spotContent){
+    public void changeSpotContent(String spotContent) {
         this.spotContent = spotContent;
     }
-
 }

@@ -6,18 +6,25 @@
           <div class="recommand-content">
             <div class="recommand-left">
               <img
-                src="/review/deoksugung.jpg"
+                :src="
+                  'https://neonaduri.s3.ap-northeast-2.amazonaws.com/' +
+                  recommendSpot?.spotImage
+                "
                 alt="임시"
                 class="recommand-img"
               />
-              <div>
-                <h2 style="font-family: 'SEBANG_Gothic_Bold'">동궁과 월지</h2>
+              <div class="recommend-right-box">
+                <h2 style="font-family: 'SEBANG_Gothic_Bold'">
+                  {{ recommendSpot?.spotName }}
+                </h2>
                 <br />
                 <div class="recommand-des">
-                  신라의 문무왕이 삼국을 통일한 후 궁궐을 넓게 확장해 태자가
-                  거처하도록 한 게 동궁! 밤에 보니깐 더 화려해보이네요.
+                  {{
+                    recommendSpot?.spotContent
+                      ? recommendSpot?.spotContent
+                      : '직접 내용을 채워주세요! ^0^'
+                  }}
                 </div>
-                <div>#데이트 #경주</div>
               </div>
             </div>
             <div class="top-title">
@@ -128,7 +135,7 @@ export default {
             },
             {
               icon: 'park.png',
-              name: '관광공원/허브마을',
+              name: '관광농원/허브마을',
               isSelected: false,
             },
             {
@@ -300,16 +307,17 @@ export default {
   },
   computed: {
     ...mapGetters('region', ['sidoSelect', 'sigunguSelect', 'myeonSelect']),
-    ...mapState('spot', ['page']),
+    ...mapState('spot', ['page', 'recommendSpot']),
   },
   created() {
     this.callSidos()
     this.CLEAR_QUERY()
     this.CLEAR_PAGE()
+    this.callRecommendSpot()
   },
   methods: {
     ...mapActions('region', ['callSidos', 'callSigungus', 'callMyeons']),
-    ...mapActions('spot', ['searchSpot']),
+    ...mapActions('spot', ['searchSpot', 'callRecommendSpot']),
     ...mapMutations('spot', [
       'SET_KEYWORD',
       'SET_QUERY',
@@ -404,7 +412,9 @@ export default {
   font-weight: normal;
   font-style: normal;
 }
-
+.recommend-right-box {
+  width: 60%;
+}
 .go-bottom {
   max-height: 500px;
   transition: max-height 0.6s ease-in;
@@ -594,6 +604,7 @@ export default {
   margin-bottom: 5vh;
 }
 .recommand-left {
+  width: 90%;
   display: flex;
 }
 .star-icon {

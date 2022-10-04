@@ -20,4 +20,8 @@ async function search(query, success, fail) {
   await api.get(`/api/spot/search?${query}`).then(success).catch(fail)
 }
 
-export { getSpot, modifyContent, search }
+async function recommend(success, fail) {
+  await api.get(`/api/recommendation`).then(success).catch(fail)
+}
+
+export { getSpot, modifyContent, search, recommend }
