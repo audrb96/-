@@ -7,6 +7,11 @@ server:
     key-store-password: ssafyA702
 
 spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 6
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://neonaduri-db.c2k2xt6qu8x0.ap-northeast-2.rds.amazonaws.com:3306/neonaduri?serverTimezone=Asia/Seoul

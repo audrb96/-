@@ -21,30 +21,33 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class SpotService {
 
     private final SpotRepository spotRepository;
+    private final RecommendService recommendService;
+
 
     public SpotDetailsRes getSpotDetailsInfo(Long spotId) {
 
         /* 1. fetch join을 통해 review까지 가져와서 */
         Spot spot = spotRepository.findDetailsSpotBySpotId(spotId);
+
         /* 2. review 목록에서 리뷰 내용고 태그를 꺼내와서 ReviewTagsRes로 정리해준다. */
         Set<Review> reviewSet = Optional.of(spot.getReviews()).orElse(new HashSet<>());
         List<ReviewTagsRes> reviews = reviewSet.stream()
-                    .map(review -> ReviewTagsRes.builder()
-                            .reviewId(review.getReviewId())
-                            .reviewContent(review.getReviewContent())
-                            .reviewImage(review.getReviewImage())
-                            .tagContents(review.getTags().stream()
-                                    .map(Tag::getTagContent)
-                                    .collect(Collectors.toList()))
-                            .build())
-                    .collect(Collectors.toList());
+                .map(review -> ReviewTagsRes.builder()
+                        .reviewId(review.getReviewId())
+                        .reviewContent(review.getReviewContent())
+                        .reviewImage(review.getReviewImage())
+                        .tagContents(review.getTags().stream()
+                                .map(Tag::getTagContent)
+                                .collect(Collectors.toList()))
+                        .build())
+                .collect(Collectors.toList());
 
-
+        /* 3. Spot 정보를 캐시를 해서 Recommend Service에 넣어준다*/
+        recommendService.cachingSpotData(spotId);
 
         /* 3. 마지막으로 SpotDetailsRes로 반환시켜준다. */
         return SpotDetailsRes.builder()
@@ -56,13 +59,12 @@ public class SpotService {
     }
 
     public Page<SearchSpotDto> searchSpotService(SearchSpotReq searchSpotReq, Pageable pageable) {
-        return spotRepository.searchByCon(searchSpotReq,pageable);
+        return spotRepository.searchByCon(searchSpotReq, pageable);
     }
 
-    public void putSpotContent(Long spotId, String spotContent){
+    @Transactional
+    public void putSpotContent(Long spotId, String spotContent) {
         Spot spot = spotRepository.findSpotBySpotId(spotId);
         spot.changeSpotContent(spotContent);
     }
-
-
 }

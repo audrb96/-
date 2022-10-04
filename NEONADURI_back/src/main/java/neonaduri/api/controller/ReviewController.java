@@ -31,7 +31,7 @@ public class ReviewController {
     }
 
     @PutMapping
-    public ResponseEntity<HttpStatus> modifyReview( @RequestPart(value = "reviewImage",required = false) MultipartFile reviewImage, @Valid ModifyReviewReq modifyReviewReq) throws IOException{
+    public ResponseEntity<HttpStatus> modifyReview(@RequestPart(value = "reviewImage",required = false) MultipartFile reviewImage, @Valid ModifyReviewReq modifyReviewReq) throws IOException{
         reviewService.putReview(modifyReviewReq,reviewImage);
         return ResponseEntity.ok().build();
     }
