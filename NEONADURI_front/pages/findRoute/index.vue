@@ -107,11 +107,12 @@
               <div
                 v-for="(item, index) in stopOverList"
                 :key="index"
-                style="display: flex; align-items: center; cursor: pointer;"
+                style="display: flex; align-items: center; cursor: pointer"
                 class="mt-3"
-
               >
-                <v-icon class="ml-2 mr-2">mdi-numeric-{{ index + 1 }}-box</v-icon>
+                <v-icon class="ml-2 mr-2"
+                  >mdi-numeric-{{ index + 1 }}-box</v-icon
+                >
                 <span style="font: 25px" class="mr-3">
                   {{ item.name }}
                 </span>
@@ -163,7 +164,7 @@ import { mapState, mapMutations } from 'vuex'
 import LoadingComponent from '../../components/LoadingComponent.vue'
 
 export default {
-  components: { LoadingComponent,draggable },
+  components: { LoadingComponent, draggable },
   head: {
     script: [
       {
@@ -177,10 +178,10 @@ export default {
   computed: {
     ...mapState('route', ['routeList']),
   },
-  watch:{
-    stopOverList(){
+  watch: {
+    stopOverList() {
       // console.log('바뀝니다')
-      this.CHANGE_ROUTE(this.stopOverList);
+      this.CHANGE_ROUTE(this.stopOverList)
       // console.log(JSON.stringify(this.stopOverList,null,2))
       // 먼저 그려져있던 포인트들 전부 지우기
       for (const i in this.stopOverObjectList) {
@@ -191,8 +192,8 @@ export default {
 
       // // this.stopOverList = JSON.parse(JSON.stringify(this.routeList))
 
-      this.pickStopOver();
-    }
+      this.pickStopOver()
+    },
   },
   data() {
     return {
@@ -257,7 +258,7 @@ export default {
     this.stopOverList = JSON.parse(JSON.stringify(this.routeList))
   },
   methods: {
-    ...mapMutations('route', ['DELETE_ROUTE','CHANGE_ROUTE']),
+    ...mapMutations('route', ['DELETE_ROUTE', 'CHANGE_ROUTE']),
     // 경유지 찍기
     pickStopOver() {
       for (let i = 0; i < this.stopOverList.length; i++) {
@@ -625,7 +626,7 @@ export default {
         .then(function (response) {
           resultData = response.data.properties
           resultFeatures = response.data.features
-          this.CHANGE_ROUTE(this.stopOverList);
+          this.CHANGE_ROUTE(this.stopOverList)
           this.isLoading = false
         })
         .catch((error) => {
@@ -734,8 +735,6 @@ export default {
           })
 
           this.resultMarkerArr.push(marker_p)
-
-          
         }
       }
       this.isLoading = false

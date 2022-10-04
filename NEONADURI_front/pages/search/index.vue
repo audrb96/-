@@ -377,7 +377,7 @@ export default {
       }
       this.SET_KEYWORD(this.searchWord)
       this.SET_QUERY(this.query)
-      this.$router.push('search/searchResult')
+      this.$router.push('/search/searchResult')
     },
     toggleKeyword() {
       this.keywordToggle = !this.keywordToggle

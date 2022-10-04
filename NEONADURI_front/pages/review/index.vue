@@ -526,7 +526,10 @@ export default {
   display: flex;
   align-items: center;
 }
-.mdi[data-v-30921a58]:before {
+.left-button > .mdi[data-v-30921a58]:before {
+  font-size: 50px;
+}
+.right-button > .mdi[data-v-30921a58]:before {
   font-size: 50px;
 }
 .spot-review-content {

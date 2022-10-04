@@ -33,7 +33,6 @@
               v-model="reviewForm.reviewContent"
               class="check-modal-body-input-line"
               style="padding: 0px flex:none"
-              :rules="rules"
               type="text"
             />
             <div class="input-name">태그</div>
@@ -54,7 +53,6 @@
                 v-model="reviewForm.reviewPassword"
                 class="password-input"
                 style="padding: 0px"
-                :rules="rules"
                 type="password"
               />
             </div>
@@ -89,6 +87,41 @@
         </div>
       </div>
     </div>
+    <b-modal id="create-modal" size="md" hide-footer>
+      <template #modal-title> 안내 </template>
+      <div class="d-block text-center">
+        <div>이미지를 등록해주세요!</div>
+      </div>
+      <div style="display: flex; justify-content: flex-end">
+        <b-button
+          class="mt-3"
+          variant="danger"
+          @click="$bvModal.hide('create-modal')"
+          >닫기</b-button
+        >
+      </div>
+    </b-modal>
+    <b-modal id="pass-modal" size="md" hide-footer>
+      <template #modal-title> 안내 </template>
+      <div class="d-block text-center">
+        <div>랜덤으로 비밀번호를 생성했습니다!</div>
+        <input
+          id="copy-text"
+          v-model="reviewForm.reviewPassword"
+          style="width: 30%"
+          readonly
+        />
+        <v-icon @click="copyToClipboard">mdi-content-copy</v-icon>
+      </div>
+      <div style="display: flex; justify-content: flex-end">
+        <b-button
+          class="mt-3"
+          variant="danger"
+          @click="$bvModal.hide('pass-modal')"
+          >닫기</b-button
+        >
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -146,10 +179,11 @@ export default {
       reviewForm: {
         spotId: null,
         reviewImage: null,
-        reviewContent: null,
+        reviewContent: '',
         reviewPassword: null,
         tags: '',
       },
+      flag: false,
     }
   },
   computed: {
@@ -218,7 +252,7 @@ export default {
         0,
         arr[arr.length - 1].length - 3
       )
-      console.log(this.$el.querySelector(`#tag-input`).value)
+
       arr.forEach((element) => {
         const word = element.replace('#', '')
         if (word !== '') {
@@ -230,6 +264,19 @@ export default {
         0,
         this.reviewForm.tags.length - 2
       )
+      if (this.reviewForm.reviewImage === null) {
+        this.$bvModal.show('create-modal')
+        return
+      }
+      if (this.reviewForm.reviewPassword === null) {
+        this.flag = true
+        this.reviewForm.reviewPassword = Math.random().toString(36).slice(2)
+      }
+      if (this.flag) {
+        this.$bvModal.show('pass-modal')
+        return
+      }
+
       reviewData.append('spotId', this.spot.spotId)
       // this.reviewForm.reviewImage.name = 'RV' + this.reviewList.length
       // console.log(tempFile.name)
@@ -237,13 +284,16 @@ export default {
       reviewData.append('reviewContent', this.reviewForm.reviewContent)
       reviewData.append('reviewPassword', this.reviewForm.reviewPassword)
       reviewData.append('tags', this.reviewForm.tags)
-      // for (const p of reviewData.entries()) {
-      //   console.log(p[0] + ',' + p[1])
-      // }
+
       await this.registReview(reviewData)
       await this.callReviews(this.spot.spotId)
       this.$emit('updateStatus', !this.pvalue)
       this.$emit('refresh')
+    },
+    copyToClipboard() {
+      const copyText = document.getElementById('copy-text')
+      copyText.select()
+      document.execCommand('copy')
     },
   },
 }
