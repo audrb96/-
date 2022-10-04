@@ -25,7 +25,12 @@
             @click="findTarget(e)"
           />
         </div>
-        <b-button variant="danger" class="findRoute-btn" @click="findRouteTmap"
+        <b-button
+          variant="danger"
+          class="findRoute-btn"
+          @click="
+            stopOverList.length === 0 ? findRouteNoViaTmap : findRouteTmap
+          "
           >경로 찾기</b-button
         >
         <b-form-select
@@ -181,7 +186,7 @@ export default {
   watch: {
     stopOverList() {
       // console.log('바뀝니다')
-      this.CHANGE_ROUTE(this.stopOverList)
+      this.CHANGE_ROUTE(JSON.parse(JSON.stringify(this.stopOverList)))
       // console.log(JSON.stringify(this.stopOverList,null,2))
       // 먼저 그려져있던 포인트들 전부 지우기
       for (const i in this.stopOverObjectList) {
@@ -255,10 +260,13 @@ export default {
     this.pickStopOver()
   },
   created() {
-    this.stopOverList = JSON.parse(JSON.stringify(this.routeList))
+    this.routeList.forEach((element) => {
+      this.stopOverList.push(element)
+    })
   },
   methods: {
     ...mapMutations('route', ['DELETE_ROUTE', 'CHANGE_ROUTE']),
+    findRouteNoViaTmap() {},
     // 경유지 찍기
     pickStopOver() {
       for (let i = 0; i < this.stopOverList.length; i++) {
@@ -613,7 +621,6 @@ export default {
       }
 
       dataInfo.viaPoints = viaPoints
-      console.log(dataInfo)
       let resultData = null
       let resultFeatures = null
       this.isLoading = true
@@ -626,7 +633,7 @@ export default {
         .then(function (response) {
           resultData = response.data.properties
           resultFeatures = response.data.features
-          this.CHANGE_ROUTE(this.stopOverList)
+          this.CHANGE_ROUTE(JSON.parse(JSON.stringify(this.stopOverList)))
           this.isLoading = false
         })
         .catch((error) => {

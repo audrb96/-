@@ -15,15 +15,7 @@
         />
       </div>
       <div v-show="statisticsClass === 'satisfaction'" class="sat-box">
-        <div id="main" style="font-family: 'GmarketSansMedium'">
-          <line-chart
-            :chart-data="chartData"
-            :width="500"
-            :height="300"
-            :chart-options="options"
-          >
-          </line-chart>
-        </div>
+        <canvas id="myChart" width="800" height="450"></canvas>
       </div>
       <div class="buttonPlace">
         <div>
@@ -59,6 +51,7 @@
 <script>
 import * as echarts from 'echarts' // echart를 전역으로 불러옴
 import VueWordCloud from 'vuewordcloud'
+import { Chart, registerables } from 'chart.js'
 import { mapActions, mapState, mapGetters } from 'vuex'
 
 export default {
@@ -77,10 +70,7 @@ export default {
       statisticsClass: 'sightNum',
       fontSizeMapper: (word) => Math.log2(word.value) * 5,
       colorIndex: 4,
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-      },
+      myChart: null,
     }
   },
   computed: {
@@ -119,18 +109,21 @@ export default {
             backgroundColor: '#f87979',
             borderColor: '#f87979',
             data: this.priceList,
+            borderWidth: 5,
           },
           {
             label: '식당 및 음식',
             backgroundColor: '#00FFFF',
             borderColor: '#00FFFF',
             data: this.foodList,
+            borderWidth: 5,
           },
           {
             label: '자연경관',
             backgroundColor: '#FF00FF',
             borderColor: '#FF00FF',
             data: this.natureList,
+            borderWidth: 5,
           },
         ],
       }
@@ -146,10 +139,54 @@ export default {
   },
   created() {},
   mounted() {
+    this.fillSat()
     // Initialize the echarts instance based on the prepared dom
     this.mapopen()
   },
   methods: {
+    fillSat() {
+      Chart.register(...registerables)
+
+      const ctx = document.getElementById('myChart').getContext('2d')
+      this.myChart = new Chart(ctx, {
+        type: 'line',
+        data: this.chartData,
+        options: {
+          plugins: {
+            legend: {
+              labels: {
+                // This more specific font property overrides the global property
+                font: {
+                  size: 15,
+                  family: 'GmarketSansMedium',
+                },
+              },
+            },
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: {
+                  size: 15,
+                  family: 'GmarketSansMedium',
+                },
+              },
+            },
+            y: {
+              ticks: {
+                font: {
+                  size: 15,
+                  family: 'GmarketSansMedium',
+                },
+              },
+            },
+          },
+          responsive: false,
+          maintainAspectRatio: true,
+        },
+      })
+      console.log(this.myChart)
+    },
     ...mapActions('statistics', [
       'callSatList',
       'callSelList',
