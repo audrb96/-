@@ -4,30 +4,51 @@
       <img src="/banner/statistics-logo2.png" alt="banner" class="banner" />
     </div>
     <div class="white-back slide-in-right">
-      <div  v-show="statisticsClass === 'sightNum'" id="myMap"></div>
+      <div v-show="statisticsClass === 'sightNum'" id="myMap"></div>
       <div v-show="statisticsClass === 'object'" id="wordCloud">
         <vue-word-cloud
           style="height: 40vh; width: 70vw"
           :words="words"
           :color="([, selPercent]) => colorPick(selPercent)"
           font-family="GmarketSansMedium"
-          font-size-ratio="5"
+          :font-size-ratio="5"
         />
       </div>
-      <div v-show="statisticsClass === 'satisfaction'">
-        <div id="main"></div>
+      <div v-show="statisticsClass === 'satisfaction'" class="sat-box">
+        <div id="main" style="font-family: 'GmarketSansMedium'">
+          <line-chart
+            :chart-data="chartData"
+            :width="500"
+            :height="300"
+            :chart-options="options"
+          >
+          </line-chart>
+        </div>
       </div>
       <div class="buttonPlace">
         <div>
-          <v-btn elevation="15" color="#E07B42" large @click="changePage(0)">여행 횟수</v-btn>
+          <div
+            :class="{ btn2: buttonActive[0], btnActive: !buttonActive[0] }"
+            @click="changePage(0)"
+          >
+            여행 횟수
+          </div>
         </div>
         <div>
-          <v-hover>
-            <v-btn color="#E07B42" @click="changePage(1)">관광 목적</v-btn>
-          </v-hover>
+          <div
+            :class="{ btn2: buttonActive[1], btnActive: !buttonActive[1] }"
+            @click="changePage(1)"
+          >
+            관광 목적
+          </div>
         </div>
         <div>
-          <v-btn color="#E07B42" @click="changePage(2)">만족도</v-btn>
+          <div
+            :class="{ btn2: buttonActive[2], btnActive: !buttonActive[2] }"
+            @click="changePage(2)"
+          >
+            만족도
+          </div>
         </div>
       </div>
     </div>
@@ -38,7 +59,7 @@
 <script>
 import * as echarts from 'echarts' // echart를 전역으로 불러옴
 import VueWordCloud from 'vuewordcloud'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 
 export default {
   name: '',
@@ -47,6 +68,7 @@ export default {
   },
   data() {
     return {
+      buttonActive: [false, true, true],
       statisticsOption: [
         { value: 'sightNum', text: '관광여행횟수' },
         { value: 'object', text: '관광목적' },
@@ -54,12 +76,11 @@ export default {
       ],
       statisticsClass: 'sightNum',
       fontSizeMapper: (word) => Math.log2(word.value) * 5,
-      priceList:[],
-      foodList:[],
-      natureList:[],
-
       colorIndex: 4,
-
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+      },
     }
   },
   computed: {
@@ -68,29 +89,66 @@ export default {
       'regionList',
       'satList',
       'koreaMap',
-      'introData' // 지도의 범례를 위한 값. 최대값과 최솟값 가짐
+      'introData', // 지도의 범례를 위한 값. 최대값과 최솟값 가짐
     ]),
-  },
-  watch:{
-    statisticsClass(newVal, oldVal){
-      if(newVal==='sightNum'){
-        this.mapopen();
+    ...mapGetters('statistics', ['priceList', 'foodList', 'natureList']),
+    chartData() {
+      const chartData = {
+        labels: [
+          '서울',
+          '부산',
+          '대구',
+          '인천',
+          '광주',
+          '대전',
+          '울산',
+          '세종',
+          '경기',
+          '강원',
+          '충북',
+          '충남',
+          '전북',
+          '전남',
+          '경북',
+          '경남',
+          '제주',
+        ],
+        datasets: [
+          {
+            label: '물가',
+            backgroundColor: '#f87979',
+            borderColor: '#f87979',
+            data: this.priceList,
+          },
+          {
+            label: '식당 및 음식',
+            backgroundColor: '#00FFFF',
+            borderColor: '#00FFFF',
+            data: this.foodList,
+          },
+          {
+            label: '자연경관',
+            backgroundColor: '#FF00FF',
+            borderColor: '#FF00FF',
+            data: this.natureList,
+          },
+        ],
       }
-      else if(newVal==='satisfaction'){
-        this.statisticsChange()
-      }
-    }
-  },
-  created() {
+      return chartData
     },
+  },
+  watch: {
+    statisticsClass(newVal, oldVal) {
+      if (newVal === 'sightNum') {
+        this.mapopen()
+      }
+    },
+  },
+  created() {},
   mounted() {
     // Initialize the echarts instance based on the prepared dom
-    // this.callSatList()
-    // this.callSelList()
-    // this.callVisitedList()
     this.mapopen()
-    this.statisticsChange()
-
+    console.log(this.chartData)
   },
   methods: {
     ...mapActions('statistics', [
@@ -98,127 +156,45 @@ export default {
       'callSelList',
       'callVisitedList',
     ]),
-    statisticsChange() {
-
-      this.priceList=[]
-      this.foodList=[]
-      this.natureList=[]
-
-      // data 분류
-      this.satList.forEach((element) => {
-        if (element.satType === '0') {
-          this.priceList.push(element.satScore)
-        } else if (element.satType === '1') {
-          this.foodList.push(element.satScore)
-        }
-        if (element.satType === '2') {
-          this.natureList.push(element.satScore)
-        }
-      })
-
-      if (this.statisticsClass === 'satisfaction') {
-        const myChart = echarts.init(document.getElementById('main'))
-        // Specify the configuration items and data for the chart
-        const option = {
-          tooltip: {},
-          legend: {
-            data: ['물가', '식당 및 음식', '자연경관'],
-          },
-          xAxis: {
-            data: [
-              '서울',
-              '부산',
-              '대구',
-              '인천',
-              '광주',
-              '대전',
-              '울산',
-              '세종',
-              '경기',
-              '강원',
-              '충북',
-              '충남',
-              '전북',
-              '전남',
-              '경북',
-              '경남',
-              '제주',
-            ],
-            name: '도시',
-          },
-          yAxis: [
-            {
-              type: 'value',
-              name: 'percent',
-              min: 60,
-              max: 100,
-              position: 'left',
-              axisLabel: {
-                formatter: '{value} %',
-              },
-            },
-          ],
-          series: [
-            {
-              name: '물가',
-              type: 'line',
-              // data: [15, 70, 64, 57, 87, 100]
-              data: this.priceList,
-            },
-            {
-              name: '식당 및 음식',
-              type: 'line',
-              // data: [10, 23, 5, 17, 3, 34]
-              data: this.foodList,
-            },
-            {
-              name: '자연경관',
-              type: 'line',
-              // data: [43, 33,75, 67, 93, 64]
-              data: this.natureList,
-            },
-          ],
-        }
-
-        // Display the chart using the configuration items and data just specified.
-        myChart.setOption(option)
-
-        window.onresize = function () {
-          myChart.resize();
-        };
+    changePage(idx) {
+      if (idx === 0) {
+        this.statisticsClass = 'sightNum'
+        this.buttonActive[0] = false
+        this.buttonActive[1] = true
+        this.buttonActive[2] = true
+      } else if (idx === 1) {
+        this.statisticsClass = 'object'
+        this.buttonActive[0] = true
+        this.buttonActive[1] = false
+        this.buttonActive[2] = true
+      } else {
+        this.statisticsClass = 'satisfaction'
+        this.buttonActive[0] = true
+        this.buttonActive[1] = true
+        this.buttonActive[2] = false
       }
     },
-    changePage(idx){
-      if(idx===0){
-        this.statisticsClass='sightNum'
-      }else if(idx===1){
-        this.statisticsClass='object'
-      }else{
-        this.statisticsClass='satisfaction'
-      }
-    },
-    async mapopen(){
-
+    async mapopen() {
       await this.callSatList()
       await this.callSelList()
       await this.callVisitedList()
 
-      const chartDom2 = document.getElementById('myMap');
+      const chartDom2 = document.getElementById('myMap')
 
-      const myChart2 = echarts.init(chartDom2);
+      const myChart2 = echarts.init(chartDom2)
 
       // const kr
-      const geoJson=this.koreaMap;
+      const geoJson = this.koreaMap
       myChart2.showLoading()
-      myChart2.hideLoading();
-      echarts.registerMap('korea', geoJson);
+      myChart2.hideLoading()
+      echarts.registerMap('korea', geoJson)
 
       const option = {
         title: {
           text: '대한민국 방문횟수(2021)',
           // subtext: 'Data from www.census.gov',
           // sublink: 'http://www.census.gov/popest/data/datasets.html',
-          left: 'center'
+          left: 'center',
         },
         tooltip: {
           trigger: 'item',
@@ -227,7 +203,7 @@ export default {
         },
         visualMap: {
           left: 'right',
-          top:'center',
+          top: 'center',
           min: 0,
           max: 45000,
           inRange: {
@@ -266,20 +242,20 @@ export default {
             map: 'korea',
             emphasis: {
               label: {
-                show: true
-              }
+                show: true,
+              },
             },
-            data : this.regionList
-          }
-        ]
-      };
-      myChart2.setOption(option);
+            data: this.regionList,
+          },
+        ],
+      }
+      myChart2.setOption(option)
 
-      option && myChart2.setOption(option);
+      option && myChart2.setOption(option)
 
       window.onresize = function () {
-        myChart2.resize();
-      };
+        myChart2.resize()
+      }
 
       // console.log(JSON.stringify(myChart2.getOption(),null,2))
     },
@@ -302,6 +278,96 @@ export default {
 </script>
 
 <style scoped>
+.btnActive {
+  cursor: pointer;
+  width: 100%;
+  padding: 15px 15px;
+  margin: 10px 4px;
+  color: rgb(46, 31, 31);
+  background: #ddf416;
+  font-family: 'SEBANG_Gothic_Bold';
+  text-transform: uppercase;
+  text-align: center;
+  position: relative;
+  text-decoration: none;
+  display: inline-block;
+  /* border: 1px solid black; */
+  border-radius: 10%;
+}
+
+@font-face {
+  font-family: 'SEBANG_Gothic_Bold';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2104@1.0/SEBANG_Gothic_Bold.woff')
+    format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.btn2 {
+  cursor: pointer;
+  width: 100%;
+  padding: 15px 15px;
+  margin: 10px 4px;
+  color: rgb(46, 31, 31);
+  font-family: 'SEBANG_Gothic_Bold';
+  text-transform: uppercase;
+  text-align: center;
+  position: relative;
+  text-decoration: none;
+  display: inline-block;
+  /* border: 1px solid black; */
+  border-radius: 10%;
+}
+
+.btn2::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-color: rgb(220, 38, 38);
+  -webkit-transform: scaleY(0.3);
+  transform: scaleY(0.3);
+  opacity: 0;
+  transition: all 0.3s;
+}
+.btn2:hover {
+  color: #ddf416;
+}
+.btn2:hover::before {
+  opacity: 1;
+  background-color: #3aa8e3;
+  -webkit-transform: scaleY(1);
+  transform: scaleY(1);
+  transition: -webkit-transform 0.6s cubic-bezier(0.08, 0.35, 0.13, 1.02),
+    opacity 0.4s;
+  transition: transform 0.6s cubic-bezier(0.08, 0.35, 0.13, 1.02), opacity;
+  border-radius: 10%;
+}
+.btn2:active {
+  opacity: 1;
+  background-color: #3aa8e3;
+  -webkit-transform: scaleY(1);
+  transform: scaleY(1);
+  transition: -webkit-transform 0.6s cubic-bezier(0.08, 0.35, 0.13, 1.02),
+    opacity 0.4s;
+  transition: transform 0.6s cubic-bezier(0.08, 0.35, 0.13, 1.02), opacity;
+  border-radius: 10%;
+}
+
+a:active {
+  opacity: 1;
+  background-color: #3aa8e3;
+  -webkit-transform: scaleY(1);
+  transform: scaleY(1);
+  transition: -webkit-transform 0.6s cubic-bezier(0.08, 0.35, 0.13, 1.02),
+    opacity 0.4s;
+  transition: transform 0.6s cubic-bezier(0.08, 0.35, 0.13, 1.02), opacity;
+  border-radius: 10%;
+}
 @font-face {
   font-family: 'GmarketSansMedium';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
@@ -309,7 +375,6 @@ export default {
   font-weight: normal;
   font-style: normal;
 }
-
 .banner-container {
   display: flex;
   justify-content: center;
@@ -347,6 +412,7 @@ export default {
     opacity: 1;
   }
 }
+
 .selected {
   position: absolute;
   top: 5vh;
@@ -357,6 +423,8 @@ export default {
   width: 10%;
 }
 .statistics {
+  background-image: url('/background/cloud-background.svg');
+  background-size: cover;
   width: 100%;
   height: 100vh;
 }
@@ -378,27 +446,31 @@ export default {
   align-items: center;
   height: 50%;
 }
+.sat-box {
+  position: absolute;
+  left: 10%;
+  top: 6%;
+}
+.buttonPlace {
+  position: absolute;
+  top: 24px;
+  right: 1%;
+  width: 14%;
+  height: 43%;
 
-.buttonPlace{
-  position:absolute;
-  top:1px;
-  right:-2%;
-  width:14%;
-  height:73%;
-
-  display:flex;
+  display: flex;
   flex-direction: column;
   justify-content: space-evenly;
 }
 
-        /* style="width: 780px; height: 700px; left:25%" */
-#myMap{
+/* style="width: 780px; height: 700px; left:25%" */
+#myMap {
   /* width: 780px; */
   /* margin-top:3vh; */
-  padding-top:10px;
+  padding-top: 10px;
   height: 100%;
   width: 40%;
-  left:10%;
+  left: 10%;
 }
 
 #main {
@@ -406,15 +478,14 @@ export default {
 
   /* bottom: 5vh; */
   /* right: 65vh; */
-  padding-top:2%;
-  left:20%;
+  padding-top: 2%;
+  left: 20%;
   /* width: 40%;
   height: 100%; */
   /* width: 600px;
   height: 600px; */
   width: 100vh;
   height: 70vh;
-
 }
 #wordCloud {
   position: absolute;
@@ -423,8 +494,7 @@ export default {
   left: 20vh;
 }
 
-.changeButton{
-  color: "#00BFFF"
+.changeButton {
+  color: '#00BFFF';
 }
-
 </style>

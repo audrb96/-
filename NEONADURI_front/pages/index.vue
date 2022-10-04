@@ -12,19 +12,19 @@
         <img src="/banner/main-banner-light.png" class="banner" />
       </div>
       <div class="main-menu-container">
-        <img src="/banner/main-menu.png" class="main-menu" alt="" />
+        <img src="/banner/main-sub-logo.png" class="main-menu" alt="" />
       </div>
       <div class="main-card-box">
         <div class="cards" @click="moveSearch">
           <div class="main-card">
-            <img src="/maincard/main-search.png" class="card-img" />
+            <img src="/maincard/main-search-button.png" class="card-img" />
             <img src="/maincard/main-move.jpg" alt="" class="card-img back" />
           </div>
         </div>
         <div class="cards" @click="moveStatistics">
           <div class="main-card">
+            <img src="/maincard/main-statistics-button.png" class="card-img" />
             <img src="/maincard/main-move.jpg" class="card-img back" />
-            <img src="/maincard/main-statistics.png" class="card-img" />
           </div>
         </div>
       </div>
@@ -62,7 +62,8 @@ export default {
 
 <style scoped>
 .main-menu-container {
-  margin-top: 70px;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -72,14 +73,17 @@ export default {
   width: 50%;
 }
 .index-page {
-  height: 100vw;
+  background-image: url('/background/cloud-background2.svg');
+  background-size: cover;
+  height: 100%;
 }
 .back {
-  transform: rotateX(180deg);
+  transform: rotateY(180deg);
 }
 .cards {
+  width: 45vw;
+  height: 36vh;
   cursor: pointer;
-  width: 600px;
   perspective: 1000px;
 }
 
@@ -87,35 +91,33 @@ export default {
   margin-top: 20px;
   margin-bottom: 10vh;
   padding-bottom: 20px;
-  width: 100%;
-  height: 100%;
   height: 60vh;
   display: flex;
   justify-content: space-around;
   perspective: 1000px;
 }
 .main-card {
-  width: 100%;
-  height: 100%;
   position: relative;
   transform-style: preserve-3d;
-  transform: rotateX(0deg);
+  transform: rotateY(0deg);
   transition: 0.5s;
 }
 
 .cards:hover .main-card {
-  -webkit-animation: flip-scale-down-hor 0.5s linear both;
-  animation: flip-scale-down-hor 0.5s linear both;
+  /* -webkit-animation: flip-scale-down-hor 0.5s linear both;
+  animation: flip-scale-down-hor 0.5s linear both; */
   /* -webkit-animation: flip-scale-2-hor-bottom 0.5s linear both;
   animation: flip-scale-2-hor-bottom 0.5s linear both; */
   /* -webkit-animation: flip-scale-up-hor 0.5s linear both;
   animation: flip-scale-up-hor 0.5s linear both; */
-  /* transform: rotateX(-180deg); */
+  transform: rotateY(-180deg);
 }
 
 .card-img {
-  width: 100%;
+  width: 45vw;
+  height: 50vh;
   position: absolute;
+  /* background-color: rgba(125, 214, 255, 0.667); */
   backface-visibility: hidden;
 }
 .banner {
@@ -184,7 +186,8 @@ export default {
   position: absolute;
   width: 100%;
   height: 100vh;
-  background-color: #bdd9e5;
+  background-image: url('/background/splash-background.svg');
+  background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;

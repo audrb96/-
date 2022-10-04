@@ -12,6 +12,9 @@ export default {
 
 <style>
 #app {
-  background-color: #eaf2f9;
+  /* background-color: #eaf2f9; */
+  background-image: url('/background/cloud-background.svg');
+  background-size: cover;
+  min-height: 100vh;
 }
 </style>

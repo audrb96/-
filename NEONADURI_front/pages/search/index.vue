@@ -71,7 +71,7 @@
             <hr />
           </div>
 
-          <div>
+          <div class="option-row-container">
             <div
               v-for="(option, index) in options"
               :key="index"
@@ -128,7 +128,7 @@ export default {
             },
             {
               icon: 'park.png',
-              name: '관광공원/허브마을',
+              name: '관광농원/허브마을',
               isSelected: false,
             },
             {
@@ -386,7 +386,9 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
-
+.option-row-container {
+  width: 100%;
+}
 @font-face {
   font-family: 'GmarketSansMedium';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
@@ -415,11 +417,11 @@ export default {
 }
 
 .mdClass-title {
-  width: 8%;
-  font-size: 30px;
+  width: 10%;
+  font-size: 250%;
   font-family: 'SEBANG_Gothic_Bold';
   padding-left: 10px;
-  height: 40px;
+  height: 100%;
   border-left: 5px solid #02a6f8;
 }
 
@@ -523,6 +525,9 @@ export default {
   transform: rotateX(-90deg);
 }
 .search {
+  min-height: 100vh;
+  background-image: url('/background/cloud-background.svg');
+  background-size: cover;
   font-family: 'GmarketSansMedium';
 }
 .btn-group {
@@ -535,6 +540,8 @@ export default {
 }
 
 .option-row {
+  width: 100%;
+  height: 60%;
   display: flex;
   align-items: center;
 }
@@ -573,6 +580,7 @@ export default {
   border: solid 3px #02a6f8;
 }
 .option-content {
+  width: 100%;
   margin-top: 30px;
   display: flex;
   justify-content: center;
@@ -582,6 +590,7 @@ export default {
   border-radius: 15px;
   background-color: white;
   width: 90%;
+  height: auto;
   margin-bottom: 5vh;
 }
 .recommand-left {
@@ -608,15 +617,17 @@ export default {
 }
 .recommand {
   width: 80vw;
-  padding-top: 2%;
+  margin-top: 2%;
   background-color: #eaf2f9;
+  border-radius: 15px;
 }
 .recommand-content {
   border-radius: 15px;
   padding: 1%;
   display: flex;
   justify-content: space-between;
-  background-color: #cbe7f0;
+  /* background-color: #cbe7f0; */
+  background-color: #fff;
 }
 .top-title {
   width: 110px;
