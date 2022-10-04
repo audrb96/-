@@ -25,12 +25,7 @@
             @click="findTarget(e)"
           />
         </div>
-        <b-button
-          variant="danger"
-          class="findRoute-btn"
-          @click="
-            stopOverList.length === 0 ? findRouteNoViaTmap : findRouteTmap
-          "
+        <b-button variant="danger" class="findRoute-btn" @click="findRouteTmap"
           >경로 찾기</b-button
         >
         <b-form-select
@@ -562,7 +557,174 @@ export default {
         this.endPointObject === undefined ||
         this.stopOverList.length === 0
       ) {
-        this.$bvModal.show('route-modal')
+        for (const i in this.markerArr) {
+          this.markerArr[i].setMap(null)
+        }
+
+        this.marker_s = new Tmapv2.Marker({
+          position: new Tmapv2.LatLng(
+            this.startPointObject.lat,
+            this.startPointObject.lon
+          ),
+          icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_m_s.png',
+          iconSize: new Tmapv2.Size(24, 38),
+          map: this.map,
+        })
+
+        this.marker_e = new Tmapv2.Marker({
+          position: new Tmapv2.LatLng(
+            this.endPointObject.lat,
+            this.endPointObject.lon
+          ),
+          icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_m_e.png',
+          iconSize: new Tmapv2.Size(24, 38),
+          map: this.map,
+        })
+
+        const headers = {}
+        headers.appKey = 'l7xx9b31967c4bc2496f8dde1d66747658c9'
+        headers['Content-Type'] = 'application/json'
+
+        const dataInfo = {
+          reqCoordType: 'WGS84GEO',
+          resCoordType: 'EPSG3857',
+          startName: '출발',
+          startX: `${this.startPointObject.lon}`,
+          startY: `${this.startPointObject.lat}`,
+          startTime: '201711121314',
+          endName: '도착',
+          endX: `${this.endPointObject.lon}`,
+          endY: `${this.endPointObject.lat}`,
+          searchOption: this.option,
+        }
+        let resultData = null
+        let resultFeatures = null
+        this.isLoading = true
+        console.log(JSON.stringify(dataInfo))
+        await axios
+          .post(
+            'https://apis.openapi.sk.com/tmap/routes?version=1&format=json&callback=result',
+            JSON.stringify(dataInfo),
+            { headers }
+          )
+          .then(function (response) {
+            console.log(response)
+            resultData = response.data.features[0].properties
+            console.log(resultData)
+            resultFeatures = response.data.features
+            console.log(resultFeatures)
+            this.isLoading = false
+          })
+          .catch((error) => {
+            this.isLoading = false
+          })
+        // 결과 출력
+
+        this.totalDistance = (resultData.totalDistance / 1000).toFixed(1)
+        this.totalTime = (resultData.totalTime / 60).toFixed(0)
+        // 기존의 길과 포인트들 전부 삭제
+        if (this.resultInfoArr.length > 0) {
+          for (const i in this.resultInfoArr) {
+            console.log('타입 : ')
+            console.log(typeof this.resultInfoArr[i])
+            console.log(this.resultInfoArr.length)
+            this.resultInfoArr[i].setMap(null)
+          }
+        }
+        this.resultInfoArr = []
+
+        if (this.resultMarkerArr.length > 0) {
+          for (const i in this.resultMarkerArr) {
+            this.resultMarkerArr[i].setMap(null)
+          }
+        }
+        this.resultMarkerArr = []
+
+        // 루트 그림 그리는 포인트를 담는 배열
+        const drawInfoArr = []
+
+        for (const i in resultFeatures) {
+          const geometry = resultFeatures[i].geometry
+          const properties = resultFeatures[i].properties
+          let polyline_
+
+          this.startPointObjcet === {} &&
+            this.resultInfoArr.push(this.startPointObject)
+          this.endPointObjcet === {} &&
+            this.resultInfoArr.push(this.endPointObject)
+
+          for (const k in this.stopOverObjectList) {
+            this.resultInfoArr.push(this.stopOverObjectList[k])
+          }
+
+          if (geometry.type == 'LineString') {
+            for (const j in geometry.coordinates) {
+              // 경로들의 결과값(구간)들을 포인트 객체로 변환
+              const latlng = new Tmapv2.Point(
+                geometry.coordinates[j][0],
+                geometry.coordinates[j][1]
+              )
+              // 포인트 객체를 받아 좌표값으로 변환
+              const convertPoint =
+                new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(latlng)
+              // 포인트객체의 정보로 좌표값 변환 객체로 저장
+              const convertChange = new Tmapv2.LatLng(
+                convertPoint._lat,
+                convertPoint._lng
+              )
+
+              drawInfoArr.push(convertChange)
+            }
+
+            polyline_ = new Tmapv2.Polyline({
+              path: drawInfoArr,
+              strokeColor: '#FF0000',
+              strokeWeight: 6,
+              map: this.map,
+            })
+            this.resultInfoArr.push(polyline_)
+          } else {
+            let markerImg = ''
+            let size = '' // 아이콘 크기 설정합니다.
+
+            if (properties.pointType == 'S') {
+              // 출발지 마커
+              markerImg =
+                'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_s.png'
+              size = new Tmapv2.Size(24, 38)
+            } else if (properties.pointType == 'E') {
+              // 도착지 마커
+              markerImg =
+                'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_e.png'
+              size = new Tmapv2.Size(24, 38)
+            } else {
+              // 각 포인트 마커
+              markerImg = 'http://topopen.tmap.co.kr/imgs/point.png'
+              size = new Tmapv2.Size(8, 8)
+            }
+
+            // 경로들의 결과값들을 포인트 객체로 변환
+            const latlon = new Tmapv2.Point(
+              geometry.coordinates[0],
+              geometry.coordinates[1]
+            )
+            // 포인트 객체를 받아 좌표값으로 다시 변환
+            const convertPoint =
+              new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(latlon)
+
+            const marker_p = new Tmapv2.Marker({
+              position: new Tmapv2.LatLng(convertPoint._lat, convertPoint._lng),
+              icon: markerImg,
+              iconSize: size,
+              map: this.map,
+            })
+
+            this.resultMarkerArr.push(marker_p)
+          }
+        }
+        this.isLoading = false
+
+        // this.$bvModal.show('route-modal')
         return
       }
 

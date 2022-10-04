@@ -211,7 +211,6 @@ export default {
   },
 
   mounted() {},
-
   methods: {
     ...mapMutations('route', ['ADD_ROUTE', 'DELETE_ROUTE', 'CHANGE_ROUTE']),
     ...mapMutations('review', ['CLEAR_REVIEW', 'SET_REVIEW']),
