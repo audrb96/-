@@ -17,13 +17,13 @@
       <div class="main-card-box">
         <div class="cards" @click="moveSearch">
           <div class="main-card">
-            <img src="/maincard/main-search-button.png" class="card-img" />
+            <img src="/maincard/search-button.png" class="card-img" />
             <img src="/maincard/main-move.png" alt="" class="card-img back" />
           </div>
         </div>
         <div class="cards" @click="moveStatistics">
           <div class="main-card">
-            <img src="/maincard/main-statistics-button.png" class="card-img" />
+            <img src="/maincard/statistics-button.png" class="card-img" />
             <img src="/maincard/main-move.png" class="card-img back" />
           </div>
         </div>
