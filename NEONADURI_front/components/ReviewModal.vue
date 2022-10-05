@@ -18,11 +18,15 @@
       <div class="check-modal-body">
         <div class="check-model-body-top">
           <div class="check-model-body-left">
-            <img :src="preview" class="check-modal-body-img" alt="없음" />
+            <img
+              :src="preview === null ? '/banner/no-img.png' : preview"
+              class="check-modal-body-img"
+              alt="없음"
+            />
             <v-file-input
               v-model="reviewForm.reviewImage"
               :placeholder="fileInfo?.name"
-              style="margin: 0 10%"
+              style="margin: 0 15%"
               @change="previewFile(reviewForm.reviewImage)"
             />
           </div>
@@ -171,7 +175,7 @@ export default {
   data() {
     return {
       pvalue: this.value,
-      preview: '/banner/no-img.png',
+      preview: null,
       // preview: '/banner/no-image1.png',
       // preview: '/banner/no-image2.png',
       fileInfo: null,
@@ -224,7 +228,7 @@ export default {
         )
       } else if (file === null) {
         this.fileInfo = null
-        this.preview = '/banner/no-image.png'
+        this.preview = null
       } else {
         file = this.fileInfo
         const fileData = (data) => {
@@ -433,18 +437,25 @@ input {
 }
 .check-model-body-top {
   display: flex;
+  justify-content: space-between;
   width: 100%;
   height: 100%;
   margin: 5% 0;
 }
+/* .check-model-body-left {
+  position: fixed;
+  width: 70%;
+} */
 .check-modal-body-img {
-  width: 100%;
-  height: 70%;
+  width: 400px;
+  height: 60%;
   max-height: 400px;
   margin: 2% 2% 0 2%;
 }
 .check-modal-body-input {
   width: 50%;
+  /* position: fixed;
+  right: 0; */
   margin: 4% 4% 4% 0;
   display: flex;
   flex-direction: column;
