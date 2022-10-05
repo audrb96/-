@@ -3,7 +3,11 @@
     <div style="width: 100%">
       <div class="main-content fadeInUp">
         <div class="recommand">
-          <div class="recommand-content">
+          <div
+            class="recommand-content"
+            style="cursor: pointer"
+            @click="recommandEnter"
+          >
             <div class="recommand-left">
               <img
                 :src="
@@ -323,7 +327,12 @@ export default {
       'SET_QUERY',
       'CLEAR_QUERY',
       'CLEAR_PAGE',
+      'SET_SPOT',
     ]),
+    recommandEnter() {
+      this.SET_SPOT(this.recommendSpot)
+      this.$router.push('/review')
+    },
     sidoChange() {
       this.callSigungus(this.sido)
       this.sigungu = 'all'
