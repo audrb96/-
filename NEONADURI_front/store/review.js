@@ -22,6 +22,9 @@ export const mutations = {
   CHANGE_PASS(state, object) {
     state.reviewList[object.idx].pass = object.pass
   },
+  PLUS_REVIEWLIST(state, review) {
+    state.reviewList.push(review)
+  },
   // SET_TAG(state, reviewList){
   //   state.reviewList.forEach((element)=>{
   //     element.tagContents = element.tagContents
@@ -45,6 +48,7 @@ export const actions = {
         data.reviewContainsTags.forEach((element) => {
           element.pass = false
         })
+        console.log(data)
         commit('SET_REVIEWLIST', data.reviewContainsTags)
       },
       (error) => {
@@ -53,24 +57,22 @@ export const actions = {
     )
   },
 
-  registReview({ commit }, review) {
-    writeReview(
+  async registReview({ commit }, review) {
+    await writeReview(
       review,
       ({ data }) => {
-        console.log(data)
+        console.log('등록 성공')
       },
       (error) => {
         console.log(error)
       }
     )
   },
-  changeReview({ commit }, review) {
-    modifyReview(
+  async changeReview({ commit }, review) {
+    await modifyReview(
       review,
       ({ data }) => {
-        console.log(11111)
-        console.log(review)
-        console.log(data)
+        console.log('수정 성공')
       },
       (error) => {
         console.log(error)
@@ -93,7 +95,6 @@ export const actions = {
       info.id,
       info.password,
       ({ data }) => {
-        console.log(data)
         const object = { pass: data, idx: info.idx }
         commit('CHANGE_PASS', object)
       },
@@ -102,11 +103,11 @@ export const actions = {
       }
     )
   },
-  removeReview({ commit }, reviewId) {
-    deleteReview(
+  async removeReview({ commit }, reviewId) {
+    await deleteReview(
       reviewId,
       ({ data }) => {
-        console.log(data)
+        console.log('삭제 성공')
       },
       (error) => {
         console.log(error)

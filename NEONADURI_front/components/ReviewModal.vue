@@ -26,7 +26,7 @@
             <v-file-input
               v-model="reviewForm.reviewImage"
               :placeholder="fileInfo?.name"
-              style="margin: 0 15%"
+              style="margin: 0 15% 0 0"
               @change="previewFile(reviewForm.reviewImage)"
             />
           </div>
@@ -130,7 +130,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 import { ref, reactive } from 'vue'
 // import Tags from "@yaireo/tagify/dist/tagify.vue"
 import Tags from '@/components/TagifyInput'
@@ -197,6 +197,7 @@ export default {
 
   methods: {
     ...mapActions('review', ['registReview', 'callReviews']),
+    ...mapMutations('review', ['PLUS_REVIEWLIST']),
     CloseCheck() {
       // document.getElementById('check-modal-box').className += 'slide-out-bottom'
       this.$emit('updateStatus', !this.pvalue)
@@ -284,13 +285,13 @@ export default {
 
       reviewData.append('spotId', this.spot.spotId)
       // this.reviewForm.reviewImage.name = 'RV' + this.reviewList.length
-      // console.log(tempFile.name)
       reviewData.append('reviewImage', this.reviewForm.reviewImage)
       reviewData.append('reviewContent', this.reviewForm.reviewContent)
       reviewData.append('reviewPassword', this.reviewForm.reviewPassword)
       reviewData.append('tags', this.reviewForm.tags)
 
       await this.registReview(reviewData)
+      console.log(this.reviewList)
       await this.callReviews(this.spot.spotId)
       this.$emit('updateStatus', !this.pvalue)
       this.$emit('refresh')

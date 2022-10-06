@@ -38,7 +38,7 @@
               v-if="flag"
               v-model="reviewForm.reviewImage"
               :placeholder="fileInfo?.name"
-              style="margin: 0 15%"
+              style="margin: 0 15% 0 0"
               @change="previewFile(reviewForm.reviewImage)"
             />
             <div v-else class="modify-box">
@@ -244,8 +244,9 @@ export default {
         )
       }
     },
-    deleteReview() {
-      this.removeReview(this.review.reviewId)
+    async deleteReview() {
+      await this.removeReview(this.review.reviewId)
+      await this.callReviews(this.spot.spotId)
       this.$emit('updateStatus', !this.pvalue)
     },
     async modifyReview() {
