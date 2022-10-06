@@ -1,5 +1,6 @@
 import {
   getReviews,
+  deleteReview,
   modifyReview,
   writeReview,
   comparePass,
@@ -95,6 +96,17 @@ export const actions = {
         console.log(data)
         const object = { pass: data, idx: info.idx }
         commit('CHANGE_PASS', object)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  },
+  removeReview({ commit }, reviewId) {
+    deleteReview(
+      reviewId,
+      ({ data }) => {
+        console.log(data)
       },
       (error) => {
         console.log(error)

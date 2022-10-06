@@ -38,6 +38,7 @@
               v-if="flag"
               v-model="reviewForm.reviewImage"
               :placeholder="fileInfo?.name"
+              style="margin: 0 15%"
               @change="previewFile(reviewForm.reviewImage)"
             />
             <div v-else class="modify-box">
@@ -72,14 +73,26 @@
           <div class="check-model-body-bot-left"></div>
           <div class="check-model-body-bot-right">
             <v-btn
-              class="mx-2"
+              class="mx-5"
               fab
               dark
               large
               color="cyan"
+              style="right: 8%"
               @click="modifyReview"
             >
               <v-icon dark> mdi-pencil </v-icon>
+            </v-btn>
+            <v-btn
+              class="mx-1"
+              fab
+              dark
+              large
+              color="cyan"
+              style="margin-left: 10%"
+              @click="deleteReview"
+            >
+              <v-icon dark> mdi-delete </v-icon>
             </v-btn>
           </div>
         </div>
@@ -178,7 +191,12 @@ export default {
     })
   },
   methods: {
-    ...mapActions('review', ['changeReview', 'callReviews', 'callReview']),
+    ...mapActions('review', [
+      'changeReview',
+      'callReviews',
+      'callReview',
+      'removeReview',
+    ]),
     CloseCheck() {
       this.$emit('updateStatus', !this.pvalue)
       const modal = document.getElementsByClassName('check-modal')[0]
@@ -225,6 +243,10 @@ export default {
           false
         )
       }
+    },
+    deleteReview() {
+      this.removeReview(this.review.reviewId)
+      this.$emit('updateStatus', !this.pvalue)
     },
     async modifyReview() {
       const reviewData = new FormData()
@@ -374,6 +396,7 @@ input {
 }
 .check-model-body-top {
   display: flex;
+  justify-content: space-between;
   width: 100%;
   height: 100%;
   margin: 5% 0;
@@ -382,8 +405,8 @@ input {
   width: 50%;
 }
 .check-modal-body-img {
-  width: 100%;
-  height: 70%;
+  width: 400px;
+  height: 60%;
   max-height: 400px;
   margin: 2% 2% 0 2%;
 }

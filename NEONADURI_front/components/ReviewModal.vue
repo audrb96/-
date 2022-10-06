@@ -278,6 +278,7 @@ export default {
       }
       if (this.flag) {
         this.$bvModal.show('pass-modal')
+        this.flag = false
         return
       }
 
@@ -446,6 +447,9 @@ input {
   position: fixed;
   width: 70%;
 } */
+.check-model-body-left {
+  width: 50%;
+}
 .check-modal-body-img {
   width: 400px;
   height: 60%;

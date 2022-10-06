@@ -11,6 +11,10 @@ async function writeReview(review, success, fail) {
   await multiApi.post(`/api/review`, review).then(success).catch(fail)
 }
 
+async function deleteReview(reviewId, success, fail) {
+  await api.delete(`/api/review/${reviewId}`).then(success).catch(fail)
+}
+
 async function modifyReview(review, success, fail) {
   await multiApi.put(`/api/review`, review).then(success).catch(fail)
 }
@@ -26,4 +30,11 @@ async function getReview(reviewId, success, fail) {
   await api.get(`/api/review/${reviewId}`).then(success).catch(fail)
 }
 
-export { writeReview, getReviews, modifyReview, comparePass, getReview }
+export {
+  writeReview,
+  getReviews,
+  deleteReview,
+  modifyReview,
+  comparePass,
+  getReview,
+}
