@@ -45,5 +45,11 @@ public class ReviewController {
         return new ResponseEntity<>(reviewService.comparePass(reviewId,password),HttpStatus.OK);
     }
 
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<?> removeReview(@PathVariable("reviewId") Long reviewId) {
+        reviewService.deleteReview(reviewId);
+        return ResponseEntity.ok().build();
+    }
+
 
 }

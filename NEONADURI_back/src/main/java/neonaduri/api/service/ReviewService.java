@@ -97,4 +97,9 @@ public class ReviewService {
         }
         return false;
     }
+
+    public void deleteReview(Long reviewId){
+        reviewRepository.deleteById(reviewId);
+    }
+
 }
